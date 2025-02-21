@@ -110,7 +110,6 @@ h1 {
     font-weight: 500 ;
     text-align: center;
     color: #283618;
-    display: flex;
     align-content: center;
     justify-self: center;
     background-color: #fffdee;
@@ -438,7 +437,6 @@ h1::after{
 
 .footer{
     text-align: center;
-    display: block;
     justify-self: center;
     font-size: clamp(8px,3vw,16px);
     margin-top: min(200px,20vw);
