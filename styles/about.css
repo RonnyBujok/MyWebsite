@@ -310,7 +310,7 @@ h1::after{
 .all-skills-mobile .code ul li,
 .all-skills-mobile .other ul li,
 .all-skills-mobile .lang .lang-flex p{
-    font-size: clamp(10px,5vw,1rem)
+    font-size: clamp(14px,3.5vw,26px);
 }
 
 
