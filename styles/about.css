@@ -305,7 +305,7 @@ h1::after{
 .all-skills-mobile .code ul, 
 .all-skills-mobile .other ul{
     display: block;
-    columns: 3 200px;
+    columns: 3 190px;
     column-gap: 5px;
 }
 
@@ -355,8 +355,19 @@ h1::after{
     border-width: 1px;
     border-color: #DDA15E;
     border-radius: 50%;
-    height: 14px;
-    width: 14px;
+    height: 12px;
+    width: 12px;
+    align-self: center;
+}
+
+.circle-half {
+    background: linear-gradient(to right, #DDA15E 50%, transparent 50%);
+    border-style: solid;
+    border-width: 1px;
+    border-color: #DDA15E;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
     align-self: center;
 }
 
