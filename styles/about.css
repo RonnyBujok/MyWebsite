@@ -361,7 +361,7 @@ h1::after{
 }
 
 .circle-half {
-    background: linear-gradient(to right, #DDA15E 50%, transparent 50%);
+    background-color: #DDA15E;
     border-style: solid;
     border-width: 1px;
     border-color: #DDA15E;
@@ -369,6 +369,18 @@ h1::after{
     height: 12px;
     width: 12px;
     align-self: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.circle-half::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #fffdee;
 }
 
 
