@@ -118,10 +118,7 @@ nav li:first-child{
 .big-photo{
     max-width: min(100%,50vw);
     border-radius: 50%;
-    border-color: #DDA15E;
-    border-width: min(5px,0.6vw);
-    border-style: solid;
-    box-shadow: 0px 10px 10px rgba(0,0,0,0.05);
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.15);
 }
 
 
