@@ -165,8 +165,7 @@ h1::after{
 }
 .person img{
     border-radius: 50%;
-    max-width: min(25%,25vw);
-    min-width: 100px;
+    width: clamp(100px,25%,25vw);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
     margin-right: 3vw;
     align-self:flex-start;
