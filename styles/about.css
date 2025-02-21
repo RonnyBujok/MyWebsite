@@ -441,11 +441,9 @@ h1::after{
 
 .footer{
     text-align: center;
-    justify-self: center;
     font-size: clamp(8px,3vw,16px);
     margin-top: min(200px,20vw);
     color: #DDA15E;
-    width: max-content;
     margin-left: 10vw;
 }
 

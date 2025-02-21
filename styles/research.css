@@ -166,13 +166,16 @@ h3{
     margin-bottom: min(5vw,40px);
 }
 
+.research-all-parent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
 .research-all{
     width: clamp(90%, 90%, 75ch);
     max-width: 75ch;
     display: flex;
     flex-direction: column;
-    justify-self: center;
-
 }
 
 .research-all p{
