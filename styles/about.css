@@ -444,13 +444,12 @@ h1::after{
     font-size: clamp(8px,3vw,16px);
     margin-top: min(200px,20vw);
     color: #DDA15E;
-    margin-left: 10vw;
 }
 
 .copyright-icons{
     display: inline;
     width: clamp(15px,5vw,30px);
-    margin-bottom: -15px;
+    margin-bottom: -30px;
 
 }
 
@@ -468,9 +467,6 @@ h1::after{
     }
     .all-skills-mobile{
         display: flex;
-    }
-    .footer{
-        margin-left: 0;
     }
     .all{
         margin-left: 0;
