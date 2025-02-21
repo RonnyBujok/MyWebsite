@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ronny Bujok - Teaching</title>
+    <link rel="stylesheet" href="styles/teaching.css">
+</head>
+<body>
+    <nav>
+        <ul class="sidebar">
+          <li class = "close-icon-button" onclick=hideSidebar()>
+            <a href="">
+              <img src="icons/close.svg" alt="">
+            </a>
+          </li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="teaching.html">Teaching</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+    
+        <ul>
+          <li><a href="index.html">
+            <img style="padding-right: 10px;" src="icons/home.svg">
+            Ronny Bujok
+          </a></li>
+          <li class="hideOnMobile"><a href="about.html">About</a></li>
+          <li class="hideOnMobile"><a href="research.html">Research</a></li>
+          <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
+          <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
+          <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+          <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+        </ul>
+      </nav>
+    
+      <script>
+        function showSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'flex'
+        }
+        function hideSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'none'
+        }
+      </script>
+      
+
+
+
+    <div>
+        <h1>
+            Teaching
+        </h1>
+    </div>
+
+    <div class="accordion">
+        <div>
+            <input type="checkbox" name="course-accordion" id="course1" class="accordion__input">
+            <label for="course1" class="accordion__label">2024 &#183; Statistics with R</label>
+            <div class="accordion__content">
+                <p class="teaching-header">
+                    EMLAR XX, Utrecht, The Netherlands
+                </p>
+                <p>
+                    Programming and statistics in R for beginners. The tutorial included: 
+                    <ul class = teaching-list>
+                        <li>Programming and calculations</li>
+                        <li>Data management</li>
+                        <li>T-tests & linear models</li>
+                        <li>Data visualization in ggplot2</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <div>
+            <input type="checkbox" name="course-accordion" id="course2" class="accordion__input">
+            <label for="course2" class="accordion__label">2023 &#183; Statistics with R</label>
+            <div class="accordion__content">
+                <p class="teaching-header">
+                    EMLAR XIX, Utrecht, The Netherlands
+                </p>
+                <p>
+                    Programming and statistics in R for beginners. The tutorial included: 
+                    <ul class = teaching-list>
+                        <li>Programming and calculations</li>
+                        <li>Data management</li>
+                        <li>T-tests & linear models</li>
+                        <li>Data visualization in ggplot2</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <div>
+            <input type="checkbox" name="course-accordion" id="course3" class="accordion__input">
+            <label for="course3" class="accordion__label">2021 &#183; Key Practices for the Languages Scientist</label>
+            <div class="accordion__content">
+                <p class="teaching-header">
+                    IMPRS Course, Nijmegen, The Netherlands
+                </p>
+                <p>
+                    Setting up, organizing, chairing and teaching a course for PhD candidates. Each class focused on a different core academic skill and/or topic. Among the selcted topics were: 
+                    <ul class = teaching-list>
+                        <li>Reference managers</li>
+                        <li>Programming skills</li>
+                        <li>Poweranalysis</li>
+                        <li>Data management</li>
+                        <li>Ethics in Academia</li>
+                        <li>Open Science</li>
+                        <li>Writing & Reviews</li>
+                        <li>Publishing</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+    </div>
+    
+    
+
+
+
+
+    <div class = "footer">
+        <p>
+            <img class="copyright-icons" src="icons/cc.svg" alt="">
+            <img class="copyright-icons"src="icons/by.svg" alt="">
+        </p>
+        <p>
+            &copy; 2025 Ronny Bujok. This work is licensed under CC BY 4.0
+        </p>
+        </div>
+    </div>
+    
+</body>
+</html>

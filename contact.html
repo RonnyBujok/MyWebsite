@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ronny Bujok - Contact</title>
+    <link rel="stylesheet" href="styles/contact.css">
+</head>
+<body>
+    <nav>
+        <ul class="sidebar">
+          <li class = "close-icon-button" onclick=hideSidebar()>
+            <a href="">
+              <img src="icons/close.svg" alt="">
+            </a>
+          </li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="teaching.html">Teaching</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+    
+        <ul>
+          <li><a href="index.html">
+            <img style="padding-right: 10px;" src="icons/home.svg">
+            Ronny Bujok
+          </a></li>
+          <li class="hideOnMobile"><a href="about.html">About</a></li>
+          <li class="hideOnMobile"><a href="research.html">Research</a></li>
+          <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
+          <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
+          <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+          <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+        </ul>
+      </nav>
+    
+      <script>
+        function showSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'flex'
+        }
+        function hideSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'none'
+        }
+      </script>
+      
+      
+      <h1>Contact</h1>
+
+      <div class="email">
+        <p>
+          &#9993; E-mail:
+        </p>
+        <p class="address">
+          bujokronny[at]gmail[dot]com
+        </p>
+      </div>
+
+      <div class="logobar">
+        <a href="https://www.facebook.com/ronny.bujok.7" target="_blank"><img src="icons/facebook.png" alt=""></a>
+        <a href="https://www.instagram.com/ronnybujok/" target="_blank"><img src="icons/Instagram.webp" alt=""></a>
+        <a href="https://www.linkedin.com/in/ronny-bujok-690a2115a/" target="_blank"><img src="icons/linkedin.webp" alt=""></a>
+        <a href="https://scholar.google.com/citations?user=_uUQuNgAAAAJ&hl=en" target="_blank"><img src="icons/scholar.png" alt=""></a>
+        <a href="https://www.researchgate.net/profile/Ronny-Bujok" target="_blank"><img src="icons/researchgate.png" alt=""></a>
+        <a href="https://orcid.org/0000-0001-6557-9808" target="_blank"><img src="icons/ORCID.png" alt=""></a>
+        <a href="https://github.com/RonnyBujok" target="_blank"><img src="icons/github.png" alt=""></a>
+      </div> 
+        
+  
+    
+    <div class = "footer">
+        <p>
+            <img class="copyright-icons" src="icons/cc.svg" alt="">
+            <img class="copyright-icons"src="icons/by.svg" alt="">
+        </p>
+        <p>
+            &copy; 2025 Ronny Bujok. This work is licensed under CC BY 4.0
+        </p>
+        </div>
+    </div>
+    
+</body>
+</html>
