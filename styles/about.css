@@ -215,7 +215,7 @@ h1::after{
     cursor: pointer;
     position: relative;
     transition: background 0.1s;
-    font-size: clamp(12px,3.5vw,20px);
+    font-size: clamp(12px,3.5vw,22px);
 }
 
 .accordion__label:hover {
@@ -238,12 +238,12 @@ h1::after{
 .accordion__content{
     background: #fffdee;
     line-height: 1.6;
-    font-size: clamp(14px,3.5vw,26px);
+    font-size: clamp(14px,3.5vw,22px);
     display: none;
 }
 
 .accordion__content li{
-    font-size: clamp(12px,3vw,24px);
+    font-size: clamp(12px,3vw,20px);
 }
 .accordion__input{
     display: none;
