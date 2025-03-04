@@ -170,6 +170,8 @@ h3{
     display: flex;
     flex-direction: column;
     justify-content: center;
+    font-size: clamp(14px,3.5vw,18px);
+
 }
 
 .research-all{
@@ -277,10 +279,9 @@ h3{
 .publications{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    font-size: clamp(14px,3.5vw,26px);
-
+    justify-content: center
 }
+
 #publications-id, #presentations-id, #summary-id, #ac-id{
     scroll-margin-block-start: min(10vw,50px);
 }
