@@ -355,8 +355,8 @@ h1::after{
     border-width: 1px;
     border-color: #DDA15E;
     border-radius: 50%;
-    height: 12px;
-    width: 12px;
+    height: clamp(9px,100%,12px);
+    width: clamp(9px,20%,12px);
     align-self: center;
 }
 
@@ -397,7 +397,7 @@ h1::after{
 
 .lang-flex{
     display: grid;
-    grid-template-columns: min(14vw,90px) 5fr;
+    grid-template-columns: min(12vw,90px) 5fr;
     padding-right: 20px;
     padding-left: 20px;
     border-radius: 10px;
