@@ -566,7 +566,7 @@ h1{
 
 .description .section-title{
     font-weight: bold;
-    margin-left: -2rem;
+    margin-left: -1.5rem;
     margin-top: 1rem;
 }
 
@@ -719,6 +719,9 @@ h1{
     }
     .description li{
         margin-top: 0.5rem;
+    }
+    .section-title{
+        margin-bottom: 0.3rem;
     }
 }
 
