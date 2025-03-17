@@ -2,7 +2,7 @@
 
 html {
 scroll-behavior: smooth;
-scroll-padding-top: 60px; 
+scroll-padding-top: 40px; 
 }
   
 
@@ -663,7 +663,7 @@ h1{
 
 @media(max-width: 1000px) {
     html{
-        scroll-padding-top: 4.5rem; 
+        scroll-padding-top: 7.5rem; 
     }
     .recipe-names{
         display:none;
