@@ -1,0 +1,469 @@
+{
+    "recipes": [
+      {
+        "name": "Finnish Salmon Soup (Lohikeitto)",
+        "tags":["salmon","potato","leek","carrot","fish","finnish","soup","lohikeitto","cream","dill","lemon"],
+        "baseServings": 4,
+        "image": "images/food/salmon-soup.jpg",
+        "ingredients": [
+          {"name": "salmon", "amount": 500, "unit": "g"},
+          {"name": "potatoes", "amount": 400, "unit": "g"},
+          {"name": "leeks", "amount": 3, "unit": ""},
+          {"name": "carrots", "amount": 3, "unit": ""},
+          {"name": "fish broth", "amount": 1.2, "unit": "l"},
+          {"name": "heavy cream", "amount": 200, "unit": "ml"},
+          {"name": "dill", "amount": 1, "unit": "bunch"},
+          {"name": "lemon", "amount": 1, "unit": ""},
+          {"name": "salt and pepper", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Cut the leeks into thin strips and wash them well. Peel and slice the carrots and cut the potatoes into cubes. Cut the fresh salmon into large cubes. Chop the dill finely.",
+          "In a large saucepan, sauté the leeks and sliced carrots in butter or olive oil.",
+          "Once the leeks have reduced in volume by half, add the potatoes and fish stock. Season with salt and black pepper. Simmer for 15 minutes at medium heat until the potatoes are cooked.",
+          "10 minutes before serving, add the salmon chunks and cream. Cook over medium heat for 3-5 minutes until the salmon is cooked. The cream should not boil. Close the lid and wait another 5 minutes.",
+          "To finish, add the fresh dill. Serve in a bowl and decorate with more dill, black pepper, and a drizzle of lemon juice if you like."
+        ],
+        "credits": {
+          "author": "Geraldine Leverd",
+          "link": "https://lacuisinedegeraldine.fr/en/finnish-salmon-soup-lohikeitto"
+        }
+      },
+      
+      {
+        "name": "Żebroczka (potato traybake)",
+        "tags":["potato","rice","milk","Polish","onion","garlic","sour cream","bacon","vegetarian"],
+        "baseServings": 2,
+        "image": "images/food/żebroczka.jpg",
+        "ingredients": [
+          {"name": "potatoes", "amount": 500, "unit": "g"},
+          {"name": "dry rice", "amount": 75, "unit": "g"},
+          {"name": "milk", "amount": 200, "unit": "ml"},
+          {"name": "onions", "amount": 2, "unit": ""},
+          {"name": "garlic cloves", "amount": 4, "unit": ""},
+          {"name": "(smoked) paprika", "amount": 0, "unit": ""},
+          {"name": "oregano", "amount": 0, "unit": ""},
+          {"name": "salt and pepper", "amount": 0, "unit": ""},
+          {"name": "(optional) sour cream", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Peel the potatoes and grate or blend them. Cook the rice. Heat up the milk.",
+          "Cut the onions and garlic and fry it on medium heat until golden brown.",
+          "Put everything in a casserole dish, add the spices, stir and put in the oven at 180 degrees for about 50 minutes or until brown and crispy on top. ",
+          "Let cool down, cut into pieces and serve (with sour cream).",
+          "Optional: Add veggies of your choice (e.g. mushrooms, spinach etc.)."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+      
+      {
+        "name": "Placki Ziemniaczane (potato pancakes)",
+        "tags":["potato","pancake","placki","Polish","onion","garlic","creme fraiche","bacon","vegetarian"],
+        "baseServings": 2,
+        "image": "images/food/placki_ziemniaczane.jpg",
+        "ingredients": [
+          {"name": "potatoes", "amount": 500, "unit": "g"},
+          {"name": "eggs", "amount": 1, "unit": ""},
+          {"name": "onions", "amount": 1, "unit": ""},
+          {"name": "garlic cloves", "amount": 1, "unit": ""},
+          {"name": "flour", "amount": 1, "unit": "tsp"},
+          {"name": "salt and pepper", "amount": 0, "unit": ""},
+          {"name": "oil (for frying)", "amount": 0, "unit": ""},
+          {"name": "(optional) créme fraiche", "amount": 0, "unit": ""},
+          {"name": "(optional) bacon cubes", "amount": 0, "unit": ""}
+
+        ],
+        "instructions": [
+          "Peel and grate the potatoes. Blend or finely cut the onions and garlic and add them to the potatoes.",
+          "Add flour until it binds together and gets thicker. Add more or less depending on your liking.",
+          "Season with plenty of pepper and some salt",
+          "Preheat a pan properly on medium high heat with some oil.",
+          "Spread the batter on the pan and fry the pancake on both sides until golden-brown.",
+          "Optional: Serve with créme fraiche or fried bacon cubes."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+      
+
+      {
+        "name": "Pierogi Ruskie (Dumplings with potatoes and quark)",
+        "tags":["pierogi", "flour","dough","potato","cheese","quark","twarog","dumplings","Polish","onion","creme fraiche","bacon","vegetarian","ruskie"],
+        "baseServings": 4,
+        "image": "images/food/pierogi_ruskie.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 500, "unit": "g"},
+              {"name": "(warm) water", "amount": 280, "unit": "ml"},
+              {"name": "salt", "amount": 1, "unit": "tbsp"},
+              {"name": "oil", "amount": 1, "unit": "tbsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "potatoes", "amount": 1, "unit": "kg"},
+              {"name": "twaróg (Polish quark)", "amount": 500, "unit": "g"},
+              {"name": "onions", "amount": 2, "unit": ""},
+              {"name": "salt and pepper", "amount": 0, "unit": ""}
+            ],
+            "instructions": [
+              "Boil the potatoes and mash them. Fry the onion until golden brown. Add to the potatoes and mix it well.",
+              "Add the twaróg (or quark) and mix it well. Add salt and pepper to taste."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Pierogi with cabbage and mushrooms",
+        "tags":["pierogi", "flour","dough","mushrooms","cabbage","sauerkraut","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+        "baseServings": 4,
+        "image": "images/food/pierogi_cabbage.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 500, "unit": "g"},
+              {"name": "(warm) water", "amount": 280, "unit": "ml"},
+              {"name": "salt", "amount": 1, "unit": "tbsp"},
+              {"name": "oil", "amount": 1, "unit": "tbsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "sauerkraut", "amount": 500, "unit": "g"},
+              {"name": "mushrooms", "amount": 500, "unit": "g"},
+              {"name": "onions", "amount": 2, "unit": ""},
+              {"name": "salt and pepper", "amount": 0, "unit": ""}
+            ],
+            "instructions": [
+              "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown.",
+              "Cut the sauerkraut in smaller pieces and add to the pan. Briefly fry until sauerkraut softens. Add salt and pepper to taste."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Pierogi with Spinach and Feta",
+        "tags":["pierogi", "flour","dough","spinach","feta","dumplings","Polish","creme fraiche","bacon","vegetarian","boullion"],
+        "baseServings": 4,
+        "image": "images/food/pierogi_spinach.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 500, "unit": "g"},
+              {"name": "(warm) water", "amount": 280, "unit": "ml"},
+              {"name": "salt", "amount": 1, "unit": "tsp"},
+              {"name": "oil", "amount": 1, "unit": "tsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "spinach", "amount": 500, "unit": "g"},
+              {"name": "feta", "amount": 250, "unit": "g"},
+              {"name": "boullion", "amount": 1, "unit": "cube"}
+            ],
+            "instructions": [
+              "Fry the spinach till it shrinks and softens. Crumble the boullion cube and add it to the spinach. Add small feta cubes and mix well."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Pierogi with Apple and Cinnamon",
+        "tags":["pierogi", "flour","dough","sweet","apple","dessert", "cinnamon","dumplings","Polish","cream","bacon","vegetarian"],
+        "baseServings": 4,
+        "image": "images/food/pierogi_apple.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 500, "unit": "g"},
+              {"name": "(warm) water", "amount": 280, "unit": "ml"},
+              {"name": "salt", "amount": 1, "unit": "tsp"},
+              {"name": "oil", "amount": 1, "unit": "tsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "apples", "amount": 4, "unit": ""},
+              {"name": "cinnamon", "amount": 0, "unit": ""}
+            ],
+            "instructions": [
+              "Grate the apples and fry them until soft. Add the cinnamon."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Pierogi with mushrooms",
+        "tags":["pierogi", "flour","dough","mushrooms","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+        "baseServings": 2,
+        "image": "images/food/pierogi_mushroom.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 250, "unit": "g"},
+              {"name": "(warm) water", "amount": 140, "unit": "ml"},
+              {"name": "salt", "amount": 0.5, "unit": "tsp"},
+              {"name": "oil", "amount": 0.5, "unit": "tsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "mushrooms", "amount": 500, "unit": "g"},
+              {"name": "onions", "amount": 2, "unit": ""},
+              {"name": "salt and pepper", "amount": 0, "unit": ""}
+            ],
+            "instructions": [
+              "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown. Add salt and pepper to taste."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Pierogi with beetroot",
+        "tags":["pierogi", "flour","dough","beetroot","cheese","ricotta","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+        "baseServings": 2,
+        "image": "images/food/pierogi_beetroot.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 250, "unit": "g"},
+              {"name": "(warm) water", "amount": 140, "unit": "ml"},
+              {"name": "salt", "amount": 0.5, "unit": "tsp"},
+              {"name": "oil", "amount": 0.5, "unit": "tsp"}
+            ],
+            "instructions": [
+              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+              "Let it rest for at least 10 minutes",
+              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
+            ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "beetroot (cooked)", "amount": 500, "unit": "g"},
+              {"name": "ricotta", "amount": 100, "unit": "g"},
+              {"name": "salt and pepper", "amount": 0, "unit": ""}
+            ],
+            "instructions": [
+              "Cook the beetroot and grate it. Add the ricotta and then add salt and pepper to taste."
+            ]
+          },
+          {
+            "name": "General:",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+              "Optional: fry the dumplings in a pan after boiling to make them crispy."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Fasolka po Bretońsku (bean stew) - vegetarian",
+        "tags":["beans", "white beans", "Polish","vegetarian","mushrooms","tofu","tomatoes","stew","onions","garlic","bell peppers","bay leaf","piment","marmite","soy sauce","ketjap manis","paprika","oregano"],
+        "baseServings": 2,
+        "image": "images/food/fasolka.jpg",
+        "ingredients": [
+          {"name": "dry white beans", "amount": 500, "unit": "g"},
+          {"name": "mushrooms", "amount": 500, "unit": "g"},
+          {"name": "(smoked) tofu", "amount": 500, "unit": "g"},
+          {"name": "water", "amount": 1, "unit": "l"},
+          {"name": "can of tomatoes", "amount": 1, "unit": ""},
+          {"name": "bell peppers", "amount": 4, "unit": ""},
+          {"name": "garlic cloves", "amount": 3, "unit": ""},
+          {"name": "onions", "amount": 2, "unit": ""},
+          {"name": "bay leaf", "amount": 1, "unit": ""},
+          {"name": "piment", "amount": 3, "unit": ""},
+          {"name": "marmite", "amount": 1, "unit": "tsp"},
+          {"name": "soy sauce", "amount": 2, "unit": "tbsp"},
+          {"name": "ketjap manis", "amount": 1, "unit": "tbsp"},
+          {"name": "sweet paprika", "amount": 0, "unit": ""},
+          {"name": "smoked paprika", "amount": 0, "unit": ""},
+          {"name": "oregano", "amount": 0, "unit": ""},
+          {"name": "salt and pepper", "amount": 0, "unit": ""},
+          {"name": "oil (for frying)", "amount": 0, "unit": ""},
+          {"name": "(optional) corn starch", "amount": 0, "unit": ""},
+          {"name": "(optional) parsley", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Soak the beans overnight in plenty of water. Strain the beans, put them in a pot, add the water and boil on low heat.",
+          "Add the bay leaf, salt, piment and boil until the beans are soft.",
+          "Wrap the tofu in a kitchen towel and put a weight on top to squeeze out the water. Cut in cubes and add to a bowl. Add the marmite, soy sauce, some oil, ketjap manis, and smoked paprika. Mix well and spread out on a baking tray. Bake the tofu at 180 degrees for 30 minutes or until crispy.",
+          "Cut the bell peppers in pieces and put on a tray. Bake at 180 degrees for 30 minutes or until soft and slightly charred.",
+          "Fry the mushrooms on a dry pan until they are nice and brown and all the water evaporates. Add a bit of oil and then the onions and garlic and fry until soft and golden brown.",
+          "Put the peppers, tofu, mushrooms, onions etc. to the boiling beans. Add the can of tomatoes and some corn starch if necessary to achieve a nicer thicker consistency. Season with some salt pepper, oregano, two heapful teaspoons of paprika and smoked paprika. Serve with bread and some parsly on top."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+
+      {
+        "name": "Asian Style Round Potato Noodles with Chicken and Pakchoy",
+        "tags":["Asian","potato","starch","soy sauce","garlic","spring onions","chicken","sesame seeds","oil","knedle","kluski","noodles","pakchoy"],
+        "baseServings": 3,
+        "image": "images/food/asian-potato-noodles.jpg",
+        "ingredients": [
+          {"name": "potatoes", "amount": 1000, "unit": "g"},
+          {"name": "(potato) starch", "amount": 100, "unit": "g"},
+          {"name": "spring onion", "amount": 3, "unit": ""},
+          {"name": "pakchoy", "amount": 300, "unit": "g"},
+          {"name": "chicken", "amount": 400, "unit": "g"},
+          {"name": "garlic cloves", "amount": 2, "unit": ""},
+          {"name": "sesame seeds", "amount": 2, "unit": "tbsp"},
+          {"name": "soy sauce", "amount": 2, "unit": "tbsp"},
+          {"name": "oil", "amount": 3, "unit": "tbsp"},
+          {"name": "chilli flakes", "amount": 1, "unit": "tsp"}
+        ],
+        "instructions": [
+          "Peel and boil the potatoes until soft. Mash them and let cool down. Then add the starch and mix properly until you get a smooth dough.",
+          "Roll little dough balls and make a little dent with your finger or a chopstick in the middle. Boil a big pot of water and throw in the balls in little batches. They are done when they float to the top. For best results briefly rinse the balls in a bowl of cold water.",
+          "Put the balls in a bowl, add the chilli flakes, sesame and crushed garlic on top. Heat up the oil until it starts smoking. Pour the hot oil on top of the potato balls and seasoning. Finally, add the soy sauce and mix well.",
+          "Cut the chicken in small pieces and fry in your favourite way.",
+          "Cut the pakchoy in smaller pieces and briefly blanch in boiling water.",
+          "Serve the potato noodles/balls, chicken and pakchoy on a board. Decorate with some more spring onions if you like."
+        ],
+        "credits": {
+          "author": "foodiechina888",
+          "link": "https://www.instagram.com/p/DA2HDVvvMaQ"
+        }
+      }
+      
+      
+
+
+
+
+
+
+
+
+
+    ]
+  }
+  
