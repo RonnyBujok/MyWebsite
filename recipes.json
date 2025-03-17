@@ -527,10 +527,10 @@
         "ingredients": [
           {"name": "spaghetti", "amount": 200, "unit": "g"},
           {"name": "courgette/zucchini", "amount": 1, "unit": ""},
-          {"name": "aubergine/eggplant", "amount": 1, "unit": "1"},
+          {"name": "aubergine/eggplant", "amount": 1, "unit": ""},
           {"name": "cherry tomatoes", "amount": 100, "unit": "g"},
           {"name": "red pepper", "amount": 1, "unit": ""},
-          {"name": "onion", "amount": 1, "unit": "1"},
+          {"name": "onion", "amount": 1, "unit": ""},
           {"name": "garlic cloves", "amount": 3, "unit": ""},
           {"name": "basil", "amount": 50, "unit": "g"},
           {"name": "pecorino cheese", "amount": 50, "unit": "g"},
@@ -545,7 +545,40 @@
         ],
         "credits": {
           "author": "Donal Skehan (adapted)",
-          "link": "https://youtu.be/0VQEJARHJJ44?si=1P0MwCsr7Oc5OLVQ"
+          "link": "https://www.youtube.com/watch?v=0VQEJARHJ44&t=12s"
+        }
+      },
+
+
+      {
+        "name": "Ratatouille",
+        "tags":["French","easy","ratatouille","tomatoes","stew","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","one-pan","lemon","balsamic vinegar","olive oil"],
+        "baseServings": 4,
+        "image": "images/food/ratatouille.jpg",
+        "ingredients": [
+          {"name": "red onions", "amount": 2, "unit": ""},
+          {"name": "courgette/zucchini", "amount": 3, "unit": ""},
+          {"name": "aubergine/eggplant", "amount": 2, "unit": ""},
+          {"name": "tomatoes", "amount": 6, "unit": ""},
+          {"name": "bell peppers", "amount": 3, "unit": ""},
+          {"name": "can of tomatoes", "amount": 1, "unit": ""},
+          {"name": "garlic cloves", "amount": 4, "unit": ""},
+          {"name": "basil", "amount": 50, "unit": "g"},
+          {"name": "thyme", "amount": 0, "unit": ""},
+          {"name": "lemon", "amount": 1, "unit": ""},
+          {"name": "balsamic vinegar", "amount": 50, "unit": "g"},
+          {"name": "olive oil", "amount": 2, "unit": "tbsp"},
+          {"name": "salt and pepper", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Chop the aubergine, courgette and bell peppers in big chunks. Heat up the oil in a large pot and add the vegetables. Fry for about 5 minutes until golden and then remove the vegetables and put them aside.",
+          "Cut the onion into wedges and finely slice the garlic. Add them into the big pot together with the basil stalks and thyme leaves. Fry for 10 - 15 minutes or until softend and golden.",
+          "Add the removed vegetables to the pot again. Then cut the tomatoes in big chunks and add them together with the can of tomatoes. Add the balsamic vinegar, salt and pepper to taste.",
+          "Simmer on low heat for about 30 minutes or until the stew reaches its desired consistency. Cook longer for softer vegetables and shorter for more bite and chunks. Serve with some fresh basil and grated lemon zest."
+        ],
+        "credits": {
+          "author": "Alex French Guy Cooking",
+          "link": "https://www.youtube.com/watch?v=iUeDMqi_-dE"
         }
       }
 
