@@ -425,7 +425,7 @@
 
       {
         "name": "Asian Style Round Potato Noodles with Chicken and Pakchoy",
-        "tags":["Asian","potato","starch","soy sauce","garlic","spring onions","chicken","sesame seeds","oil","knedle","kluski","noodles","pakchoy"],
+        "tags":["Asian","potato","starch","soy sauce","garlic","spring onions","chicken","sesame seeds","oil","knedle","kluski","noodles","pakchoy","paksoi"],
         "baseServings": 3,
         "image": "images/food/asian-potato-noodles.jpg",
         "ingredients": [
@@ -452,7 +452,104 @@
           "author": "foodiechina888",
           "link": "https://www.instagram.com/p/DA2HDVvvMaQ"
         }
+      },
+
+
+      {
+        "name": "Easy Egg Fried Noodles",
+        "tags":["Asian","egg","fried","noodles","carrot","spring onions","onion","garlic","soy sauce","sesame seeds","sesame oil","sambal oelek","oil","easy"],
+        "baseServings": 2,
+        "image": "images/food/egg-noodles.jpg",
+        "ingredients": [
+          {"name": "noodles", "amount": 200, "unit": "g"},
+          {"name": "carrots", "amount": 2, "unit": ""},
+          {"name": "onion", "amount": 1, "unit": ""},
+          {"name": "spring onion", "amount": 3, "unit": ""},
+          {"name": "garlic cloves", "amount": 1, "unit": ""},
+          {"name": "egg", "amount": 1, "unit": ""},
+          {"name": "soy sauce", "amount": 2, "unit": "tbsp"},
+          {"name": "sesame oil", "amount": 1, "unit": "tbsp"},
+          {"name": "sesame seeds", "amount": 1, "unit": "tsp"},
+          {"name": "sambal oelek", "amount": 2, "unit": "tsp"},
+          {"name": "oil (for frying)", "amount": 2, "unit": "tbsp"}
+        ],
+        "instructions": [
+          "Boil the noodles according to the instructions. Strain them, rinse in cold water and let them dry a bit.",
+          "Dice the onion, cut the carrots in cubes, mince the garlic, and cut the spring onion.",
+          "Heat up the oil in a pan on high heat and add the onion and carrots for two minutes. Then add the garlic and spring onion. Fry for 5 more minutes.",
+          "Add the strained noodles to the pan and stir from time to time for 2 minutes. Add an egg straight into the pan and mix well to scramble the egg.",
+          "Take the pan off the heat and add the sesame oil, sesame seeds, soy sauce and sambal oelek.",
+          "Tip: This is a small meal. Add more vegetables, meat or tofu to your liking. You can also replace the sambal with your favorite chilli paste/powder."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Shrimp Saganaki",
+        "tags":["Greek","shrimp","saganaki","tomatoes","tomato sauce","oregano","thyme","lemon","feta","bread","pasta","orzo","easy","red chilli"],
+        "baseServings": 2,
+        "image": "images/food/shrimp-feta-tomato.jpg",
+        "ingredients": [
+          {"name": "shrimps", "amount": 200, "unit": "g"},
+          {"name": "feta", "amount": 200, "unit": "g"},
+          {"name": "cherry tomatoes", "amount": 100, "unit": "g"},
+          {"name": "red chilli", "amount": 1, "unit": ""},
+          {"name": "tomato sauce", "amount": 500, "unit": "g"},
+          {"name": "tomato puree", "amount": 1, "unit": "tsp"},
+          {"name": "oregano", "amount": 1, "unit": "tsp"},
+          {"name": "thyme", "amount": 0, "unit": ""},
+          {"name": "lemon", "amount": 1, "unit": ""},
+          {"name": "oil (for frying)", "amount": 2, "unit": "tbsp"},
+          {"name": "salt and pepper", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Dice the onion, mince the garlic and cut the chilli. Add to a hot pan with oil. Fry for a few minutes and then add the tomato sauce and tomato puree.",
+          "Add the (frozen) shrimp and cook them in the tomato sauce until they are done.",
+          "Add the oregano, thyme, and salt and pepper to taste. Squeeze out the lemon juice and crumble the feta cheese into the pan. Stir well and serve.",
+          "Tip: This is a small meal. You can eat it with bread, rice or pasta (e.g., orzo)"
+        ],
+        "credits": {
+          "author": "Lisa Oudijn",
+          "link": "https://www.tiktok.com/@lisaoudijn/video/7481311594400550166"
+        }
+      },
+
+
+
+      {
+        "name": "Easy One Pot Pasta",
+        "tags":["Italian","easy","pasta","spaghetti","tomatoes","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","pecorino","parmigiano","red chilli","one-pan"],
+        "baseServings": 2,
+        "image": "images/food/one-pot-pasta.jpg",
+        "ingredients": [
+          {"name": "spaghetti", "amount": 200, "unit": "g"},
+          {"name": "courgette/zucchini", "amount": 1, "unit": ""},
+          {"name": "aubergine/eggplant", "amount": 1, "unit": "1"},
+          {"name": "cherry tomatoes", "amount": 100, "unit": "g"},
+          {"name": "red pepper", "amount": 1, "unit": ""},
+          {"name": "onion", "amount": 1, "unit": "1"},
+          {"name": "garlic cloves", "amount": 3, "unit": ""},
+          {"name": "basil", "amount": 50, "unit": "g"},
+          {"name": "pecorino cheese", "amount": 50, "unit": "g"},
+          {"name": "oil (for frying)", "amount": 2, "unit": "tbsp"},
+          {"name": "salt and pepper", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Lay down the spaghetti flat into a big pot/pan. Next cut the courgette and aubergine in small 2cm cubes, and cut the cherry tomatoes in half. Add them to the pot.",
+          "Cut the garlic, onion and red chilli in slices and spread them evenly in the pot. Put the basil leaves in the pot as well.",
+          "Add a drizzle of olive oil and then top up with ca. 600ml of water. Put the pot on a stove and bring to a boil. Once the pasta softens a bit stir it with the other ingredients. Boil until the pasta and vegetables are soft and the liquid reduces to a nice sauce. Add water if necessary.",
+          "Grate the cheese and add it to the pan. Season with salt and pepper."
+        ],
+        "credits": {
+          "author": "Donal Skehan (adapted)",
+          "link": "https://youtu.be/0VQEJARHJJ44?si=1P0MwCsr7Oc5OLVQ"
+        }
       }
+
+
       
       
 
