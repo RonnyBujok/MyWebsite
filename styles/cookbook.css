@@ -269,7 +269,7 @@ nav li:first-child{
 }
 
 #search-btn{
-    height: 2.25rem;
+    height: 2.22rem;
     width: min(2.25rem,13vw);
     display: flex;           /* Use flexbox to align content */
     justify-content: center; /* Center horizontally */
@@ -526,7 +526,10 @@ h1{
 
 .entry{
     display: block;
-    margin: min(2rem,20px);
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 20px;
+    margin-top: 20px;
     max-width: 100ch;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
     background-color: white;
