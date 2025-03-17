@@ -427,7 +427,10 @@
       recipePage.innerHTML = ''; // Clear the page before displaying new results
 
       if (recipes.length === 0) {
-        recipePage.innerHTML = '<p style="font-weight: bold; margin-top: 5rem;">No recipes found matching the search criteria.</p> <p style="font-weight: bold;">Try again!</p>';
+        recipePage.innerHTML = `
+        <div style="text-align: center; margin-top: 5rem;">
+        <p style="font-weight: bold;">No recipes found matching the search criteria.</p>
+        <p style="font-weight: bold;">Try again!</p></div>`;      
       } else {
         recipes.forEach(recipe => {
           const recipeEntry = document.createElement('div');
