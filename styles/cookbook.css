@@ -2,7 +2,9 @@
 
 html {
 scroll-behavior: smooth;
-scroll-padding-top: 40px; 
+/* scroll-padding-top: 40px;  */
+scroll-snap-type: y mandatory;
+scroll-padding-top: 4.5rem;
 }
   
 
@@ -499,6 +501,14 @@ nav li:first-child{
     justify-items: center;  
     width: 100%;    
     margin-left: 35ch;
+
+
+
+    /* overflow-y: scroll;
+    height: 100vh; */
+
+
+
     /* margin-top: 4rem; */
   }
 
@@ -524,17 +534,20 @@ h1{
 
 }
 
+
 .entry{
     display: block;
     margin-left: 5px;
     margin-right: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5rem;
     margin-top: 20px;
     max-width: 100ch;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
     background-color: white;
     border-radius: 1rem;
     overflow: hidden;
+
+    scroll-snap-align: start;
 }
 
 .recipe-container{
