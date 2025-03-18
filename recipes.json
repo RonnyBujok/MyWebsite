@@ -425,7 +425,7 @@
 
       {
         "name": "Asian Style Round Potato Noodles with Chicken and Pakchoy",
-        "tags":["Asian","potato","starch","soy sauce","garlic","spring onions","chicken","sesame seeds","oil","knedle","kluski","noodles","pakchoy","paksoi"],
+        "tags":["Asian","Chinese","potato","starch","soy sauce","garlic","spring onions","chicken","sesame seeds","oil","knedle","kluski","noodles","pakchoy","paksoi"],
         "baseServings": 3,
         "image": "images/food/asian-potato-noodles.jpg",
         "ingredients": [
@@ -457,7 +457,7 @@
 
       {
         "name": "Easy Egg Fried Noodles",
-        "tags":["Asian","egg","fried","noodles","carrot","spring onions","onion","garlic","soy sauce","sesame seeds","sesame oil","sambal oelek","oil","easy"],
+        "tags":["Asian","egg","fried","noodles","carrot","spring onions","onion","garlic","soy sauce","sesame seeds","sesame oil","sambal oelek","oil","easy", "vegetarian"],
         "baseServings": 2,
         "image": "images/food/egg-noodles.jpg",
         "ingredients": [
@@ -489,7 +489,7 @@
 
       {
         "name": "Shrimp Saganaki",
-        "tags":["Greek","shrimp","saganaki","tomatoes","tomato sauce","oregano","thyme","lemon","feta","bread","pasta","orzo","easy","red chilli"],
+        "tags":["Greek","shrimp","saganaki","tomatoes","tomato sauce","oregano","thyme","lemon","feta","bread","pasta","orzo","easy","red chilli","pescetarian"],
         "baseServings": 2,
         "image": "images/food/shrimp-feta-tomato.jpg",
         "ingredients": [
@@ -521,7 +521,7 @@
 
       {
         "name": "Easy One Pot Pasta",
-        "tags":["Italian","easy","pasta","spaghetti","tomatoes","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","pecorino","parmigiano","red chilli","one-pan"],
+        "tags":["Italian","Donal Skehan","easy","pasta","spaghetti","tomatoes","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","pecorino","parmigiano","red chilli","one-pan", "vegetarian"],
         "baseServings": 2,
         "image": "images/food/one-pot-pasta.jpg",
         "ingredients": [
@@ -552,7 +552,7 @@
 
       {
         "name": "Ratatouille",
-        "tags":["French","easy","ratatouille","tomatoes","stew","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","one-pan","lemon","balsamic vinegar","olive oil"],
+        "tags":["French","Alex","easy","ratatouille","tomatoes","stew","basil","courgette","zucchini","eggplant","aubergine","onion","garlic","olive oil","one-pan","lemon","balsamic vinegar","olive oil", "vegetarian"],
         "baseServings": 4,
         "image": "images/food/ratatouille.jpg",
         "ingredients": [
@@ -579,6 +579,93 @@
         "credits": {
           "author": "Alex French Guy Cooking",
           "link": "https://www.youtube.com/watch?v=iUeDMqi_-dE"
+        }
+      },
+
+
+      {
+        "name": "Costa Rican Black Bean Soup",
+        "tags":["Costa Rica","Jamie Oliver","beans","onions","soup","stew","garlic","parsley","lemon","tortillas","olive oil","bay leaf","bell peppers","celery","one-pan","beans","black beans","thyme","salsa", "vegetarian"],
+        "baseServings": 4,
+        "image": "images/food/costa-rican-black-bean-soup.jpg",
+        "ingredients": [
+          {"name": "black beans (canned)", "amount": 800, "unit": "g"},
+          {"name": "red onions", "amount": 3, "unit": ""},
+          {"name": "garlic cloves", "amount": 2, "unit": ""},
+          {"name": "celery sticks", "amount": 2, "unit": ""},
+          {"name": "bell peppers", "amount": 2, "unit": ""},
+          {"name": "red chilli", "amount": 2, "unit": ""},
+          {"name": "parsley", "amount": 0.5, "unit": "bunch"},
+          {"name": "lemon", "amount": 1, "unit": ""},
+          {"name": "thyme", "amount": 0, "unit": ""},
+          {"name": "bay leaves", "amount": 2, "unit": ""},
+          {"name": "olive oil", "amount": 0, "unit": ""},
+          {"name": "tortillas", "amount": 4, "unit": ""}
+        ],
+        "instructions": [
+          "Peel and finely chop the onions and garlic, then trim and finely slice the celery. Deseed and finely chop the peppers and chillies. Pick the coriander leaves, then finely chop the stalks.",
+          "Drizzle a lug of olive oil in a large saucepan and place over a medium-low heat. Add two-thirds of the chopped onion, garlic, celery, coriander stalks and peppers to the pan, then pick in the thyme leaves. Add half of the chilli and gently sauté the veggies for 15 minutes, or until softened but not coloured.",
+          "Tip in both tins of black beans with their liquid, followed by the bay leaves and 400ml of boiling water. Turn up the heat and bring to the boil.",
+          "Season, reduce the heat to low and simmer, uncovered, for 30 minutes, or until thickened and creamy. If it reduces too much, add a splash more water. Blend it all into a smooth soup.",
+          "Make a salsa: Finely chop the parsley and add to a bowl with the remaining chopped onion. Add the juice from one lemon and a few tablespoons of extra virgin olive oil. Mix well.",
+          "Serve the soup together with salsa on top and a tortilla on the side."
+        ],
+        "credits": {
+          "author": "Jamie Oliver (adapted)",
+          "link": "https://www.jamieoliver.com/recipes/vegetables/costa-rican-black-bean-soup/"
+        }
+      },
+
+      {
+        "name": "Sernik Królewski",
+        "tags":["sernik", "flour","dough","cheesecake","vegetarian","cake","dessert","cacao","butter","twarog","quark","egg","vanilla","Polish"],
+        "baseServings": 8,
+        "image": "images/food/sernik-krolewski.jpg",
+        "sections": [
+          {
+            "name": "Dough:",
+            "ingredients": [
+              {"name": "flour", "amount": 400, "unit": "g"},
+              {"name": "sugar", "amount": 225, "unit": "g"},
+              {"name": "cakao", "amount": 50, "unit": "g"},
+              {"name": "butter", "amount": 250, "unit": "g"},
+              {"name": "twaróg (Polish quark)", "amount": 3, "unit": "tbsp"},
+              {"name": "baking powder", "amount": 1, "unit": "sachet"},
+              {"name": "egg yolk", "amount": 4, "unit": ""}
+            ],
+            "instructions": [
+             ]
+          },
+          {
+            "name": "Filling:",
+            "ingredients": [
+              {"name": "twaróg (Polish quark)", "amount": 1, "unit": "kg"},
+              {"name": "sugar", "amount": 200, "unit": "g"},
+              {"name": "butter", "amount": 250, "unit": "g"},
+              {"name": "eggs", "amount": 5, "unit": ""},
+              {"name": "egg whites", "amount": 4, "unit": ""},
+              {"name": "pudding powder", "amount": 80, "unit": "g"},
+              {"name": "vanilla sugar", "amount": 1, "unit": "sachet"}
+            ],
+            "instructions": [
+            ]
+          },
+          {
+            "name": "",
+            "ingredients": [
+            ],
+            "instructions": [
+              "Take the ingredients for the dough and mix them together. Knead it until you get an even dought. Tip: it works best with room temperature butter.",
+              "For the filling take all 9 egg egg whites and beat them up till they foam up and become stiff. Take the remaining ingredients and mix them together. Finally, add the egg white foam and gently mix it in with the rest.",
+              "Take half of the dough and roll it out flat on your (deep) baking tray or cake dish. Spread out the filling on top. Next crumble the rest of the dough on top of the filling.",
+              "Preheat the oven to 180C and bake for approximately 60 minutes. Exact baking time might differ based on dish size and oven.",
+              "Let cool down fully before cutting and serving."
+            ]
+          }
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
         }
       }
 
