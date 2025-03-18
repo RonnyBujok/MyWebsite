@@ -300,13 +300,6 @@ nav li:first-child{
 }
 
 
-#recipes-btn:hover,
-#tags-btn:hover,
-#filter-btn:hover{
-    background-color: #DDA15E;
-    color: #fffdee;
-    cursor: pointer;
-}
 
 .search-bar input{
     height: 2rem;
@@ -764,4 +757,27 @@ h1{
         width:100%;
     }
 }
+
+/* Hover effect on desktop (non-touch) devices */
+@media (hover: hover) {
+    #recipes-btn:hover,
+    #tags-btn:hover,
+    #filter-btn:hover{
+        background-color: #DDA15E;
+        color: #fffdee;
+        cursor: pointer;
+    }
+}
+
+/* Disable hover effect on mobile (touch) devices */
+@media (hover: none) {
+    #recipes-btn:hover,
+    #tags-btn:hover,
+    #filter-btn:hover{
+        background-color: #fffdee;
+        color: #283618;
+        cursor: pointer;
+    }
+}
+
 
