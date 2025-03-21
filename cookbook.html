@@ -673,6 +673,19 @@
 
 
     window.onload = loadRecipes;
+
+    // After your page has loaded content dynamically, check for hash and scroll to the target section
+    window.addEventListener('load', function () {
+        // Check if the URL contains a hash
+        if (window.location.hash) {
+            // Use scrollIntoView to scroll to the target element
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' }); // Scroll smoothly to the target element
+            }
+        }
+    });
+
   </script>
 </body>
 </html>

@@ -745,7 +745,7 @@
 
       {
         "name": "Żurek Starter",
-        "tags":["żurek","starter","soup","Polish","flour","bay leaf","piment","garlic"],
+        "tags":["żurek","zurek","starter","soup","Polish","flour","bay leaf","piment","garlic"],
         "baseServings": 1,
         "image": "images/food/zurek-starter.jpg",
         "ingredients": [
@@ -759,7 +759,7 @@
           "Put all ingredients in a jar and mix well. Cover the jar loosely, so air can still escape.",
           "Leave it in a warm place for 3 - 5 days. Stir 2 - 3 times a day. It will ferment and will be ready when it has a pleasant, sour smell and you see it bubbling on top.",
           "You can close the jar and keep it in the fridge for about a week.",
-          "The starter can then be used to make <a href='https://ronnybujok.com/cookbook.html#Żurek>Żurek</a>."
+          "The starter can then be used to make <a href='https://ronnybujok.com/cookbook.html#żurek'>Żurek</a>."
         ],
         "credits": {
           "author": "Ronny Bujok",
@@ -769,8 +769,8 @@
 
       {
         "name": "Żurek",
-        "tags":["żurek","soup","vegetarian","Polish","tofu","potato","celery","boullion","onion","garlic","mushrooms"],
-        "baseServings": 1,
+        "tags":["żurek","zurek","soup","vegetarian","Polish","tofu","potato","celery","boullion","onion","garlic","mushrooms"],
+        "baseServings": 4,
         "image": "images/food/zurek.jpg",
         "ingredients": [
           {"name": "Żurek Starter", "amount": 500, "unit": "ml"},
@@ -786,7 +786,7 @@
           "Cut the vegetables in small pieces and boil in the bouillon until they soften a bit.",
           "Cut the mushrooms and add them to a dry pan on medium high heat. Bake the mushrooms until all the moisture evaporates.",
           "Dice the onion, add a drizzle of oil to the pan with mushrooms and add the diced onions to it. Fry until golden brown. Halfway through add some crushed garlic. Finally add it to the soup.",
-          "Then add the <a href='https://ronnybujok.com/cookbook.html#Żurek-Starter>Żurek Starter</a>, oregano or majoran, smoked paprika, salt and pepper. Finally you can make it thicker with some corn starch.",
+          "Then add the <a href='https://ronnybujok.com/cookbook.html#żurek-starter'>Żurek Starter</a>, oregano or majoran, smoked paprika, salt and pepper. Finally you can make it thicker with some corn starch.",
           "Tip: Typically it is served in a carved out loaf of bread instead of a bowl. You can replace the tofu for meat like bacon or sausage."
         ],
         "credits": {
