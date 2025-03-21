@@ -154,7 +154,7 @@ nav li:first-child{
 
 .intro-text {
     margin-top: 20px;
-    font-size: clamp(10px,4vw,30px);
+    font-size: clamp(10px,4vw,24px);
     text-align: left;
     max-width: 720px;
     position: relative;

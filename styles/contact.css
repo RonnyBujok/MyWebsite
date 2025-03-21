@@ -141,11 +141,11 @@ h1::after{
     padding: 2vw;
     margin-bottom: 2vw;
     font-weight: bold;
-    font-size: clamp(8px,4vw,30px);
+    font-size: clamp(8px,3.5vw,24px);
 }
 
 .address{
-    font-size: clamp(10px,5vw,40px);
+    font-size: clamp(10px,4vw,30px);
     margin-top: 2vw;
     margin-bottom: 2vw;
 }

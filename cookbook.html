@@ -555,7 +555,7 @@
           } else {
             recipe.instructions.forEach(instruction => {
               const li = document.createElement('li');
-              li.textContent = instruction;
+              li.innerHTML = instruction;
               ol.appendChild(li);
             });
           }

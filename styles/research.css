@@ -212,7 +212,7 @@ h3{
 
 .summary{
     width: min(90vw,90vw,800px);
-    font-size: clamp(14px,3.5vw,26px);
+    font-size: clamp(14px,4vw,20px);
     padding: 3vw;
     line-height: 1.5;
     margin: auto;

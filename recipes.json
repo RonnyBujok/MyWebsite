@@ -667,11 +667,136 @@
           "author": "Ronny Bujok",
           "link": ""
         }
+      },
+
+      {
+        "name": "Best Brownies Ever",
+        "tags":["vegetarian","brownies","chocolate","cacao","sweet","dessert","egg","butter","flour","sugar"],
+        "baseServings": 8,
+        "image": "images/food/brownies.jpg",
+        "ingredients": [
+          {"name": "flour", "amount": 90, "unit": "g"},
+          {"name": "dar chocolate", "amount": 170, "unit": "g"},
+          {"name": "cacao", "amount": 25, "unit": "g"},
+          {"name": "sugar", "amount": 250, "unit": "g"},
+          {"name": "eggs", "amount": 4, "unit": ""},
+          {"name": "butter", "amount": 110, "unit": "g"}
+        ],
+        "instructions": [
+          "Melt chocolate and butter, add eggs and whisk properly. Add cacao, flour and sugar and mix until smooth (don't overmix it or it can become too cakey).",
+          "Spread out in a cake form or casserole dish and bake at 180C for about 25 minutes or until inside is still moist."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Energy Bars",
+        "tags":["vegetarian","nuts","cacao","sweet","dessert","cashew","peanut","coconut","energy bar","protein","coffee","dates"],
+        "baseServings": 8,
+        "image": "images/food/energy-bars.jpg",
+        "ingredients": [
+          {"name": "cashews", "amount": 250, "unit": "g"},
+          {"name": "almonds", "amount": 50, "unit": "g"},
+          {"name": "coffee", "amount": 100, "unit": "ml"},
+          {"name": "cacao", "amount": 50, "unit": "g"},
+          {"name": "coconut flakes", "amount": 30, "unit": "g"},
+          {"name": "vanilla extract", "amount": 2, "unit": "tbsp"},
+          {"name": "medjoul dates", "amount": 250, "unit": "g"}
+        ],
+        "instructions": [
+          "Blend the nuts into small chunks or fine powder if you don't like crunchy bits. Cut up the dates",
+          "Mix everything in a bowl and knead into a sticky dough. Then spread it out in a tray or casserole dish with baking paper.",
+          "Let it completely cool down in the fridge. Cut into bars of desired size. Keep it in the fridge.",
+          "Tip: You can substitute the nuts for any other nuts you like (e.g., peanuts)"
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+
+      {
+        "name": "Placki (Polish pancakes)",
+        "tags":["placki","Polish","pancakes","crepe","milk","flour","eggs","sugar","salt","breakfast","sweet","dessert"],
+        "baseServings": 4,
+        "image": "images/food/placki.jpg",
+        "ingredients": [
+          {"name": "milk", "amount": 0, "unit": ""},
+          {"name": "flour", "amount": 0, "unit": ""},
+          {"name": "eggs", "amount": 0, "unit": ""},
+          {"name": "sugar", "amount": 0, "unit": ""},
+          {"name": "salt", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Whisk milk, flour, sugar and egg together with a pinch of salt. Add more milk or flour to achieve desired consistency. Thicker batter for American-style pancakes and runny batter for Crepe-style pancakes.",
+          "Preheat a non-stick pan to medium high heat, spread a ladle full of batter on the pan. Flip when it gets dry on top and bake for another few seconds.",
+          "Alternatively use some butter, melt it in the pan and then bake to make the pancakes crispier, more flavorful anf fattier."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+
+      {
+        "name": "Żurek Starter",
+        "tags":["żurek","starter","soup","Polish","flour","bay leaf","piment","garlic"],
+        "baseServings": 1,
+        "image": "images/food/zurek-starter.jpg",
+        "ingredients": [
+          {"name": "flour", "amount": 100, "unit": "g"},
+          {"name": "water", "amount": 500, "unit": "ml"},
+          {"name": "bay leaf", "amount": 1, "unit": ""},
+          {"name": "piment", "amount": 3, "unit": ""},
+          {"name": "garlic cloves", "amount": 2, "unit": ""}
+        ],
+        "instructions": [
+          "Put all ingredients in a jar and mix well. Cover the jar loosely, so air can still escape.",
+          "Leave it in a warm place for 3 - 5 days. Stir 2 - 3 times a day. It will ferment and will be ready when it has a pleasant, sour smell and you see it bubbling on top.",
+          "You can close the jar and keep it in the fridge for about a week.",
+          "The starter can then be used to make <a href='https://ronnybujok.com/cookbook.html#Żurek>Żurek</a>."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Żurek",
+        "tags":["żurek","soup","vegetarian","Polish","tofu","potato","celery","boullion","onion","garlic","mushrooms"],
+        "baseServings": 1,
+        "image": "images/food/zurek.jpg",
+        "ingredients": [
+          {"name": "Żurek Starter", "amount": 500, "unit": "ml"},
+          {"name": "smoked tofu", "amount": 250, "unit": "g"},
+          {"name": "potatoes", "amount": 500, "unit": "g"},
+          {"name": "root celery", "amount": 0.5, "unit": "piece"},
+          {"name": "boullion", "amount": 2, "unit": "l"},
+          {"name": "garlic cloves", "amount": 2, "unit": ""},
+          {"name": "onion", "amount": 2, "unit": ""},
+          {"name": "mushrooms", "amount": 250, "unit": "g"}
+        ],
+        "instructions": [
+          "Cut the vegetables in small pieces and boil in the bouillon until they soften a bit.",
+          "Cut the mushrooms and add them to a dry pan on medium high heat. Bake the mushrooms until all the moisture evaporates.",
+          "Dice the onion, add a drizzle of oil to the pan with mushrooms and add the diced onions to it. Fry until golden brown. Halfway through add some crushed garlic. Finally add it to the soup.",
+          "Then add the <a href='https://ronnybujok.com/cookbook.html#Żurek-Starter>Żurek Starter</a>, oregano or majoran, smoked paprika, salt and pepper. Finally you can make it thicker with some corn starch.",
+          "Tip: Typically it is served in a carved out loaf of bread instead of a bowl. You can replace the tofu for meat like bacon or sausage."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
       }
+      
 
 
-      
-      
 
 
 

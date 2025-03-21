@@ -262,7 +262,7 @@ h2 {
 .description{
     max-width: 800px;
     min-width: min(90vw,800px);
-    font-size: clamp(14px,3.5vw,26px);
+    font-size: clamp(14px,3.5vw,20px);
     padding: 3vw;
     line-height: 1.5;
     margin-bottom: -30px;
