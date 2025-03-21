@@ -676,7 +676,7 @@
         "image": "images/food/brownies.jpg",
         "ingredients": [
           {"name": "flour", "amount": 90, "unit": "g"},
-          {"name": "dar chocolate", "amount": 170, "unit": "g"},
+          {"name": "dark chocolate", "amount": 170, "unit": "g"},
           {"name": "cacao", "amount": 25, "unit": "g"},
           {"name": "sugar", "amount": 250, "unit": "g"},
           {"name": "eggs", "amount": 4, "unit": ""},
