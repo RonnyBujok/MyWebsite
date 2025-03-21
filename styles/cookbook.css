@@ -354,7 +354,7 @@ nav li:first-child{
     border: #DDA15E solid;
     padding: 4px 8px;
     border-radius: 5px;
-    font-size: 0.8rem;
+    font-size: clamp(8px,0.8rem,12px);
     margin-top: 5px; /* Add some space between rows of tags */
     cursor: pointer;
 }
