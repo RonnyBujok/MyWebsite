@@ -793,18 +793,40 @@
           "author": "Ronny Bujok",
           "link": ""
         }
+      },
+
+
+      {
+        "name": "Vegetarian Butter Chicken",
+        "tags":["Indian","curry","vegetarian","rice","soy-pieces","onion","garlic","butter","tomatoes","garam massala","cinnamon","lemon"],
+        "baseServings": 4,
+        "image": "images/food/butter_chicken.jpg",
+        "ingredients": [
+          {"name": "rice", "amount": 200, "unit": "g"},
+          {"name": "onion", "amount": 2, "unit": ""},
+          {"name": "garlic cloves", "amount": 4, "unit": ""},
+          {"name": "soy-pieces", "amount": 200, "unit": "g"},
+          {"name": "cream", "amount": 100, "unit": "ml"},
+          {"name": "can of tomatoes", "amount": 400, "unit": "g"},
+          {"name": "butter", "amount": 2, "unit": "tbsp"},
+          {"name": "garam massala", "amount": 2, "unit": "tbsp"},
+          {"name": "lemon", "amount": 0.5, "unit": ""},
+          {"name": "oil", "amount": 0, "unit": ""},
+          {"name": "cinammon", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Soak the soy-pieces in water until they are soft. Alternativel, you can replace the soy-pieces with tofu or chicken.",
+          "Cut the onions and fry on medium high heat until they turn golden. Then add the garlic and fry for another minute. Finally add the garam massala for another minute.",
+          "To the pan add the tomatoes, the heavy cream and mix well. Then blend everything into a smooth sauce. Strain the soy-pieces and add them to the pan and simmer for another 10 minutes.",
+          "Add the butter to the pan and let it melt. Finally top it off with the parsley and lemon juice.",
+          "Boil the rice in your favorite way and serve with it."
+        ],
+        "credits": {
+          "author": "Eef kookt zo (adapted)",
+          "link": "https://www.eefkooktzo.nl/butter-chicken/"
+        }
       }
       
-
-
-
-
-
-
-
-
-
-
 
     ]
   }
