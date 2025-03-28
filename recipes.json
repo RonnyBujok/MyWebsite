@@ -800,7 +800,7 @@
         "name": "Vegetarian Butter Chicken",
         "tags":["Indian","curry","vegetarian","rice","soy-pieces","onion","garlic","butter","tomatoes","garam massala","cinnamon","lemon"],
         "baseServings": 4,
-        "image": "images/food/butter_chicken.jpg",
+        "image": "images/food/butter-chicken.jpg",
         "ingredients": [
           {"name": "rice", "amount": 200, "unit": "g"},
           {"name": "onion", "amount": 2, "unit": ""},
