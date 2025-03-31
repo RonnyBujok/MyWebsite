@@ -825,6 +825,41 @@
           "author": "Eef kookt zo (adapted)",
           "link": "https://www.eefkooktzo.nl/butter-chicken/"
         }
+      },
+
+      {
+        "name": "French Mushroom Stew",
+        "tags":["French","stew","mushrooms","potato","onion","garlic","carrot","celery","butter","flour","chives","tomatoes","red wine","cream","boullion","thyme","salt","pepper","nutmeg","oil","vegetarian"],
+        "baseServings": 3,
+        "image": "images/food/french-mushroom-stew.jpg",
+        "ingredients": [
+          {"name": "(baby) mushrooms", "amount": 400, "unit": "g"},
+          {"name": "potatoes", "amount": 1000, "unit": "g"},
+          {"name": "onion", "amount": 2, "unit": ""},
+          {"name": "garlic cloves", "amount": 4, "unit": ""},
+          {"name": "large carrots", "amount": 2, "unit": ""},
+          {"name": "celery sticks", "amount": 2, "unit": ""},
+          {"name": "butter", "amount": 150, "unit": "g"},
+          {"name": "flour", "amount": 2, "unit": "tbsp"},
+          {"name": "tomato puree", "amount": 2, "unit": "tbsp"},
+          {"name": "red wine", "amount": 175, "unit": "ml"},
+          {"name": "boullion", "amount": 500, "unit": "ml"},
+          {"name": "thyme", "amount": 0, "unit": ""},
+          {"name": "chives", "amount": 0, "unit": ""},
+          {"name": "salt and pepper", "amount": 0, "unit": ""},
+          {"name": "nutmeg", "amount": 0, "unit": ""},
+          {"name": "oil", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Fry the mushrooms in a dry pan until all moisture evaporates. Remove and set aside. Add a third of the butter and some oil to the pan and let the butter melt. Chop the onion and mince the garlic. Add to the pan and fry until golden.",
+          "Add the flour and mix well. Let the flour brown a bit. Add the wine and top off with boullion. Add the chopped celery sticks, tomato puree and roughly chopped carrots. Add the mushrooms and some thyme and let it simmer for about 15 minutes. Add water or flour until you get a desired consistency (ideally consistency of gravy).",
+          "In the meantime peel and boil the potatoes. Strain them mash them or press through a sieve. Add the remaining two thirds of the butter, the cream and a pinch of nutmeg to it and mix to get a nice puree.",
+          "Serve the potato puree with the stew. Garnish with chives, lettuce, pickels or other vegetables."
+        ],
+        "credits": {
+          "author": "sebscrispyclub (adapted)",
+          "link": "https://www.instagram.com/sebscrispyclub/reel/DCMCWlGswmW/"
+        }
       }
       
 
