@@ -2,7 +2,7 @@
     "recipes": [
       {
         "name": "Finnish Salmon Soup (Lohikeitto)",
-        "tags":["salmon","potato","leek","carrot","fish","finnish","soup","lohikeitto","cream","dill","lemon"],
+        "tags":["salmon","potato","leek","carrot","fish","Finnish","soup","lohikeitto","cream","dill","lemon"],
         "baseServings": 4,
         "image": "images/food/salmon-soup.jpg",
         "ingredients": [
@@ -383,7 +383,7 @@
 
       {
         "name": "Fasolka po Bretońsku (bean stew) - vegetarian",
-        "tags":["beans", "white beans", "Polish","vegetarian","mushrooms","tofu","tomatoes","stew","onions","garlic","bell peppers","bay leaf","piment","marmite","soy sauce","ketjap manis","paprika","oregano"],
+        "tags":["beans", "white beans", "Polish","vegetarian","mushrooms","tofu","tomatoes","stew","onion","garlic","bell peppers","bay leaf","piment","marmite","soy sauce","ketjap manis","paprika","oregano"],
         "baseServings": 2,
         "image": "images/food/fasolka.jpg",
         "ingredients": [
