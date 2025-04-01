@@ -860,6 +860,37 @@
           "author": "sebscrispyclub (adapted)",
           "link": "https://www.instagram.com/sebscrispyclub/reel/DCMCWlGswmW/"
         }
+      },
+
+
+      {
+        "name": "Green Curry",
+        "tags":["Indian","curry","coconut milk","peas","spinach","chickpeas","sugar snaps","garlic","onion","rice","mushrooms","oil","vegetarian","easy"],
+        "baseServings": 3,
+        "image": "images/food/green-curry.jpg",
+        "ingredients": [
+          {"name": "rice", "amount": 300, "unit": "g"},
+          {"name": "onion", "amount": 2, "unit": ""},
+          {"name": "garlic cloves", "amount": 2, "unit": ""},
+          {"name": "mushrooms", "amount": 250, "unit": "g"},
+          {"name": "spinach", "amount": 200, "unit": "g"},
+          {"name": "sugar snaps", "amount": 200, "unit": "g"},
+          {"name": "(canned) chickpeas", "amount": 400, "unit": "g"},
+          {"name": "(frozen) peas", "amount": 250, "unit": "g"},
+          {"name": "coconut milk", "amount": 400, "unit": "ml"},
+          {"name": "lime", "amount": 1, "unit": ""},
+          {"name": "green curry paste", "amount": 1, "unit": "package"},
+          {"name": "oil", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Fry the mushrooms in a dry pan until all moisture evaporates. Remove and set aside. Chop the onion and mince the garlic. Add to the pan with some oil and fry until golden.",
+          "Cut off the ends of the sugarsnaps and add them to the pan. Fry for a minute and then add the green curry paste and fry for another minute. Add the coconutmilk and bring to a boil. Add some water if necessary.",
+          "When it boils, bring down the heat and let it simmer. Add the spinach and mix until the spinach shrinks down. Finally add the chickpeas, peas and mushrooms and wait till it boils again. Squeeze out the lime juice into the pan and serve with some boiled rice."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
       }
       
 
