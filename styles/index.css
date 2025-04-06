@@ -111,8 +111,6 @@ nav li:first-child{
 
 .photo-grid{
     align-content: center;
-    justify-content: right;
-    flex: 1;
 }
 
 .big-photo{
@@ -126,7 +124,7 @@ nav li:first-child{
 .welcome-grid{
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 
@@ -134,11 +132,9 @@ nav li:first-child{
 
 .welcome-text {
     display: flex;
-    
     flex-direction: column;
     padding-right: min(50px,4vw);
     padding-left: min(50px,4vw);
-    flex: 2;
   }
 
 .headline{

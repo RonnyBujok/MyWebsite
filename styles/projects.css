@@ -112,7 +112,6 @@ nav li:first-child{
     bottom: 40%; 
     transform: translateX(-50%); 
     text-align: center; 
-    max-width: min(100%,80vw); 
     font-size: clamp(12px, 3vw, 20px); /* Makes the font responsive */
 }
 
