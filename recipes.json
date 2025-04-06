@@ -384,7 +384,7 @@
       {
         "name": "Fasolka po Bretońsku (bean stew) - vegetarian",
         "tags":["beans", "white beans", "Polish","vegetarian","mushrooms","tofu","tomatoes","stew","onion","garlic","bell peppers","bay leaf","piment","marmite","soy sauce","ketjap manis","paprika","oregano"],
-        "baseServings": 2,
+        "baseServings": 5,
         "image": "images/food/fasolka.jpg",
         "ingredients": [
           {"name": "dry white beans", "amount": 500, "unit": "g"},
@@ -886,6 +886,37 @@
           "Fry the mushrooms in a dry pan until all moisture evaporates. Remove and set aside. Chop the onion and mince the garlic. Add to the pan with some oil and fry until golden.",
           "Cut off the ends of the sugarsnaps and add them to the pan. Fry for a minute and then add the green curry paste and fry for another minute. Add the coconutmilk and bring to a boil. Add some water if necessary.",
           "When it boils, bring down the heat and let it simmer. Add the spinach and mix until the spinach shrinks down. Finally add the chickpeas, peas and mushrooms and wait till it boils again. Squeeze out the lime juice into the pan and serve with some boiled rice."
+        ],
+        "credits": {
+          "author": "Ronny Bujok",
+          "link": ""
+        }
+      },
+
+      {
+        "name": "Easy Stir Fry Veggies",
+        "tags":["Asian","oil","vegetarian","easy","noodles","bell peppers","soy-pieces","soy sauce","oyster sauce","spring onions","sesame oil","pakchoy","paksoi","corn starch","stir fry"],
+        "baseServings": 2,
+        "image": "images/food/stir-fry-veg.jpg",
+        "ingredients": [
+          {"name": "noodles", "amount": 200, "unit": "g"},
+          {"name": "soy-pieces", "amount": 200, "unit": "g"},
+          {"name": "onion", "amount": 2, "unit": ""},
+          {"name": "bell peppers", "amount": 2, "unit": ""},
+          {"name": "pakchoy", "amount": 1, "unit": ""},
+          {"name": "spring onion", "amount": 1, "unit": ""},
+          {"name": "oyster sauce", "amount": 2, "unit": "tbsp"},
+          {"name": "soy sauce", "amount": 2, "unit": "tbsp"},
+          {"name": "sesame oil", "amount": 2, "unit": "tbsp"},
+          {"name": "corn starch", "amount": 1, "unit": "tbsp"},
+          {"name": "oil", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Soak the soy-pieces in water overnight. Strain them and let dry. Heat up a pan with some oil to a high heat and sear the soy-pieces until they get a bit cripsy brown (replace soy-pieces with chicken for non-vegetarian recipe).",
+          "Bring a big pot with water to a boil. In the meantime cut all vegetables in big mouth-sized pieces. Throw in all vegetables into the boiling water for a minute and then remove and strain them. Let them dry properly.",
+          "Next heat up the pan to high heat and dump in the blanched and dried vegetables into the pan. Fry them until they soften a little and become slightly charred.",
+          "Mix the oyster sauce, sesame oil, soy sauce and corn starch. Add some water if necessary. When the vegetables are done add the fried soy-pieces, remove the pan from the heat and add the sauce while stirring and mixing it all well. The sauce should get slightly sticky and coat all vegetables nicely.",
+          "You can serve the stir fry alone or serve it with noodles or rice."
         ],
         "credits": {
           "author": "Ronny Bujok",
