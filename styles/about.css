@@ -480,7 +480,7 @@ h1::after{
 
 .description-container{
     max-width: 800px;
-    min-width: min(90vw,800px);
+    min-width: min(1vw,800px);
     margin: 0;
 }
 
