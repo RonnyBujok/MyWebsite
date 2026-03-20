@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFX2EX8LP8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LFX2EX8LP8');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ronny Bujok, Postdoctoral researcher at the Centre for Language Studies">
+    <meta name="keywords" content="Ronny, Bujok, Nijmegen, Max Planck Institute, Psycholinguistics, Research, Prosody, Beat gestures">
+    <meta name="author" content="Ronny Bujok">
+    <title>Ronny Bujok - About</title>
+    <link rel="stylesheet" href="styles/facts.css">
+</head>
+<body>
+    <nav>
+        <ul class="sidebar">
+          <li class = "close-icon-button" onclick=hideSidebar()>
+            <a href="">
+              <img src="icons/close.svg" alt="">
+            </a>
+          </li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="teaching.html">Teaching</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+    
+        <ul>
+          <li><a href="index.html">
+            <img style="padding-right: 10px;" src="icons/home.svg">
+            Ronny Bujok
+          </a></li>
+          <li class="hideOnMobile"><a href="about.html">About</a></li>
+          <li class="hideOnMobile"><a href="research.html">Research</a></li>
+          <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
+          <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
+          <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+          <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+        </ul>
+    </nav>
+
+    <div class="factheader">
+    <h1>Fun Fact of the Day</h1>
+    <div id="fact">Loading...</div>
+    <button class="fact-button" onclick="loadFact(true)">New Fact</button>
+  </div>
+
+  <script>
+    function getTodayKey() {
+      return new Date().toISOString().split("T")[0];
+    }
+
+    async function loadFact(forceNew = false) {
+      const today = getTodayKey();
+      const saved = localStorage.getItem("fact-" + today);
+      if (saved && !forceNew) {
+        document.getElementById("fact").innerHTML = saved;
+        return;
+      }
+
+      try {
+        const res = await fetch("https://uselessfacts.jsph.pl/random.json?language=en");
+        const data = await res.json();
+
+        const html = `<p>${data.text}</p>`;
+        localStorage.setItem("fact-" + today, html);
+        document.getElementById("fact").innerHTML = html;
+      } catch (err) {
+        document.getElementById("fact").innerHTML = "Failed to load fact 😢";
+      }
+    }
+
+    loadFact();
+  </script>
+
+
+</body>
+
+
+</html>
