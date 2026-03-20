@@ -457,7 +457,7 @@
 
       {
         "name": "Easy Egg Fried Noodles",
-        "tags":["Asian","egg","fried","noodles","carrot","spring onions","onion","garlic","soy sauce","sesame seeds","sesame oil","sambal oelek","oil","easy", "vegetarian"],
+        "tags":["Asian","eggs","fried","noodles","carrot","spring onions","onion","garlic","soy sauce","sesame seeds","sesame oil","sambal oelek","oil","easy", "vegetarian"],
         "baseServings": 2,
         "image": "images/food/egg-noodles.jpg",
         "ingredients": [
@@ -466,7 +466,7 @@
           {"name": "onion", "amount": 1, "unit": ""},
           {"name": "spring onion", "amount": 3, "unit": ""},
           {"name": "garlic cloves", "amount": 1, "unit": ""},
-          {"name": "egg", "amount": 1, "unit": ""},
+          {"name": "eggs", "amount": 1, "unit": ""},
           {"name": "soy sauce", "amount": 2, "unit": "tbsp"},
           {"name": "sesame oil", "amount": 1, "unit": "tbsp"},
           {"name": "sesame seeds", "amount": 1, "unit": "tsp"},
@@ -618,7 +618,7 @@
 
       {
         "name": "Sernik Królewski",
-        "tags":["sernik", "flour","dough","cheesecake","vegetarian","cake","dessert","cacao","butter","twarog","quark","egg","vanilla","Polish"],
+        "tags":["sernik", "flour","dough","cheesecake","vegetarian","cake","dessert","cacao","butter","twarog","quark","eggs","vanilla","Polish"],
         "baseServings": 8,
         "image": "images/food/sernik-krolewski.jpg",
         "sections": [
@@ -671,7 +671,7 @@
 
       {
         "name": "Best Brownies Ever",
-        "tags":["vegetarian","brownies","chocolate","cacao","sweet","dessert","egg","butter","flour","sugar"],
+        "tags":["vegetarian","brownies","chocolate","cacao","sweet","dessert","eggs","butter","flour","sugar"],
         "baseServings": 8,
         "image": "images/food/brownies.jpg",
         "ingredients": [
@@ -922,9 +922,209 @@
           "author": "Ronny Bujok",
           "link": ""
         }
+      },
+
+      {
+        "name": "Shish Andaz (Iranian walnut stew)",
+        "tags":["Iranian", "Middle-East", "walnuts","aubergine","eggplant","pomegranate","onion"],
+        "baseServings": 4,
+        "image": "images/food/shish_andaz.jpg",
+        "ingredients": [
+          {"name": "eggplant", "amount": 3, "unit": ""},
+          {"name": "walnuts", "amount": 300, "unit": "g"},
+          {"name": "onion", "amount": 1, "unit": ""},
+          {"name": "tomato paste", "amount": 2, "unit": "tbsp"},
+          {"name": "pomegranate molasses", "amount": 3, "unit": "tbsp"},
+          {"name": "cinnamon", "amount": 1, "unit": "tsp"},
+          {"name": "black pepper", "amount": 0.5, "unit": "tsp"},
+          {"name": "tumeric", "amount": 0.5, "unit": "tsp"},
+          {"name": "water", "amount": 500, "unit": "ml"},
+          {"name": "salt", "amount": 0, "unit": ""},
+          {"name": "oil", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Peel a few stripes off the eggplants. Cut the eggplants in 2x2 cm cubes",
+          "Salt the eggplant a lot, mix and set aside. Let the moisture draw out",
+          "Blend the walnuts to a coarse paste",
+          "Dice the onion and fry until golden brown",
+          "Add the spices and walnuts and fry for a minute. Then add the tomato paste, pomegranate molasses and water. Bring to a boil and simmer for 30 minutes",
+          "Meanwhile rinse off the salt from the eggplants, squeeze out all of the moisture, and dry them off completely",
+          "Heat up some oil in a skillet and fry the eggplants until golden brown",
+          "Add the eggplant to the stew and simmer for 10 more minutes",
+          "Best served with rice"
+        ],
+        "credits": {
+          "author": "Baking Hermann",
+          "link": "https://bakinghermann.com/persian-shish-andaz-rich-walnut-and-aubergine-stew/"
+        }
+      },
+
+      {
+        "name": "Tomato, Egg and Rice",
+        "tags":["tomatoes","eggs","garlic","Asian","Chinese","rice","oyster sauce","soy sauce","spring onions"],
+        "baseServings": 2,
+        "image": "images/food/tomato_egg_rice.jpg",
+        "ingredients": [
+          {"name": "tomatoes", "amount": 4, "unit": ""},
+          {"name": "eggs", "amount": 4, "unit": ""},
+          {"name": "garlic cloves", "amount": 1, "unit": ""},
+          {"name": "rice", "amount": 0, "unit": ""},
+          {"name": "spring onion", "amount": 0, "unit": ""},
+          {"name": "oyster sauce", "amount": 0, "unit": ""},
+          {"name": "soy sauce", "amount": 0, "unit": ""},
+          {"name": "sugar", "amount": 0, "unit": ""},
+          {"name": "oil", "amount": 0, "unit": ""}
+        ],
+        "instructions": [
+          "Heat up some oil and fry the eggs to a scramble. Set aside",
+          "Heat up some oil again, finely chop the garlic and briefly fry it. Then add roughly chopped tomatoes and fry until tomatoes get soft",
+          "Add oyster and soy sauce and a bit of sugar to taste. Chop the spring onions for garnish",
+          "Best served with rice"
+        ],
+        "credits": {
+          "author": "Rui Wencheng",
+          "link": "https://www.instagram.com/reel/DR7fUe3jVpa/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+        }
+      },
+
+
+      {
+        "name": "Vegan Okra Soup",
+        "tags":["okra","red onions","bell peppers","mushrooms","spring onion","broth","African","Nigerian","curry","thyme","ginger","soup","fufu","black pepper","rice","vegan"],
+        "baseServings": 4,
+        "image": "images/food/okra_soup.jpg",
+        "ingredients": [
+          {"name": "okra", "amount": 680, "unit": "g"},
+          {"name": "bell peppers", "amount": 2, "unit": ""},
+          {"name": "red onions", "amount": 2, "unit": ""},
+
+          {"name": "mushrooms", "amount": 200, "unit": "g"},
+          {"name": "spring onion", "amount": 1, "unit": "bunch"},
+          {"name": "spinach", "amount": 200, "unit": "g"},
+          {"name": "vegetable broth", "amount": 200, "unit": "g"},
+
+          {"name": "curry", "amount": 0.5, "unit": "tsp"},
+          {"name": "thyme", "amount": 0.5, "unit": "tsp"},
+          {"name": "ground ginger", "amount": 0.5, "unit": "tsp"},
+          {"name": "black pepper", "amount": 0.5, "unit": "tsp"},
+          {"name": "garlic powder", "amount": 0.5, "unit": "tsp"},
+          {"name": "salt", "amount": 1, "unit": "tsp"},
+          {"name": "oil (for frying)", "amount": 0, "unit": ""}
+
+
+
+        ],
+        "instructions": [
+          "Blend the bell peppers and half of the onions into a paste",
+          "Cut the mushrooms and add them to a dry pan. Once mushrooms lose moisture, add some oil and fry them for a while. Dice the remaining onions and fry them too",
+          "Add the spices, the blended pepper mix and the spring onions",
+          "add the stock, okra and spinach and let it cook for 15 minutes",
+          "serve with rice or fufu"
+        ],
+        "credits": {
+          "author": "Eleanor",
+          "link": "https://eleanorsdish.com/food/vegan-okra-soup-recipe-nigerian"
+        }
+      },
+
+
+      {
+        "name": "Fufu",
+        "tags":["fufu","African","Nigerian","cassave","plantain"],
+        "baseServings": 2,
+        "image": "images/food/fufu.jpg",
+        "ingredients": [
+          {"name": "cassave", "amount": 500, "unit": "g"},
+          {"name": "plantain (green)", "amount": 1, "unit": ""}
+
+        ],
+        "instructions": [
+          "Peel the cassave and plantain and cut in pieces. Boil until soft",
+          "Strain the cassave and plantain and smash in a mortar until it creates a smooth texture"
+
+        ],
+        "credits": {
+          "author": "",
+          "link": ""
+        }
+      },
+
+
+      {
+        "name": "West African Peanut Soup",
+        "tags":["sweet potato","chickpeas","spinach","peanut butter","peanuts","broth","onion","garlic","ginger","black pepper","cumin","Ghanaian","African","tomato paste","soup","vegan"],
+        "baseServings": 4,
+        "image": "images/food/peanut_soup.jpg",
+        "ingredients": [
+          {"name": "sweet potato", "amount": 400, "unit": "g"},
+          {"name": "(canned) chickpeas", "amount": 1, "unit": ""},
+          {"name": "spinach", "amount": 600, "unit": "g"},
+          {"name": "peanut butter", "amount": 300, "unit": "g"},
+          {"name": "can of tomatoes", "amount": 1, "unit": ""},
+
+          {"name": "vegetable broth", "amount": 1, "unit": "l"},
+
+          {"name": "onion", "amount": 1, "unit": ""},
+          {"name": "ginger", "amount": 1, "unit": "thumb"},
+          {"name": "garlic", "amount": 4, "unit": "cloves"},
+
+          {"name": "tomato paste", "amount": 2, "unit": "tbsp"},
+          {"name": "black pepper", "amount": 0.5, "unit": "tsp"},
+          {"name": "cumin", "amount": 2, "unit": "tsp"},
+          {"name": "oil (for frying)", "amount": 0, "unit": ""},
+          {"name": "salt", "amount": 0, "unit": ""},
+          {"name": "peanuts", "amount": 0, "unit": ""}
+
+
+        ],
+        "instructions": [
+          "Heat up some oil in a skillet. Dice the onion and fry until golden brown. Add the ginger and garlic and fry for a minute. Then add the spices and tomato paste",
+          "Add the can of tomatoes, broth, diced sweet potatoes, chickpeas and peanut butter and stir until combined. Let it simmer for 15 minutes",
+          "Add in the spinach and cook for another 5 minutes. Salt to taste",
+          "Serve with rice of fufu. Garnish with peanuts"
+
+        ],
+        "credits": {
+          "author": "The modern proper (adapted)",
+          "link": "https://themodernproper.com/african-peanut-soup"
+        }
+      },
+
+
+      {
+        "name": "Lao Papaya Salad",
+        "tags":["Lao","papaya","salad","cherry tomatoes","garlic","shrimp","tamarind","fish sauce","lime","Asian"],
+        "baseServings": 4,
+        "image": "images/food/papaya_salad.jpg",
+        "ingredients": [
+          {"name": "green papaya", "amount": 1, "unit": ""},
+          {"name": "lime", "amount": 0.5, "unit": ""},
+          {"name": "cherry tomatoes", "amount": 200, "unit": "g"},
+          {"name": "garlic cloves", "amount": 1, "unit": ""},
+          {"name": "bird eye chilli", "amount": 3, "unit": ""},
+       
+          {"name": "shrimp paste", "amount": 1, "unit": "tsp"},
+          {"name": "tamarind paste", "amount": 1, "unit": "tbsp"},
+          {"name": "sugar", "amount": 4, "unit": "tsp"},
+          {"name": "fish sauce", "amount": 2, "unit": "tsp"}
+
+        ],
+        "instructions": [
+          "Peel and shred the papaya in thin strips",
+          "Add the garlic and chillies into a mortar and smash. Add the shrimp paste, fish sauce and sugar and mix",
+          "Add the shredded papaya and halved cherry tomatoes and mix and smash",
+          "Finish it with the juice of the lime and salt to taste",
+          "Best served with sticky rice"
+
+        ],
+        "credits": {
+          "author": "Saengs Kitchen (adapted)",
+          "link": "https://www.saengskitchen.com/laorecipes/laopapayasalad"
+        }
       }
       
 
     ]
   }
   
+
