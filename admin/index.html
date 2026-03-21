@@ -1,10 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Recipe Admin</title>
-  <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
-</head>
-<body>
-</body>
-</html>
+<script>
+  window.CMS_MANUAL_INIT = true;
+</script>
+
+<script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+
+<script>
+  CMS.init({
+    config: '/admin/config.yml',
+  });
+</script>
