@@ -1,11 +1,24 @@
-<script>
-  window.CMS_MANUAL_INIT = true;
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Recipe Admin</title>
 
-<script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+  <!-- Force manual initialization -->
+  <script>
+    window.CMS_MANUAL_INIT = true;
+  </script>
 
-<script>
-  CMS.init({
-    config: '/admin/config.yml',
-  });
-</script>
+  <!-- Decap CMS library -->
+  <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+</head>
+<body>
+  <h1>Loading CMS…</h1>
+
+  <script>
+    CMS.init({
+      config: './config.yml',  // relative path to config
+    });
+  </script>
+</body>
+</html>

@@ -11,7 +11,7 @@ collections:
   - name: "recipes"
     label: "Recipes"
     files:
-      - file: "recipes.json"
+      - file: "../recipes.json"
         label: "Recipe List"
         name: "recipes"
         fields:
@@ -22,16 +22,25 @@ collections:
             fields:
 
               # BASIC INFO
-              - { label: "Name", name: "name", widget: "string" }
+              - label: "Name"
+                name: "name"
+                widget: "string"
 
               - label: "Tags"
                 name: "tags"
                 widget: "list"
-                field: { label: "Tag", name: "tag", widget: "string" }
+                field:
+                  label: "Tag"
+                  name: "tag"
+                  widget: "string"
 
-              - { label: "Base Servings", name: "baseServings", widget: "number" }
+              - label: "Base Servings"
+                name: "baseServings"
+                widget: "number"
 
-              - { label: "Image", name: "image", widget: "image" }
+              - label: "Image"
+                name: "image"
+                widget: "image"
 
               # INGREDIENTS
               - label: "Ingredients"
@@ -39,20 +48,34 @@ collections:
                 widget: "list"
                 summary: "{{fields.amount}} {{fields.unit}} {{fields.name}}"
                 fields:
-                  - { label: "Name", name: "name", widget: "string" }
-                  - { label: "Amount", name: "amount", widget: "number" }
-                  - { label: "Unit", name: "unit", widget: "string", required: false }
+                  - label: "Name"
+                    name: "name"
+                    widget: "string"
+                  - label: "Amount"
+                    name: "amount"
+                    widget: "number"
+                  - label: "Unit"
+                    name: "unit"
+                    widget: "string"
+                    required: false
 
               # INSTRUCTIONS
               - label: "Instructions"
                 name: "instructions"
                 widget: "list"
-                field: { label: "Step", widget: "text" }
+                field:
+                  label: "Step"
+                  name: "step"
+                  widget: "string"
 
               # CREDITS
               - label: "Credits"
                 name: "credits"
                 widget: "object"
                 fields:
-                  - { label: "Author", name: "author", widget: "string" }
-                  - { label: "Link", name: "link", widget: "string" }
+                  - label: "Author"
+                    name: "author"
+                    widget: "string"
+                  - label: "Link"
+                    name: "link"
+                    widget: "string"
