@@ -1121,6 +1121,54 @@
           "author": "Saengs Kitchen (adapted)",
           "link": "https://www.saengskitchen.com/laorecipes/laopapayasalad"
         }
+      },
+
+      {
+        "name": "Mango Sticky Rice",
+        "tags": [
+          "Lao",
+          "Thai",
+          "dessert",
+          "Asian",
+          "Mango",
+          "Glutinous Rice",
+          "Coconut Milk",
+          "palm sugar"
+        ],
+        "baseServings": 2,
+        "image": "images/food/mango_sticky_rice.jpg",
+        "ingredients": [
+          {
+            "name": "Mango",
+            "amount": 1,
+            "unit": ""
+          },
+          {
+            "name": "Glutinous Rice",
+            "amount": 150,
+            "unit": "g"
+          },
+          {
+            "name": "Coconut Milk",
+            "amount": 250,
+            "unit": "ml"
+          },
+          {
+            "name": "palm sugar",
+            "amount": 0,
+            "unit": ""
+          }
+        ],
+        "instructions": [
+          "Cook the sticky rice according to the instructions (Ideally steaming)",
+          "Peel the mango and cut the mango in slices",
+          "Add the cooked rice in a pot with coconut milk, heat up and mix well. Add more coconut milk if necessary for desired consistency",
+          "Add palm sugar to taste and serve with the fresh mango"
+        ],
+        "credits": {
+          "author": "",
+          "link": ""
+        }
       }
       
 

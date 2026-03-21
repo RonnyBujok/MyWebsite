@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFX2EX8LP8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LFX2EX8LP8');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ronny Bujok, PhD candidate at the Max Planck Institute for Psycholinguistics">
+    <meta name="keywords" content="Ronny, Bujok, Nijmegen, Max Planck Institute, Psycholinguistics, Research, Prosody, Beat gestures">
+    <meta name="author" content="Ronny Bujok">
+    <title>Ronny Bujok - Contact</title>
+    <link rel="stylesheet" href="styles/recipeform.css">
+</head>
+<body>
+
+<nav>
+        <ul class="sidebar">
+          <li class = "close-icon-button" onclick=hideSidebar()>
+            <a href="">
+              <img src="icons/close.svg" alt="">
+            </a>
+          </li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="teaching.html">Teaching</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+    
+        <ul>
+          <li><a href="index.html">
+            <img style="padding-right: 10px;" src="icons/home.svg">
+            Ronny Bujok
+          </a></li>
+          <li class="hideOnMobile"><a href="about.html">About</a></li>
+          <li class="hideOnMobile"><a href="research.html">Research</a></li>
+          <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
+          <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
+          <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+          <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+        </ul>
+      </nav>
+    
+      <script>
+        function showSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'flex'
+        }
+        function hideSidebar(){
+          const sidebar = document.querySelector('.sidebar')
+          sidebar.style.display = 'none'
+        }
+      </script>
+
+
+  <form id="recipeForm">
+    <h1>Add a New Recipe</h1>
+
+    <h3>General Information</h3>
+
+    <div class="inforow">
+        <label>Name</label>
+        <input type="text" name="name" required>
+    </div>
+
+    <div class="inforow">
+        <label>Tags (comma-separated)</label>
+        <input type="text" name="tags">
+    </div>
+
+    <div class="inforow">
+        <label>Base Servings</label>
+        <input type="number" name="baseServings" value="4">
+    </div>
+    
+    <div class="inforow">
+        <label>Image URL</label>
+        <input type="text" name="image">
+    </div>
+    <hr>
+    <h3>Ingredients</h3>
+    <div id="ingredients"></div>
+    <button class="addbutton" type="button" onclick="addIngredient()">Add Ingredient</button>
+    <hr>
+
+    <h3>Instructions</h3>
+    <div id="instructions"></div>
+    <button class="addbutton" type="button" onclick="addStep()">Add Step</button>
+    <hr>
+
+    <h3>Credits</h3>
+    <div class="inforow">
+    <label>Author</label>
+    <input type="text" name="author">
+    </div>
+
+    <div class="inforow">
+    <label>Link</label>
+    <input type="text" name="link">
+    </div>
+    
+    <div class="jsonbuttonparent">
+    <button class="jsonbutton" type="submit">Generate JSON</button>
+    </div>
+  <h2>Generated JSON</h2>
+  <pre id="output" style="background: #f0f0f0; padding: 10px;"></pre>
+  
+<div class="jsonbuttonparent" style="margin-top: 10px;">
+  <button class="jsonbutton" type="button" onclick="copyJSON()">Copy JSON to Clipboard</button>
+</div>
+
+  </form>
+
+
+
+  <script>
+    const ingredientsDiv = document.getElementById("ingredients");
+    const instructionsDiv = document.getElementById("instructions");
+
+    function addIngredient() {
+        const div = document.createElement("div");
+        div.className = "ingredient";
+        div.innerHTML = `
+        <input type="text" placeholder="Name" class="ing-name" required>
+        <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
+        <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
+        <button type="button" onclick="this.parentNode.remove()">x</button>
+        `;
+        ingredientsDiv.appendChild(div);
+    }
+
+    function addStep() {
+        const div = document.createElement("div");
+        div.className = "step";
+        div.innerHTML = `
+        <textarea placeholder="Step" class="step-text" required></textarea>
+        <button type="button" onclick="this.parentNode.remove()">x</button>
+        `;
+        instructionsDiv.appendChild(div);
+    }
+
+    // Add one ingredient and step by default
+    addIngredient();
+    addStep();
+
+    document.getElementById("recipeForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+        const form = e.target;
+
+        const ingredients = Array.from(document.querySelectorAll(".ingredient")).map(div => ({
+        name: div.querySelector(".ing-name").value,
+        amount: Number(div.querySelector(".ing-amount").value) || 0, // default 0
+        unit: div.querySelector(".ing-unit").value
+        }));
+
+        // Combine manual tags + ingredient names
+        const manualTags = form.tags.value.split(",").map(t => t.trim()).filter(Boolean);
+        const ingredientTags = ingredients.map(i => i.name.trim()).filter(Boolean);
+        const tags = Array.from(new Set([...manualTags, ...ingredientTags]));
+
+        // Force image path to start with "images/"
+        let imagePath = form.image.value.trim();
+        if (!imagePath.startsWith("images/") && imagePath !== "") {
+        imagePath = `images/${imagePath}`;
+        }
+
+        const recipe = {
+        name: form.name.value,
+        tags: tags,
+        baseServings: Number(form.baseServings.value),
+        image: imagePath,
+        ingredients: ingredients,
+        instructions: Array.from(document.querySelectorAll(".step")).map(div => div.querySelector(".step-text").value),
+        credits: {
+            author: form.author.value,
+            link: form.link.value
+        }
+        };
+
+        // Output only the single recipe JSON
+        const output = document.getElementById("output");
+        output.textContent = JSON.stringify(recipe, null, 2);
+    });
+    </script>
+
+
+
+<script>
+  function copyJSON() {
+    const output = document.getElementById("output");
+    if (output.textContent.trim() === "") {
+      alert("Nothing to copy! Generate the JSON first.");
+      return;
+    }
+    navigator.clipboard.writeText(output.textContent).then(() => {
+      alert("JSON copied to clipboard!");
+    }).catch(err => {
+      console.error("Failed to copy: ", err);
+    });
+  }
+</script>
+
+</body>
+</html>

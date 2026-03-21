@@ -1,0 +1,389 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #fffdee;
+    font-family:Arial, Helvetica, sans-serif;
+    color: #283618;
+    margin-top: min(12vw,100px);
+}
+
+p {
+    margin-top: 0;
+}
+
+
+nav {
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    background-color: #283618;
+
+    box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
+    z-index: 100;
+
+}
+
+nav ul {
+    width: 100%;
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+nav li {
+    height: 50px;
+    font-weight: bold;
+}
+
+nav a{
+    height: 100%;
+    padding: 0 30px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fffdee;
+}
+
+nav a:hover{
+    background-color: #DDA15E;
+    transition: 200ms;
+    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+}
+
+nav li:first-child{
+    margin-right: auto;
+}
+
+
+.sidebar{
+    position: fixed;
+    top: 0px;
+    right: 0;
+    height: 100vp;
+    width: 250px;
+    z-index: 999;
+    background-color: #2836187e;
+    backdrop-filter: blur(10px);
+    box-shadow: -10px 0 10px rgba(0,0,0,0.15);
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.sidebar li{
+    width: 100%;
+}
+
+.sidebar a{
+    width: 100%;
+    padding: 0 0;
+
+}
+
+.sidebar .close-icon-button a{
+    justify-content: right;
+}
+
+.sidebar .close-icon-button a img{
+    padding-right: 20px;
+}
+
+.menu-button{
+    display: none;
+}
+
+
+.h1-parent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+h1 {
+    font-size: clamp(20px,8vw,70px);
+    font-weight: 500 ;
+    text-align: center;
+    color: #283618;
+    display: block;
+    background-color: #fffdee;
+    padding: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: min(5vw,40px);
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    position: relative;
+}
+
+h1::after{
+    content: "";
+    background: #DDA15E;
+    height: 5px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    box-shadow: 0px 3px 5px rgba(0,0,0,0.05);
+}
+
+
+h3{
+    text-align: center;
+    color: #283618;
+    display: block; 
+    padding-bottom: 10px;
+}
+
+h2{
+    margin-top: 50px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+
+#recipeForm{
+    justify-self: center;
+    align-items: center;     /* vertically align label + input */
+    width: 90%;            /* default width on small screens */
+    max-width: 600px;      /* never wider than 600px even on huge screens */
+    min-width: 300px;      /* never too narrow */
+}
+
+
+  .inforow {
+    display: flex;           /* side-by-side layout */
+    align-items: center;     /* vertically align label + input */
+    justify-content: flex-start;
+
+    margin: 10px auto;       /* center horizontally with top/bottom spacing */
+    padding: 0 20px;         /* 20px padding on left/right */
+    box-sizing: border-box;  /* padding included in width */
+  }
+
+  .inforow label {
+    width: 40%;             /* label takes 40% of the row */
+    text-align: left;       /* left-align label text */
+    font-weight: bold;
+    margin-right: 10px;     /* spacing between label and input */
+    color: #283618;
+
+  }
+
+  .inforow input {
+    width: 60%;             /* input takes remaining 60% */
+    padding: 5px;           /* inner padding for text box */
+    box-sizing: border-box;
+  }
+  
+  #ingredients {
+    display: flex;
+    flex-direction: column;   /* stack ingredient rows vertically */
+    align-items: center;      /* center rows horizontally */
+    margin: 10px auto;        /* center horizontally with spacing */
+    padding: 0 20px;          /* 20px padding on sides */
+    box-sizing: border-box;
+  }
+
+  #instructions {
+    display: flex;
+    flex-direction: column;   /* stack ingredient rows vertically */
+    align-items: center;      /* center rows horizontally */
+    margin: 10px auto;        /* center horizontally with spacing */
+    padding: 0 20px;          /* 20px padding on sides */
+    box-sizing: border-box;
+  }
+
+
+.addbutton{
+    margin-left: 20px;
+    padding: 8px;
+    border-color: #283618;
+    border-radius: 7px;
+    background-color:#cef1a6;
+    color:#283618
+}
+
+hr {
+  border: none;           /* remove default border */
+  height: 1px;            /* thickness */
+  background-color: #ccc; /* color */
+  margin: 20px 0px;         /* spacing above/below */
+}
+
+.jsonbuttonparent{
+    text-align: center;
+}
+.jsonbutton{
+    margin-top: 30px;
+    margin-left: 20px;
+    padding: 15px; 
+    border-color:#a47c4e;
+    border-radius: 7px;
+    background-color:#DDA15E;
+    color:white
+}
+
+  .addbutton:hover {
+    background-color:#d9feae;
+        transition: 200ms;
+    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+}
+
+  .jsonbutton:hover {
+    background-color:#e8b77e;
+        transition: 200ms;
+    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+
+}
+
+
+
+  /* Each ingredient row */
+  .ingredient {
+    display: flex;
+    gap: 5px;                 /* spacing between inputs */
+    margin-bottom: 5px;
+    flex-wrap: nowrap;         /* always stay in one row */
+    width: 100%;               /* take full width of container */
+    box-sizing: border-box;
+  }
+
+  /* Name input grows to fill remaining space */
+  .ingredient .ing-name {
+    flex: 1 1 auto;
+    min-width: 50px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  /* Amount and Unit have reasonable widths but shrink if needed */
+  .ingredient .ing-amount {
+    flex: 0 1 70px;
+    min-width: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  .ingredient .ing-unit {
+    flex: 0 1 80px;
+    min-width: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  /* Remove button fixed size */
+  .ingredient button {
+    flex: 0 0 auto;
+    padding: 0 8px;
+    background-color: rgb(255, 88, 88);
+    border-radius: 5px;
+    border-color: red;  
+}
+
+  .ingredient button:hover {
+    background-color: rgb(252, 116, 116);
+        transition: 200ms;
+    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+
+}
+
+
+
+
+
+
+
+
+
+
+  /* Each ingredient row */
+  .step {
+    display: flex;
+    gap: 5px;                 /* spacing between inputs */
+    margin-bottom: 5px;
+    flex-wrap: nowrap;         /* always stay in one row */
+    width: 100%;               /* take full width of container */
+    box-sizing: border-box;
+  }
+
+  /* Name input grows to fill remaining space */
+  .step .step-text {
+    flex: 1 1 auto;
+    min-width: 50px;
+    height: 30px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  /* Amount and Unit have reasonable widths but shrink if needed */
+  .step .ing-amount {
+    flex: 0 1 70px;
+    min-width: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  .step .ing-unit {
+    flex: 0 1 80px;
+    min-width: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+  }
+
+  /* Remove button fixed size */
+  .step button {
+    flex: 0 0 auto;
+    padding: 0 8px;
+    background-color: rgb(255, 88, 88);
+    border-radius: 5px;
+    border-color: red;  
+}
+
+  .step button:hover {
+    background-color: rgb(252, 116, 116);
+        transition: 200ms;
+    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+
+}
+
+.footer{
+    text-align: center;
+    font-size: clamp(8px,3vw,16px);
+    margin-top: min(200px,20vw);
+    color: #DDA15E;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.copyright-icons{
+    display: inline;
+    width: clamp(15px,5vw,30px);
+}
+
+
+
+@media(max-width: 800px){
+    .hideOnMobile{
+        display: none;
+    }
+    .menu-button{
+        display: block;
+    }
+}
+
+@media(max-width: 400px) {
+    .sidebar{
+        width:100%;
+    }
+}
+
+
