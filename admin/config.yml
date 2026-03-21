@@ -1,0 +1,58 @@
+backend:
+  name: github
+  repo: RonnyBujok/MyWebsite
+  branch: main
+  auth_endpoint: https://decapcms-auth.netlify.app/auth
+
+media_folder: "images/food"
+public_folder: "/images/food"
+
+collections:
+  - name: "recipes"
+    label: "Recipes"
+    files:
+      - file: "recipes.json"
+        label: "Recipe List"
+        name: "recipes"
+        fields:
+          - label: "Recipes"
+            name: "recipes"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+
+              # BASIC INFO
+              - { label: "Name", name: "name", widget: "string" }
+
+              - label: "Tags"
+                name: "tags"
+                widget: "list"
+                field: { label: "Tag", name: "tag", widget: "string" }
+
+              - { label: "Base Servings", name: "baseServings", widget: "number" }
+
+              - { label: "Image", name: "image", widget: "image" }
+
+              # INGREDIENTS
+              - label: "Ingredients"
+                name: "ingredients"
+                widget: "list"
+                summary: "{{fields.amount}} {{fields.unit}} {{fields.name}}"
+                fields:
+                  - { label: "Name", name: "name", widget: "string" }
+                  - { label: "Amount", name: "amount", widget: "number" }
+                  - { label: "Unit", name: "unit", widget: "string", required: false }
+
+              # INSTRUCTIONS
+              - label: "Instructions"
+                name: "instructions"
+                widget: "list"
+                field: { label: "Step", name: "step", widget: "text" }
+
+              # CREDITS
+              - label: "Credits"
+                name: "credits"
+                widget: "object"
+                fields:
+                  - { label: "Author", name: "author", widget: "string" }
+                  - { label: "Link", name: "link", widget: "string" }
