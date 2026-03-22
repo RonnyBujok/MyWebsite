@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let imagePath = form.image.value.trim();
     if (imagePath && !imagePath.startsWith("images/food/")) {
-      imagePath = `images/${imagePath}`;
+      imagePath = `images/food/${imagePath}`;
     }
 
     const recipe = {
