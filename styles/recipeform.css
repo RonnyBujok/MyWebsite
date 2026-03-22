@@ -5,6 +5,7 @@
 
 body {
     min-height: 100vh;
+    background-color: white;
     background-color: #fffdee;
     font-family:Arial, Helvetica, sans-serif;
     color: #283618;
@@ -156,6 +157,9 @@ h2{
     width: 90%;            /* default width on small screens */
     max-width: 600px;      /* never wider than 600px even on huge screens */
     min-width: 300px;      /* never too narrow */
+    /* background-color: white; */
+    background-color: #fffdee;
+    margin-bottom: 1rem;
 }
 
 
@@ -206,10 +210,13 @@ h2{
 .addbutton{
     margin-left: 20px;
     padding: 8px;
-    border-color: #283618;
+    /* /border-color: #283618; */
     border-radius: 7px;
-    background-color:#cef1a6;
-    color:#283618
+    background-color:#283618;
+    color:#283618;
+    border-style: hidden;
+    color: #fffdee;
+
 }
 
 hr {
@@ -228,23 +235,36 @@ hr {
     margin-bottom: 20px ;
     padding: 15px; 
     border-color:#a47c4e;
+    border-style: hidden;
     border-radius: 7px;
     background-color:#DDA15E;
     color:white
 }
 
-  .addbutton:hover {
-    background-color:#d9feae;
-        transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+  .addbutton:hover, .jsonbutton:hover {
+    /* #background-color:#d9feae; */
+    transition: 200ms;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transform: scale(1.1);
+
+
+    /* box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15); */
 }
 
+
+#add-recipe-btn:hover {
+  transform: scale(1.1);
+  background-color: #c99750;
+}
+
+
+/* 
   .jsonbutton:hover {
     background-color:#e8b77e;
         transition: 200ms;
     box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
 
-}
+} */
 
 
 
