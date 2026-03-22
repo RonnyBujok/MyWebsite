@@ -64,6 +64,9 @@ nav li:first-child{
     margin-right: auto;
 }
 
+.activeproject:hover{
+    cursor: pointer;
+}
 
 .sidebar{
     position: fixed;
