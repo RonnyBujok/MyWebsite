@@ -121,6 +121,7 @@ nav li:first-child{
     height: 4rem;
     display: flex;
     justify-content: center;
+    background-color: #fffdee;
 }
 
 .search-bar-full input{
@@ -440,7 +441,9 @@ nav li:first-child{
     padding-top: 1rem;
     text-align: center;
     margin: 0;
-    background-color: #ffffff;
+    background-color: #fffdee;
+    /* background-color: #ffffff; */
+
     /* border-top: #DDA15E solid; 
     border-bottom: #DDA15E solid;  */
     z-index: 2;
@@ -506,6 +509,31 @@ nav li:first-child{
     /* margin-top: 4rem; */
   }
 
+
+#add-recipe-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: #DDA15E; /* matches your theme */
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 50px;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 9999; /* stay on top */
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+#add-recipe-btn:hover {
+  transform: scale(1.1);
+  background-color: #c99750;
+}
 
 
 
@@ -625,6 +653,9 @@ h1{
 
 .instructions-title{
     margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    padding-left: 0.5rem;
     color: #DDA15E;
     font-weight: bold;
     text-decoration: underline;

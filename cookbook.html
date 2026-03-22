@@ -43,7 +43,6 @@
     <div class="dropdown-buttons">
       <button id="recipes-btn">Recipes</button>
       <button id="tags-btn">Tags</button>
-      <!-- <button id="filter-btn">Filter</button> -->
     </div>
     <div id="recipe-dd"></div>
     <div id="tags-dd">
@@ -77,615 +76,428 @@
     </div>
   </div>
 
-  <script>
-    function showSidebar(){
-      const sidebar = document.querySelector('.sidebar')
-      sidebar.style.display = 'flex'
-    }
-    function hideSidebar(){
-      const sidebar = document.querySelector('.sidebar')
-      sidebar.style.display = 'none'
-    }
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // -------------------- Global Variables --------------------
+  let allRecipes = [];
+  let selectedTags = [];
+  const SUPABASE_URL = "https://oqzceuesqnkmdbsgttcl.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  const recipesBtn = document.getElementById('recipes-btn');
+  const tagsBtn = document.getElementById('tags-btn');
+  const recipeDd = document.getElementById('recipe-dd');
+  const tagsDd = document.getElementById('tags-dd');
 
+  // -------------------- Load Recipes from Supabase --------------------
+  async function loadRecipes() {
+    const recipePage = document.querySelector('.recipe-page');
+    recipePage.innerHTML = "<p>Loading recipes from Supabase...</p>";
 
-    
-    let allRecipes = []; // Store all recipes globally
+    try {
+      const { data: recipes, error } = await supabaseClient
+        .from("recipes")
+        .select("*")
+        .order("id");
 
-    // Function to load recipes from the JSON file
-    async function loadRecipes() {
-      try {
-        const response = await fetch('recipes.json');
-        if (!response.ok) {
-          throw new Error('Failed to load recipes.json');
-        }
-        const data = await response.json();
-
-        allRecipes = data.recipes; // Store the recipes globally
-
-        // Step 1: Sort the recipes alphabetically by name
-        allRecipes.sort((a, b) => {
-          if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;  // Sort in ascending order
-          if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-          return 0;
-        });
-
-        // Display the list of recipe names at the top
-        displayRecipeNames(allRecipes);
-        
-
-        // Display all recipes initially
-        displayRecipes(allRecipes);
-
-        // Get all elements with the class 'search-input'
-        const searchInputs = document.querySelectorAll('.search-input');
-
-        // Loop through each search input and add an event listener
-        searchInputs.forEach(searchInput => {
-          searchInput.addEventListener('input', (event) => {
-            
-            selectedTags = []; // Clear selected tags array
-
-            // Reset all tags to inactive
-            document.querySelectorAll('.recipe-tag').forEach(tagElement => {
-              tagElement.classList.remove('active'); // Remove active class from all tags
-              tagElement.style.backgroundColor = ''; // Reset background color
-              tagElement.style.color = ''; // Reset font color
-            });
-            const searchTerm = searchInput.value.trim().toLowerCase();
-            
-            // Empty the other search bar when this one is used
-            searchInputs.forEach(input => {
-              if (input !== searchInput) {
-                input.value = ''; // Clear the other search input field
-              }
-            });
-            
-            // Hide tags-dd and recipe-dd when typing in the search bar
-            const tagsDd = document.getElementById('tags-dd');
-            const recipeDd = document.getElementById('recipe-dd');
-
-            if (tagsDd) {
-              tagsDd.style.display = 'none'; // Hide tags-dd
-            }
-            if (recipeDd) {
-              recipeDd.style.display = 'none'; // Hide recipe-dd
-            }
-            
-
-            // Revert recipe-btn and tags-btn to default colors
-            const recipeBtn = document.getElementById('recipes-btn');
-            const tagsBtn = document.getElementById('tags-btn');
-
-            if (recipeBtn) {
-              recipeBtn.style.backgroundColor = ''; // Revert to default background color
-              recipeBtn.style.color = ''; // Revert to default font color
-            }
-
-            if (tagsBtn) {
-              tagsBtn.style.backgroundColor = ''; // Revert to default background color
-              tagsBtn.style.color = ''; // Revert to default font color
-            }
-
-            
-            if (searchTerm === '') {
-              // If search is empty, show all recipes
-              displayRecipes(allRecipes);
-            } else {
-              filterRecipesBySearchTerm(searchTerm); // Call the filtering function with the search term
-            }
-          });
-        });
-
-      } catch (error) {
-        console.error('Error loading recipes:', error);
-      }
-    }
-
-    function updateIngredients(selectElement, baseServings) {
-      const servings = parseInt(selectElement.value);
-      const entry = selectElement.closest('.entry'); // Get the current recipe entry
-
-      // Loop through all the ingredient lists in the entry
-      const ingredientLists = entry.querySelectorAll('.ingredients-list');
-
-      ingredientLists.forEach((ingredientsList) => {
-        const ingredients = ingredientsList.querySelectorAll('li');
-        ingredients.forEach((ingredient) => {
-          const baseAmount = parseFloat(ingredient.getAttribute('data-base')); // Get the base amount from the data attribute
-
-          if (baseAmount > 0) {
-            let updatedAmount = baseAmount * (servings / baseServings); // Scale the amount
-
-            // Ensure updatedAmount has no more than 2 decimal places
-            updatedAmount = parseFloat(updatedAmount.toFixed(2)); // Round to 2 decimal places
-
-            // Update the text content to reflect the new amount
-            if (updatedAmount === 0) {
-              ingredient.textContent = `${ingredient.textContent.split(' ').slice(1).join(' ')}`; // Remove amount if 0
-            } else {
-              ingredient.textContent = `${updatedAmount} ${ingredient.textContent.split(' ').slice(1).join(' ')}`;
-            }
-          }
-        });
-      });
-    }
-
-
-    let selectedTags = []; // Declare this globally so it persists
-
-    function displayRecipeNames(recipes) {
-      const recipeList = document.getElementById('recipe-list');
-      const recipeDd = document.getElementById('recipe-dd');  // Reference to recipe-dd div
-      const tagsDd = document.getElementById('tags-dd-child');  // Reference to tags-dd-child
-      const tagsContainer = document.querySelector('.tags-container'); // Reference to tags-container
-
-      recipeList.innerHTML = ''; // Clear the existing list
-      recipeDd.innerHTML = '';  // Clear the existing list in recipe-dd
-      tagsDd.innerHTML = '';    // Clear the existing list in tags-dd-child
-
-      let allTags = [];
-
-      // Collect all unique tags from recipes
-      recipes.forEach(recipe => {
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = `#${recipe.name.replace(/\s+/g, '-').toLowerCase()}`;
-        link.textContent = recipe.name;
-
-        link.addEventListener('click', (event) => {
-          // Clear all search input fields
-          const searchInputs = document.querySelectorAll('.search-input');
-          searchInputs.forEach(input => input.value = ''); // Clear the input field
-
-          selectedTags = []; // Clear selected tags array
-
-          // Reset all tags to inactive
-          document.querySelectorAll('.recipe-tag').forEach(tagElement => {
-            tagElement.classList.remove('active');
-            tagElement.style.backgroundColor = '';
-            tagElement.style.color = '';
-          });
-
-          searchForEmptyInput();
-          recipeDd.style.display = 'none'; // Hide the recipe dropdown
-        });
-
-        listItem.appendChild(link);
-        recipeList.appendChild(listItem);
-        recipeDd.appendChild(listItem.cloneNode(true));  // Clone the item and append to recipe-dd
-
-        // Collect tags for later display
-        if (recipe.tags && recipe.tags.length > 0) {
-          recipe.tags.forEach(tag => {
-            if (!allTags.includes(tag)) {
-              allTags.push(tag); // Prevent duplicate tags
-            }
-          });
-        }
-      });
-
-      // Create a div for the RESET button that will be separate from the tag container
-      const resetTagContainer = document.createElement('div');
-      resetTagContainer.classList.add('reset-tag-container');
-
-      const resetTagElement = document.createElement('span');
-      resetTagElement.classList.add('recipe-tag', 'reset-tag');
-      resetTagElement.textContent = 'RESET';
-
-      resetTagElement.addEventListener('click', () => {
-        // Clear selected tags
-        selectedTags = [];
-
-        // Remove the "active" class and reset styles for all tags (except the RESET tag itself)
-        document.querySelectorAll('.recipe-tag').forEach(tagElement => {
-          if (!tagElement.classList.contains('reset-tag')) {
-            tagElement.classList.remove('active');
-            tagElement.style.backgroundColor = '';
-            tagElement.style.color = ''; // Reset styles
-          }
-        });
-
-        // Display all recipes when RESET is clicked
-        displayRecipes(allRecipes);
-      });
-
-      resetTagContainer.appendChild(resetTagElement);
-      tagsContainer.parentElement.insertBefore(resetTagContainer, tagsContainer);
-
-      // Sort tags alphabetically
-      allTags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
-      // Create a span for each tag
-      allTags.forEach(tag => {
-        const tagElement = document.createElement('span');
-        tagElement.classList.add('recipe-tag');
-        tagElement.textContent = tag;
-
-        if (selectedTags.includes(tag.toLowerCase())) {
-          tagElement.classList.add('active');
-          tagElement.style.backgroundColor = '#DDA15E';
-          tagElement.style.color = 'white';
-        }
-
-        // Add event listener to toggle the active class for each tag
-        tagElement.addEventListener('click', () => {
-          const searchInputs = document.querySelectorAll('.search-input');
-          searchInputs.forEach(input => input.value = ''); // Clear the input field
-
-          tagElement.classList.toggle('active');
-
-          if (tagElement.classList.contains('active')) {
-            tagElement.style.backgroundColor = '#DDA15E';
-            tagElement.style.color = 'white'; // Selected color
-            selectedTags.push(tag.toLowerCase());
-          } else {
-            tagElement.style.backgroundColor = '';
-            tagElement.style.color = ''; // Reset color
-            selectedTags = selectedTags.filter(selectedTag => selectedTag !== tag.toLowerCase());
-          }
-
-          // Filter recipes based on selected tags
-          filterRecipesBySelectedTags();
-        });
-
-        // Append the tag element to the containers
-        tagsContainer.appendChild(tagElement);
-        tagsDd.appendChild(tagElement.cloneNode(true)); // Clone and append to tags-dd-child
-      });
-
-      let applyButtonClicked = false;  // Flag to track if the Apply button was clicked
-      let resetButtonClicked = false;  // Flag to track if the Apply button was clicked
-
-      // Add event listener for the Apply button
-      document.querySelector('.apply').addEventListener('click', () => {
-        applyButtonClicked = true; // Set the flag to true when the Apply button is clicked
-        filterRecipesBySelectedTags();  // Call the filter function when Apply is clicked
-        
-        // Hide the tags-dd-child dropdown
-        const tagsDd = document.getElementById('tags-dd');
-        if (tagsDd) {
-          tagsDd.style.display = 'none'; // Set display to none to hide the dropdown
-        }
-
-        // Reset the background color of the tags-btn
-        const tagsBtn = document.querySelector('#tags-btn');
-        if (tagsBtn) {
-          tagsBtn.style.backgroundColor = ''; 
-          tagsBtn.style.color = ''; // Reset to original background color
-        }
-      
-      });
-
-      // Add event listener for the Apply button
-      document.querySelector('.reset-tag').addEventListener('click', () => {
-        resetButtonClicked = true; // Set the flag to true when the Apply button is clicked
-        selectedTags = []; // Clear selected tags array
-        
-        // Reset styles for all tags
-        document.querySelectorAll('.recipe-tag').forEach(tagElement => {
-          tagElement.classList.remove('active');
-          tagElement.style.backgroundColor = '';
-          tagElement.style.color = '';
-        });
-        
-        filterRecipesBySelectedTags();  // Call the filter function when Apply is clicked
-      });
-
-      const tagsDdLinks = tagsDd.querySelectorAll('.recipe-tag');
-      tagsDdLinks.forEach(tag => {
-        tag.addEventListener('click', () => {
-          tag.classList.toggle('active');
-          if (tag.classList.contains('active')) {
-            tag.style.backgroundColor = '#DDA15E';
-            tag.style.color = 'white';
-            selectedTags.push(tag.textContent.toLowerCase());
-          } else {
-            tag.style.backgroundColor = '';
-            tag.style.color = '';
-            selectedTags = selectedTags.filter(selectedTag => selectedTag !== tag.textContent.toLowerCase());
-          }
-        });
-      });
-    }
-
-
-
-
-
-
-
-
-    // Function to filter recipes by selected tags
-    function filterRecipesBySelectedTags() {
-      // If no tags are selected, show all recipes
-      if (selectedTags.length === 0) {
-        displayRecipes(allRecipes);
+      if (error) throw error;
+      if (!recipes || recipes.length === 0) {
+        recipePage.innerHTML = "<p>No recipes found in Supabase yet.</p>";
         return;
       }
 
-      const filteredRecipes = allRecipes.filter(recipe => {
-        // Check if the recipe contains all selected tags
-        return selectedTags.every(tag => recipe.tags && recipe.tags.some(rTag => rTag.toLowerCase() === tag));
-      });
+      // Parse JSON fields safely
+      allRecipes = recipes.map(r => ({
+        name: r.name || "Unnamed",
+        baseServings: r.baseServings || 4,
+        image: r.image || "",
+        tags: typeof r.tags === 'string' ? JSON.parse(r.tags) : (r.tags || []),
+        ingredients: typeof r.ingredients === 'string' ? JSON.parse(r.ingredients) : (r.ingredients || []),
+        instructions: typeof r.instructions === 'string' ? JSON.parse(r.instructions) : (r.instructions || []),
+        credits: typeof r.credits === 'string' ? JSON.parse(r.credits) : (r.credits || { author: "", link: "" })
+      }));
 
-      displayRecipes(filteredRecipes); // Display only the filtered recipes
-    }
+      // Sort alphabetically
+      allRecipes.sort((a, b) => a.name.localeCompare(b.name));
 
+      displayRecipeNames(allRecipes);
+      displayRecipes(allRecipes);
 
-
-    // Function to trigger search with an empty input (show all recipes)
-    function searchForEmptyInput() {
-      const searchInputs = document.querySelectorAll('.search-input');
-      searchInputs.forEach(input => {
-        const searchTerm = input.value.trim().toLowerCase();
-        if (searchTerm === '') {
-          displayRecipes(allRecipes); // Show all recipes when input is empty
-        }
-      });
-    } 
-
-    function displayRecipes(recipes) {
-      const recipePage = document.querySelector('.recipe-page');
-      recipePage.innerHTML = ''; // Clear the page before displaying new results
-
-      if (recipes.length === 0) {
-        recipePage.innerHTML = `
-        <div style="text-align: center; margin-top: 5rem;">
-        <p style="font-weight: bold;">No recipes found matching the search criteria.</p>
-        <p style="font-weight: bold;">Try again!</p></div>`;      
-      } else {
-        recipes.forEach(recipe => {
-          const recipeEntry = document.createElement('div');
-          recipeEntry.className = 'entry';
-          recipeEntry.id = recipe.name.replace(/\s+/g, '-').toLowerCase(); // Set a unique id based on the recipe name
-
-          // Title
-          const h1 = document.createElement('h1');
-          h1.className = 'h1';
-          h1.textContent = recipe.name;
-          recipeEntry.appendChild(h1);
-
-          // Recipe container
-          const recipeContainer = document.createElement('div');
-          recipeContainer.className = 'recipe-container';
-
-          // Left side with image and ingredients
-          const containerLeft = document.createElement('div');
-          containerLeft.className = 'container-left';
-
-          // Image
-          const imageDiv = document.createElement('div');
-          imageDiv.className = 'image';
-          const img = document.createElement('img');
-          img.src = recipe.image;
-          img.alt = recipe.name;
-          imageDiv.appendChild(img);
-          containerLeft.appendChild(imageDiv);
-
-          // Ingredients
-          const ingredientsDiv = document.createElement('div');
-          ingredientsDiv.className = 'ingredients';
-          const ingredientsTitle = document.createElement('p');
-          ingredientsTitle.className = 'ingredients-title';
-          ingredientsTitle.textContent = 'Ingredients';
-          ingredientsDiv.appendChild(ingredientsTitle);
-
-          const servingsDiv = document.createElement('div');
-          servingsDiv.className = 'serving';
-          const servingsLabel = document.createElement('p');
-          servingsLabel.textContent = 'Servings:';
-          servingsDiv.appendChild(servingsLabel);
-
-          const servingsSelect = document.createElement('select');
-          servingsSelect.className = 'serving-dropdown';
-          for (let i = 1; i <= 8; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = i;
-            servingsSelect.appendChild(option);
-          }
-          servingsDiv.appendChild(servingsSelect);
-          ingredientsDiv.appendChild(servingsDiv);
-
-          servingsSelect.value = recipe.baseServings;
-
-          // Ingredients list
-          if (recipe.sections && recipe.sections.length > 0) {
-            recipe.sections.forEach(section => {
-              if (section.ingredients && section.ingredients.length > 0) {
-                const sectionTitle = document.createElement('p');
-                sectionTitle.className = 'section-title';
-                sectionTitle.textContent = section.name;
-                ingredientsDiv.appendChild(sectionTitle);
-
-                const ingredientsList = document.createElement('ul');
-                ingredientsList.className = 'ingredients-list';
-                section.ingredients.forEach(ingredient => {
-                  const li = document.createElement('li');
-                  li.setAttribute('data-base', ingredient.amount); // Store the base amount in a custom attribute
-                  li.textContent = `${ingredient.amount === 0 ? '' : ingredient.amount + ' ' + ingredient.unit} ${ingredient.name}`;
-                  ingredientsList.appendChild(li);
-                });
-                ingredientsDiv.appendChild(ingredientsList);
-              }
-            });
-          } else {
-            const ingredientsList = document.createElement('ul');
-            ingredientsList.className = 'ingredients-list';
-            recipe.ingredients.forEach(ingredient => {
-              const li = document.createElement('li');
-              li.setAttribute('data-base', ingredient.amount); // Store the base amount in a custom attribute
-              li.textContent = `${ingredient.amount === 0 ? '' : ingredient.amount + ' ' + ingredient.unit} ${ingredient.name}`;
-              ingredientsList.appendChild(li);
-            });
-            ingredientsDiv.appendChild(ingredientsList);
-          }
-
-          containerLeft.appendChild(ingredientsDiv);
-          recipeContainer.appendChild(containerLeft);
-
-          // Right side with instructions
-          const descriptionDiv = document.createElement('div');
-          descriptionDiv.className = 'description';
-
-          const instructionsTitle = document.createElement('p');
-          instructionsTitle.className = 'instructions-title';
-          instructionsTitle.textContent = 'Instructions';
-
-          const ol = document.createElement('ol');
-          ol.appendChild(instructionsTitle);
-
-          if (recipe.sections && recipe.sections.length > 0) {
-              recipe.sections.forEach(section => {
-                if (section.instructions && section.instructions.length > 0) {
-                  const sectionTitle = document.createElement('p');
-                  sectionTitle.className = 'section-title';
-                  sectionTitle.textContent = section.name;
-                  ol.appendChild(sectionTitle);
-
-                  section.instructions.forEach(instruction => {
-                      const li = document.createElement('li');
-                      li.textContent = instruction;
-                      ol.appendChild(li);
-                  });
-              }
+      // Attach search listeners
+      document.querySelectorAll('.search-input').forEach(input => {
+        input.addEventListener('input', e => {
+          selectedTags = [];
+          document.querySelectorAll('.recipe-tag').forEach(t => {
+            t.classList.remove('active');
+            t.style.backgroundColor = '';
+            t.style.color = '';
           });
-          } else {
-            recipe.instructions.forEach(instruction => {
-              const li = document.createElement('li');
-              li.innerHTML = instruction;
-              ol.appendChild(li);
-            });
-          }
-
-          descriptionDiv.appendChild(ol);
-          recipeContainer.appendChild(descriptionDiv);
-
-          // Credit section
-          const creditDiv = document.createElement('div');
-          creditDiv.className = 'credit';
-          const creditTitle = document.createElement('p');
-          creditTitle.textContent = 'Credits:';
-          creditDiv.appendChild(creditTitle);
-
-          if (recipe.credits.link) {
-            const creditLink = document.createElement('a');
-            creditLink.href = recipe.credits.link;
-            creditLink.textContent = `${recipe.name} - ${recipe.credits.author}`;
-            creditLink.target = '_blank'; // Open link in a new tab
-            creditDiv.appendChild(creditLink);
-          } else {
-            const creditText = document.createElement('span');
-            creditText.textContent = `${recipe.credits.author}`;
-            creditDiv.appendChild(creditText);
-          }
-
-          // Append the recipe container to the main entry
-          recipeEntry.appendChild(recipeContainer);
-          recipeEntry.appendChild(creditDiv);
-          recipePage.appendChild(recipeEntry);
-
-          // Attach event listener to update ingredients when servings are changed
-          servingsSelect.addEventListener('change', (event) => {
-            updateIngredients(event.target, recipe.baseServings);
-          });
-
-          updateIngredients(servingsSelect, recipe.baseServings); // Update ingredients on page load
+          filterRecipesBySearchTerm(input.value.trim().toLowerCase());
         });
-      }
-    }
-
-    // Function to filter recipes based on the search term
-    function filterRecipesBySearchTerm(searchTerm) {
-      const filteredRecipes = allRecipes.filter(recipe => {
-        // Check if any recipe name or tags match the search term
-        return recipe.name.toLowerCase().includes(searchTerm) || 
-               (recipe.tags && recipe.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
       });
 
-      displayRecipes(filteredRecipes); // Display only the filtered recipes
+    } catch (err) {
+      console.error("Failed to load recipes:", err);
+      recipePage.innerHTML = `<p style="color:red;">Error fetching recipes: ${err.message}</p>`;
+    }
+  }
+function displayRecipeNames(recipes) {
+  const recipeList = document.getElementById('recipe-list');
+  const recipeDd = document.getElementById('recipe-dd');
+  const tagsContainer = document.querySelector('.tags-container');
+  const tagsDdChild = document.getElementById('tags-dd-child');
+
+  recipeList.innerHTML = '';
+  recipeDd.innerHTML = '';
+  tagsContainer.innerHTML = '';
+  tagsDdChild.innerHTML = '';
+
+  let allTags = [];
+
+  // ---------- CREATE RECIPE LIST ----------
+  recipes.forEach(recipe => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+
+    a.href = `#${recipe.name.replace(/\s+/g,'-').toLowerCase()}`;
+    a.textContent = recipe.name;
+
+    // ✅ RESET FILTERS WHEN CLICKING RECIPE
+    a.addEventListener('click', () => {
+      selectedTags = [];
+
+      document.querySelectorAll('.recipe-tag').forEach(tag => {
+        tag.classList.remove('active');
+        tag.style.backgroundColor = '';
+        tag.style.color = '';
+      });
+
+      document.querySelectorAll('.search-input').forEach(input => input.value = '');
+
+      displayRecipes(allRecipes);
+
+      // optional UI reset
+      recipeDd.style.display = 'none';
+      tagsDd.style.display = 'none';
+      recipesBtn.style.backgroundColor = '';
+      recipesBtn.style.color = '';
+      tagsBtn.style.backgroundColor = '';
+      tagsBtn.style.color = '';
+    });
+
+    li.appendChild(a);
+    recipeList.appendChild(li);
+
+    // ⚠️ cloneNode does NOT copy event listeners → re-add click
+    const liClone = li.cloneNode(true);
+    const cloneLink = liClone.querySelector('a');
+
+    cloneLink.addEventListener('click', () => {
+      selectedTags = [];
+
+      document.querySelectorAll('.recipe-tag').forEach(tag => {
+        tag.classList.remove('active');
+        tag.style.backgroundColor = '';
+        tag.style.color = '';
+      });
+
+      document.querySelectorAll('.search-input').forEach(input => input.value = '');
+
+      displayRecipes(allRecipes);
+
+      recipeDd.style.display = 'none';
+      tagsDd.style.display = 'none';
+      recipesBtn.style.backgroundColor = '';
+      recipesBtn.style.color = '';
+      tagsBtn.style.backgroundColor = '';
+      tagsBtn.style.color = '';
+    });
+
+    recipeDd.appendChild(liClone);
+
+    // collect tags
+    recipe.tags.forEach(t => {
+      if (!allTags.includes(t)) allTags.push(t);
+    });
+  });
+
+  // ---------- TAG CREATOR ----------
+  function createTagElement(tag) {
+    const span = document.createElement('span');
+    span.classList.add('recipe-tag');
+    span.textContent = tag;
+
+    span.addEventListener('click', () => {
+      document.querySelectorAll('.search-input').forEach(input => input.value = '');
+
+      span.classList.toggle('active');
+
+      if (span.classList.contains('active')) {
+        span.style.backgroundColor = "#DDA15E";
+        span.style.color = "white";
+
+        if (!selectedTags.includes(tag.toLowerCase())) {
+          selectedTags.push(tag.toLowerCase());
+        }
+      } else {
+        span.style.backgroundColor = "";
+        span.style.color = "";
+
+        selectedTags = selectedTags.filter(t => t !== tag.toLowerCase());
+      }
+
+      filterRecipesBySelectedTags();
+    });
+
+    return span;
+  }
+
+  // ---------- CREATE TAGS ----------
+  allTags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+  allTags.forEach(tag => {
+    tagsContainer.appendChild(createTagElement(tag));
+    tagsDdChild.appendChild(createTagElement(tag));
+  });
+
+  // ---------- APPLY BUTTON ----------
+  const applyBtn = document.querySelector('.apply');
+  applyBtn.replaceWith(applyBtn.cloneNode(true)); // prevent duplicate listeners
+
+  document.querySelector('.apply').addEventListener('click', () => {
+    filterRecipesBySelectedTags();
+
+    tagsDd.style.display = 'none';
+    tagsBtn.style.backgroundColor = '';
+    tagsBtn.style.color = '';
+  });
+
+  // ---------- RESET BUTTON ----------
+  const resetBtn = document.querySelector('.reset-tag');
+  resetBtn.replaceWith(resetBtn.cloneNode(true)); // prevent duplicate listeners
+
+  document.querySelector('.reset-tag').addEventListener('click', () => {
+    selectedTags = [];
+
+    document.querySelectorAll('.recipe-tag').forEach(t => {
+      t.classList.remove('active');
+      t.style.backgroundColor = '';
+      t.style.color = '';
+    });
+
+    displayRecipes(allRecipes);
+  });
+}
+
+  function displayRecipes(recipes) {
+    const page = document.querySelector('.recipe-page');
+    page.innerHTML = '';
+    if (recipes.length === 0) {
+      page.innerHTML = `<p style="text-align:center;margin-top:2rem;">No recipes found.</p>`;
+      return;
     }
 
-    
+    recipes.forEach(recipe => {
+      const entry = document.createElement('div');
+      entry.className = 'entry';
+      entry.id = recipe.name.replace(/\s+/g, '-').toLowerCase();
 
-    // DROPDOWN menu -----------------------------------
-    // Recipes button
-    const recipesBtn = document.getElementById('recipes-btn');
-    const recipeDd = document.getElementById('recipe-dd');
+      const h1 = document.createElement('h1'); h1.textContent = recipe.name; entry.appendChild(h1);
 
-    // Tags button
-    const tagsBtn = document.getElementById('tags-btn');
-    const tagsDd = document.getElementById('tags-dd');
+      const left = document.createElement('div'); left.className='container-left';
+      const imgDiv = document.createElement('div'); imgDiv.className='image';
+      if(recipe.image) { const img = document.createElement('img'); img.src=recipe.image; img.alt=recipe.name; imgDiv.appendChild(img); }
+      left.appendChild(imgDiv);
 
-    // Add an event listener to the button
-    recipesBtn.addEventListener('click', () => {
-      if (recipeDd.style.display === 'none' || recipeDd.style.display === '') {
-        recipeDd.style.display = 'flex';
-        recipesBtn.style.backgroundColor = "#DDA15E";
-        recipesBtn.style.color = "white";
-        tagsDd.style.display = 'none';
-        tagsBtn.style.backgroundColor = '';
-        tagsBtn.style.color = ''// Show the div as flex
+      const ingDiv = document.createElement('div'); ingDiv.className='ingredients';
+      const ingTitle = document.createElement('p'); ingTitle.className='ingredients-title'; ingTitle.textContent='Ingredients';
+      ingDiv.appendChild(ingTitle);
 
+      const servingsDiv = document.createElement('div'); servingsDiv.className='serving';
+      const servingsLabel = document.createElement('p'); servingsLabel.textContent='Servings:';
+      const servingsSelect = document.createElement('select');
+      for(let i=1;i<=8;i++){ const opt=document.createElement('option'); opt.value=i; opt.textContent=i; servingsSelect.appendChild(opt);}
+      servingsSelect.value = recipe.baseServings;
+      servingsDiv.appendChild(servingsLabel); servingsDiv.appendChild(servingsSelect); ingDiv.appendChild(servingsDiv);
 
-        const searchInputs = document.querySelectorAll('.search-input');
-          searchInputs.forEach(input => {
-            input.value = ''; // Clear the input field
-          });
-        searchForEmptyInput();
+      const ul = document.createElement('ul'); 
+      ul.className = 'ingredients-list';
 
+      recipe.ingredients.forEach(ing => {
+        const li = document.createElement('li');
+        li.setAttribute('data-base', ing.amount);
+        li.dataset.name = ing.name;   // store name
+        li.dataset.unit = ing.unit;   // store unit
 
+        // Display initially
+        li.textContent = ing.amount > 0 
+            ? `${ing.amount} ${ing.unit} ${ing.name}`.trim() 
+            : ing.name;
 
+        ul.appendChild(li);
+      });
+
+      ingDiv.appendChild(ul); left.appendChild(ingDiv);
+
+      const right = document.createElement('div'); right.className='description';
+      const instTitle = document.createElement('p'); instTitle.className = 'instructions-title'; instTitle.textContent='Instructions';
+      const ol = document.createElement('ol');
+      recipe.instructions.forEach(step=>{ const li=document.createElement('li'); li.textContent=step; ol.appendChild(li);});
+      right.appendChild(instTitle); right.appendChild(ol);
+
+      const credit = document.createElement('div'); credit.className='credit';
+      const creditP = document.createElement('p'); creditP.textContent='Credits:'; credit.appendChild(creditP);
+      if(recipe.credits.link){ const a=document.createElement('a'); a.href=recipe.credits.link; a.target='_blank'; a.textContent=recipe.credits.author; credit.appendChild(a);}
+      else { const span=document.createElement('span'); span.textContent=recipe.credits.author; credit.appendChild(span);}
+
+      const container = document.createElement('div'); container.className='recipe-container';
+      container.appendChild(left); container.appendChild(right);
+
+      entry.appendChild(container); entry.appendChild(credit); page.appendChild(entry);
+
+      servingsSelect.addEventListener('change', e=>updateIngredients(e.target, recipe.baseServings));
+      updateIngredients(servingsSelect, recipe.baseServings);
+    });
+  }
+
+  function updateIngredients(select, baseServings){
+    const entry = select.closest('.entry');
+    const ulList = entry.querySelectorAll('.ingredients-list li');
+    const servings = parseInt(select.value);
+
+    ulList.forEach(li => {
+      const baseAmount = parseFloat(li.getAttribute('data-base'));
+      const updatedAmount = parseFloat((baseAmount * (servings / baseServings)).toFixed(2));
+
+      // Get ingredient name and unit from li.dataset
+      const name = li.dataset.name || li.textContent.trim();
+      const unit = li.dataset.unit || '';
+
+      // Display ingredient
+      li.textContent = updatedAmount > 0
+        ? `${updatedAmount} ${unit} ${name}`.trim()
+        : name;
+    });
+  }
+
+  function filterRecipesBySelectedTags(){
+    if(selectedTags.length===0) displayRecipes(allRecipes);
+    else {
+      const filtered = allRecipes.filter(r=>selectedTags.every(t=>r.tags.map(tt=>tt.toLowerCase()).includes(t)));
+      displayRecipes(filtered);
+    }
+  }
+
+  function filterRecipesBySearchTerm(term){
+    if(term==='') displayRecipes(allRecipes);
+    else {
+      const filtered = allRecipes.filter(r=>{
+        return r.name.toLowerCase().includes(term) || r.tags.some(t=>t.toLowerCase().includes(term));
+      });
+      displayRecipes(filtered);
+    }
+  }
+
+  // -------------------- Initialize --------------------
+// -------------------- Initialize --------------------
+window.addEventListener('load', () => {
+  loadRecipes();
+
+  // ---------- Recipes dropdown ----------
+  recipesBtn.addEventListener('click', () => {
+    if (recipeDd.style.display === 'none' || recipeDd.style.display === '') {
+      recipeDd.style.display = 'flex';
+      recipesBtn.style.backgroundColor = "#DDA15E";
+      recipesBtn.style.color = "white";
+
+      tagsDd.style.display = 'none';
+      tagsBtn.style.backgroundColor = '';
+      tagsBtn.style.color = '';
+
+      document.querySelectorAll('.search-input').forEach(input => input.value = '');
+      filterRecipesBySearchTerm('');
+    } else {
+      recipeDd.style.display = 'none';
+      recipesBtn.style.backgroundColor = '';
+      recipesBtn.style.color = '';
+    }
+  });
+
+  // ---------- Tags dropdown ----------
+  tagsBtn.addEventListener('click', () => {
+    if (tagsDd.style.display === 'none' || tagsDd.style.display === '') {
+      tagsDd.style.display = 'flex';
+      tagsBtn.style.backgroundColor = "#DDA15E";
+      tagsBtn.style.color = "white";
+
+      recipeDd.style.display = 'none';
+      recipesBtn.style.backgroundColor = '';
+      recipesBtn.style.color = '';
+
+      // Reset search if no tags selected
+      if (selectedTags.length === 0) {
+        document.querySelectorAll('.search-input').forEach(input => input.value = '');
+        displayRecipes(allRecipes);
+      }
+    } else {
+      tagsDd.style.display = 'none';
+      tagsBtn.style.backgroundColor = '';
+      tagsBtn.style.color = '';
+    }
+  });
+
+  // ---------- Search button logic ----------
+  const searchButtons = document.querySelectorAll('#search-btn');
+
+  searchButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.parentElement.querySelector('.search-input');
+      const value = input.value.trim().toLowerCase();
+
+      // Always reset tags when searching
+      selectedTags = [];
+      document.querySelectorAll('.recipe-tag').forEach(tag => {
+        tag.classList.remove('active');
+        tag.style.backgroundColor = '';
+        tag.style.color = '';
+      });
+
+      if (value === '') {
+        // Empty search → show all recipes
+        displayRecipes(allRecipes);
       } else {
-        recipeDd.style.display = 'none'; 
-        recipesBtn.style.backgroundColor = '';
-        recipesBtn.style.color = ''// Show the div as flex
+        filterRecipesBySearchTerm(value);
+      }
+
+      // Optional UI reset
+      recipeDd.style.display = 'none';
+      tagsDd.style.display = 'none';
+      recipesBtn.style.backgroundColor = '';
+      recipesBtn.style.color = '';
+      tagsBtn.style.backgroundColor = '';
+      tagsBtn.style.color = '';
+    });
+  });
+
+  // ---------- Optional: trigger search on Enter ----------
+  document.querySelectorAll('.search-input').forEach(input => {
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const btn = input.parentElement.querySelector('#search-btn');
+        btn.click();
       }
     });
+  });
+});
 
 
-    // Add an event listener to the button
-    tagsBtn.addEventListener('click', () => {
-      if (tagsDd.style.display === 'none' || tagsDd.style.display === '') {
-        tagsDd.style.display = 'flex';
-        tagsBtn.style.backgroundColor = "#DDA15E";
-        tagsBtn.style.color = "white";
-        recipeDd.style.display = 'none'; 
-        recipesBtn.style.backgroundColor = '';
-        recipesBtn.style.color = ''// Show the div as flex
+</script>
 
-        if(selectedTags.length === 0){
-          const searchInputs = document.querySelectorAll('.search-input');
-            searchInputs.forEach(input => {
-              input.value = ''; // Clear the input field
-            });
-          searchForEmptyInput();
-        }
+<!-- Add Recipe Button -->
+<a href="recipeform.html" id="add-recipe-btn" title="Add Recipe">+</a>
 
-      } else {
-        tagsDd.style.display = 'none'; 
-        tagsBtn.style.backgroundColor = '';
-        tagsBtn.style.color = ''// Show the div as flex
-      }
-    });
-
-
-    window.onload = loadRecipes;
-
-    // After your page has loaded content dynamically, check for hash and scroll to the target section
-    window.addEventListener('load', function () {
-        // Check if the URL contains a hash
-        if (window.location.hash) {
-            // Use scrollIntoView to scroll to the target element
-            const target = document.querySelector(window.location.hash);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' }); // Scroll smoothly to the target element
-            }
-        }
-    });
-
-  </script>
 </body>
 </html>

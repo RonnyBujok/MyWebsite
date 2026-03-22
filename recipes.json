@@ -90,296 +90,161 @@
       },
       
 
-      {
-        "name": "Pierogi Ruskie (Dumplings with potatoes and quark)",
-        "tags":["pierogi", "flour","dough","potato","cheese","quark","twarog","dumplings","Polish","onion","creme fraiche","bacon","vegetarian","ruskie"],
-        "baseServings": 4,
-        "image": "images/food/pierogi_ruskie.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 500, "unit": "g"},
-              {"name": "(warm) water", "amount": 280, "unit": "ml"},
-              {"name": "salt", "amount": 1, "unit": "tbsp"},
-              {"name": "oil", "amount": 1, "unit": "tbsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "potatoes", "amount": 1, "unit": "kg"},
-              {"name": "twaróg (Polish quark)", "amount": 500, "unit": "g"},
-              {"name": "onions", "amount": 2, "unit": ""},
-              {"name": "salt and pepper", "amount": 0, "unit": ""}
-            ],
-            "instructions": [
-              "Boil the potatoes and mash them. Fry the onion until golden brown. Add to the potatoes and mix it well.",
-              "Add the twaróg (or quark) and mix it well. Add salt and pepper to taste."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
-
-      {
-        "name": "Pierogi with cabbage and mushrooms",
-        "tags":["pierogi", "flour","dough","mushrooms","cabbage","sauerkraut","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
-        "baseServings": 4,
-        "image": "images/food/pierogi_cabbage.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 500, "unit": "g"},
-              {"name": "(warm) water", "amount": 280, "unit": "ml"},
-              {"name": "salt", "amount": 1, "unit": "tbsp"},
-              {"name": "oil", "amount": 1, "unit": "tbsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "sauerkraut", "amount": 500, "unit": "g"},
-              {"name": "mushrooms", "amount": 500, "unit": "g"},
-              {"name": "onions", "amount": 2, "unit": ""},
-              {"name": "salt and pepper", "amount": 0, "unit": ""}
-            ],
-            "instructions": [
-              "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown.",
-              "Cut the sauerkraut in smaller pieces and add to the pan. Briefly fry until sauerkraut softens. Add salt and pepper to taste."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
-
-      {
-        "name": "Pierogi with Spinach and Feta",
-        "tags":["pierogi", "flour","dough","spinach","feta","dumplings","Polish","creme fraiche","bacon","vegetarian","boullion"],
-        "baseServings": 4,
-        "image": "images/food/pierogi_spinach.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 500, "unit": "g"},
-              {"name": "(warm) water", "amount": 280, "unit": "ml"},
-              {"name": "salt", "amount": 1, "unit": "tsp"},
-              {"name": "oil", "amount": 1, "unit": "tsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "spinach", "amount": 500, "unit": "g"},
-              {"name": "feta", "amount": 250, "unit": "g"},
-              {"name": "boullion", "amount": 1, "unit": "cube"}
-            ],
-            "instructions": [
-              "Fry the spinach till it shrinks and softens. Crumble the boullion cube and add it to the spinach. Add small feta cubes and mix well."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
-
-      {
-        "name": "Pierogi with Apple and Cinnamon",
-        "tags":["pierogi", "flour","dough","sweet","apple","dessert", "cinnamon","dumplings","Polish","cream","bacon","vegetarian"],
-        "baseServings": 4,
-        "image": "images/food/pierogi_apple.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 500, "unit": "g"},
-              {"name": "(warm) water", "amount": 280, "unit": "ml"},
-              {"name": "salt", "amount": 1, "unit": "tsp"},
-              {"name": "oil", "amount": 1, "unit": "tsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "apples", "amount": 4, "unit": ""},
-              {"name": "cinnamon", "amount": 0, "unit": ""}
-            ],
-            "instructions": [
-              "Grate the apples and fry them until soft. Add the cinnamon."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
-
-      {
-        "name": "Pierogi with mushrooms",
-        "tags":["pierogi", "flour","dough","mushrooms","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
-        "baseServings": 2,
-        "image": "images/food/pierogi_mushroom.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 250, "unit": "g"},
-              {"name": "(warm) water", "amount": 140, "unit": "ml"},
-              {"name": "salt", "amount": 0.5, "unit": "tsp"},
-              {"name": "oil", "amount": 0.5, "unit": "tsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "mushrooms", "amount": 500, "unit": "g"},
-              {"name": "onions", "amount": 2, "unit": ""},
-              {"name": "salt and pepper", "amount": 0, "unit": ""}
-            ],
-            "instructions": [
-              "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown. Add salt and pepper to taste."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
-
-      {
-        "name": "Pierogi with beetroot",
-        "tags":["pierogi", "flour","dough","beetroot","cheese","ricotta","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
-        "baseServings": 2,
-        "image": "images/food/pierogi_beetroot.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
-            "ingredients": [
-              {"name": "flour", "amount": 250, "unit": "g"},
-              {"name": "(warm) water", "amount": 140, "unit": "ml"},
-              {"name": "salt", "amount": 0.5, "unit": "tsp"},
-              {"name": "oil", "amount": 0.5, "unit": "tsp"}
-            ],
-            "instructions": [
-              "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
-              "Let it rest for at least 10 minutes",
-              "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass"
-            ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
-              {"name": "beetroot (cooked)", "amount": 500, "unit": "g"},
-              {"name": "ricotta", "amount": 100, "unit": "g"},
-              {"name": "salt and pepper", "amount": 0, "unit": ""}
-            ],
-            "instructions": [
-              "Cook the beetroot and grate it. Add the ricotta and then add salt and pepper to taste."
-            ]
-          },
-          {
-            "name": "General:",
-            "ingredients": [
-            ],
-            "instructions": [
-              "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
-              "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
-              "Optional: fry the dumplings in a pan after boiling to make them crispy."
-            ]
-          }
-        ],
-        "credits": {
-          "author": "Ronny Bujok",
-          "link": ""
-        }
-      },
+     
+  {
+    "name": "Pierogi Ruskie (Dumplings with potatoes and quark)",
+    "tags": ["pierogi","flour","dough","potato","cheese","quark","twarog","dumplings","Polish","onion","creme fraiche","bacon","vegetarian","ruskie"],
+    "baseServings": 4,
+    "image": "images/food/pierogi_ruskie.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 500, "unit": "g"},
+      {"name": "(warm) water", "amount": 280, "unit": "ml"},
+      {"name": "salt", "amount": 1, "unit": "tbsp"},
+      {"name": "oil", "amount": 1, "unit": "tbsp"},
+      {"name": "potatoes", "amount": 1, "unit": "kg"},
+      {"name": "twaróg (Polish quark)", "amount": 500, "unit": "g"},
+      {"name": "onions", "amount": 2, "unit": ""},
+      {"name": "salt and pepper", "amount": 0, "unit": ""}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Boil the potatoes and mash them. Fry the onion until golden brown. Add to the potatoes and mix it well.",
+      "Add the twaróg (or quark) and mix it well. Add salt and pepper to taste.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  },
+  {
+    "name": "Pierogi with cabbage and mushrooms",
+    "tags": ["pierogi","flour","dough","mushrooms","cabbage","sauerkraut","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+    "baseServings": 4,
+    "image": "images/food/pierogi_cabbage.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 500, "unit": "g"},
+      {"name": "(warm) water", "amount": 280, "unit": "ml"},
+      {"name": "salt", "amount": 1, "unit": "tbsp"},
+      {"name": "oil", "amount": 1, "unit": "tbsp"},
+      {"name": "sauerkraut", "amount": 500, "unit": "g"},
+      {"name": "mushrooms", "amount": 500, "unit": "g"},
+      {"name": "onions", "amount": 2, "unit": ""},
+      {"name": "salt and pepper", "amount": 0, "unit": ""}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown. Add salt and pepper to taste.",
+      "Cut the sauerkraut in smaller pieces and add to the pan. Briefly fry until sauerkraut softens. Add salt and pepper to taste.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  },
+  {
+    "name": "Pierogi with Spinach and Feta",
+    "tags": ["pierogi","flour","dough","spinach","feta","dumplings","Polish","creme fraiche","bacon","vegetarian","boullion"],
+    "baseServings": 4,
+    "image": "images/food/pierogi_spinach.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 500, "unit": "g"},
+      {"name": "(warm) water", "amount": 280, "unit": "ml"},
+      {"name": "salt", "amount": 1, "unit": "tsp"},
+      {"name": "oil", "amount": 1, "unit": "tsp"},
+      {"name": "spinach", "amount": 500, "unit": "g"},
+      {"name": "feta", "amount": 250, "unit": "g"},
+      {"name": "boullion", "amount": 1, "unit": "cube"}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Fry the spinach till it shrinks and softens. Crumble the boullion cube and add it to the spinach. Add small feta cubes and mix well.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  },
+  {
+    "name": "Pierogi with Apple and Cinnamon",
+    "tags": ["pierogi","flour","dough","sweet","apple","dessert","cinnamon","dumplings","Polish","cream","bacon","vegetarian"],
+    "baseServings": 4,
+    "image": "images/food/pierogi_apple.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 500, "unit": "g"},
+      {"name": "(warm) water", "amount": 280, "unit": "ml"},
+      {"name": "salt", "amount": 1, "unit": "tsp"},
+      {"name": "oil", "amount": 1, "unit": "tsp"},
+      {"name": "apples", "amount": 4, "unit": ""},
+      {"name": "cinnamon", "amount": 0, "unit": ""}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Grate the apples and fry them until soft. Add the cinnamon.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  },
+  {
+    "name": "Pierogi with mushrooms",
+    "tags": ["pierogi","flour","dough","mushrooms","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+    "baseServings": 2,
+    "image": "images/food/pierogi_mushroom.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 250, "unit": "g"},
+      {"name": "(warm) water", "amount": 140, "unit": "ml"},
+      {"name": "salt", "amount": 0.5, "unit": "tsp"},
+      {"name": "oil", "amount": 0.5, "unit": "tsp"},
+      {"name": "mushrooms", "amount": 500, "unit": "g"},
+      {"name": "onions", "amount": 2, "unit": ""},
+      {"name": "salt and pepper", "amount": 0, "unit": ""}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Fry the mushrooms in a dry pan until all moisture evaporates. Add oil and onions and fry the onion until golden brown. Add salt and pepper to taste.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  },
+  {
+    "name": "Pierogi with beetroot",
+    "tags": ["pierogi","flour","dough","beetroot","cheese","ricotta","dumplings","Polish","onion","creme fraiche","bacon","vegetarian"],
+    "baseServings": 2,
+    "image": "images/food/pierogi_beetroot.jpg",
+    "ingredients": [
+      {"name": "flour", "amount": 250, "unit": "g"},
+      {"name": "(warm) water", "amount": 140, "unit": "ml"},
+      {"name": "salt", "amount": 0.5, "unit": "tsp"},
+      {"name": "oil", "amount": 0.5, "unit": "tsp"},
+      {"name": "beetroot (cooked)", "amount": 500, "unit": "g"},
+      {"name": "ricotta", "amount": 100, "unit": "g"},
+      {"name": "salt and pepper", "amount": 0, "unit": ""}
+    ],
+    "instructions": [
+      "Add flour, water, salt and oil into a bowl and knead the dough until it is elastic and smooth.",
+      "Let it rest for at least 10 minutes",
+      "Roll the dough out flat, sprinkle a bit with flour so it doesn't stick and cut out circles with a glass",
+      "Cook the beetroot and grate it. Add the ricotta and then add salt and pepper to taste.",
+      "Scoop roughly a teaspoon of the filling into the cut out dough circles, fold the dough over and press the edges together to seal.",
+      "Boil the dumplings in salted water until they float to the surface. Serve with créme fraiche or fried onions if desired.",
+      "Optional: fry the dumplings in a pan after boiling to make them crispy."
+    ],
+    "credits": {"author": "Ronny Bujok", "link": ""}
+  }
+,
 
       {
         "name": "Fasolka po Bretońsku (bean stew) - vegetarian",

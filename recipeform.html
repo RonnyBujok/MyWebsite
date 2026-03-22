@@ -107,88 +107,112 @@
     </div>
     
     <div class="jsonbuttonparent">
-    <button class="jsonbutton" type="submit">Generate JSON</button>
+    <button class="jsonbutton" type="submit">Save</button>
     </div>
-  <h2>Generated JSON</h2>
+  <!-- <h2>Generated JSON</h2>
   <pre id="output" style="background: #f0f0f0; padding: 10px;"></pre>
   
 <div class="jsonbuttonparent" style="margin-top: 10px;">
   <button class="jsonbutton" type="button" onclick="copyJSON()">Copy JSON to Clipboard</button>
-</div>
+</div> -->
 
   </form>
 
 
 
-  <script>
-    const ingredientsDiv = document.getElementById("ingredients");
-    const instructionsDiv = document.getElementById("instructions");
+  <!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    function addIngredient() {
-        const div = document.createElement("div");
-        div.className = "ingredient";
-        div.innerHTML = `
-        <input type="text" placeholder="Name" class="ing-name" required>
-        <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
-        <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
-        <button type="button" onclick="this.parentNode.remove()">x</button>
-        `;
-        ingredientsDiv.appendChild(div);
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  const ingredientsDiv = document.getElementById("ingredients");
+  const instructionsDiv = document.getElementById("instructions");
+
+  const supabase = window.supabase.createClient(
+    "https://oqzceuesqnkmdbsgttcl.supabase.co",  // 🔴 REPLACE with your URL
+    "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN" // 🔴 REPLACE with your anon key
+  );
+
+  function addIngredient() {
+    const div = document.createElement("div");
+    div.className = "ingredient";
+    div.innerHTML = `
+      <input type="text" placeholder="Name" class="ing-name" required>
+      <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
+      <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
+      <button type="button" onclick="this.parentNode.remove()">x</button>
+    `;
+    ingredientsDiv.appendChild(div);
+  }
+
+  function addStep() {
+    const div = document.createElement("div");
+    div.className = "step";
+    div.innerHTML = `
+      <textarea placeholder="Step" class="step-text" required></textarea>
+      <button type="button" onclick="this.parentNode.remove()">x</button>
+    `;
+    instructionsDiv.appendChild(div);
+  }
+
+  // Add one ingredient and step by default
+  addIngredient();
+  addStep();
+
+  // ✅ Make the submit handler async so we can use await
+  document.getElementById("recipeForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    const form = e.target;
+
+    const ingredients = Array.from(document.querySelectorAll(".ingredient")).map(div => ({
+      name: div.querySelector(".ing-name").value,
+      amount: Number(div.querySelector(".ing-amount").value) || 0, // default 0
+      unit: div.querySelector(".ing-unit").value
+    }));
+
+    // Combine manual tags + ingredient names
+    const manualTags = form.tags.value.split(",").map(t => t.trim()).filter(Boolean);
+    const ingredientTags = ingredients.map(i => i.name.trim()).filter(Boolean);
+    const tags = Array.from(new Set([...manualTags, ...ingredientTags]));
+
+    // Force image path to start with "images/"
+    let imagePath = form.image.value.trim();
+    if (!imagePath.startsWith("images/food/") && imagePath !== "") {
+      imagePath = `images/${imagePath}`;
     }
 
-    function addStep() {
-        const div = document.createElement("div");
-        div.className = "step";
-        div.innerHTML = `
-        <textarea placeholder="Step" class="step-text" required></textarea>
-        <button type="button" onclick="this.parentNode.remove()">x</button>
-        `;
-        instructionsDiv.appendChild(div);
+    const recipe = {
+      name: form.name.value,
+      tags: tags,
+      baseServings: Number(form.baseServings.value),
+      image: imagePath,
+      ingredients: ingredients,
+      instructions: Array.from(document.querySelectorAll(".step")).map(div => div.querySelector(".step-text").value),
+      credits: {
+        author: form.author.value,
+        link: form.link.value
+      }
+    };
+
+    // // Output only the single recipe JSON
+    // const output = document.getElementById("output");
+    // output.textContent = JSON.stringify(recipe, null, 2);
+
+    // 🔹 Insert into Supabase
+    const { error } = await supabase.from("recipes").insert([recipe]);
+
+    if (error) {
+      console.error("Supabase insert failed:", error);
+      alert("Failed to save to Supabase");
+    } else {
+      alert("Saved to Supabase!");
     }
+  });
 
-    // Add one ingredient and step by default
-    addIngredient();
-    addStep();
-
-    document.getElementById("recipeForm").addEventListener("submit", function(e) {
-        e.preventDefault();
-        const form = e.target;
-
-        const ingredients = Array.from(document.querySelectorAll(".ingredient")).map(div => ({
-        name: div.querySelector(".ing-name").value,
-        amount: Number(div.querySelector(".ing-amount").value) || 0, // default 0
-        unit: div.querySelector(".ing-unit").value
-        }));
-
-        // Combine manual tags + ingredient names
-        const manualTags = form.tags.value.split(",").map(t => t.trim()).filter(Boolean);
-        const ingredientTags = ingredients.map(i => i.name.trim()).filter(Boolean);
-        const tags = Array.from(new Set([...manualTags, ...ingredientTags]));
-
-        // Force image path to start with "images/"
-        let imagePath = form.image.value.trim();
-        if (!imagePath.startsWith("images/food/") && imagePath !== "") {
-        imagePath = `images/${imagePath}`;
-        }
-
-        const recipe = {
-        name: form.name.value,
-        tags: tags,
-        baseServings: Number(form.baseServings.value),
-        image: imagePath,
-        ingredients: ingredients,
-        instructions: Array.from(document.querySelectorAll(".step")).map(div => div.querySelector(".step-text").value),
-        credits: {
-            author: form.author.value,
-            link: form.link.value
-        }
-        };
-
-        // Output only the single recipe JSON
-        const output = document.getElementById("output");
-        output.textContent = JSON.stringify(recipe, null, 2);
-    });
-    </script>
+});
+</script>
 
 
 

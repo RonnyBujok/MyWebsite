@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Import Recipes</title>
+</head>
+<body>
+  <h1>Importing recipes to Supabase (run once)</h1>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://oqzceuesqnkmdbsgttcl.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN";
+
+    const supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function importRecipesOnce() {
+      try {
+        // Fetch your JSON
+        const response = await fetch("recipes.json");
+        const data = await response.json();
+
+        // Fetch existing recipe names to avoid duplicates
+        const { data: existingRecipes, error: fetchError } = await supa
+          .from("recipes")
+          .select("name");
+
+        if (fetchError) throw fetchError;
+
+        const existingNames = existingRecipes.map(r => r.name.toLowerCase());
+
+        // Insert recipes that don't exist yet
+        for (let recipe of data.recipes) {
+          if (existingNames.includes(recipe.name.toLowerCase())) {
+            console.log("Skipping already imported:", recipe.name);
+            continue;
+          }
+
+          const { error } = await supa.from("recipes").insert([{
+            name: recipe.name,
+            baseServings: recipe.baseServings,
+            image: recipe.image || "",
+            tags: Array.isArray(recipe.tags) ? recipe.tags : [],
+            ingredients: Array.isArray(recipe.ingredients) ? recipe.ingredients : [],
+            instructions: Array.isArray(recipe.instructions) ? recipe.instructions : [],
+            credits: recipe.credits || { author: "", link: "" }
+          }]);
+
+          if (error) console.error("Failed:", recipe.name, error);
+          else console.log("Inserted:", recipe.name);
+        }
+
+        console.log("Import completed!");
+      } catch (err) {
+        console.error("Import failed:", err);
+      }
+    }
+
+    // Run only once
+    importRecipesOnce();
+  </script>
+</body>
+</html>
