@@ -307,11 +307,12 @@ hr {
     padding: 0 8px;
     background-color: rgb(255, 88, 88);
     border-radius: 5px;
-    border-color: red;  
+    /* border-color: red;   */
+    border-style: none;
 }
 
   .ingredient button:hover {
-    background-color: rgb(252, 116, 116);
+    /* background-color: rgb(252, 116, 116); */
         transition: 200ms;
     box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
 
@@ -366,7 +367,9 @@ hr {
     padding: 0 8px;
     background-color: rgb(255, 88, 88);
     border-radius: 5px;
-    border-color: red;  
+        border-style: none;
+
+    /* border-color: red;   */
 }
 
   .step button:hover {
