@@ -87,12 +87,15 @@
     <hr>
     <h3>Ingredients</h3>
     <div id="ingredients"></div>
-    <button class="addbutton" type="button" onclick="addIngredient()">Add Ingredient</button>
+    <button class="addbutton" type="button" id="addIngredientBtn">Add Ingredient</button>
+    <!-- <button class="addbutton" type="button" onclick="addIngredient()">Add Ingredient</button> -->
     <hr>
 
     <h3>Instructions</h3>
     <div id="instructions"></div>
-    <button class="addbutton" type="button" onclick="addStep()">Add Step</button>
+    <!-- <button class="addbutton" type="button" onclick="addStep()">Add Step</button> -->
+    <button class="addbutton" type="button" id="addStepBtn">Add Step</button>
+
     <hr>
 
     <h3>Credits</h3>
@@ -122,19 +125,22 @@
 
   <!-- SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
   const ingredientsDiv = document.getElementById("ingredients");
   const instructionsDiv = document.getElementById("instructions");
+  const addIngredientBtn = document.getElementById("addIngredientBtn");
+  const addStepBtn = document.getElementById("addStepBtn");
+  const recipeForm = document.getElementById("recipeForm");
 
+  // Initialize Supabase client
   const supabase = window.supabase.createClient(
-    "https://oqzceuesqnkmdbsgttcl.supabase.co",  // 🔴 REPLACE with your URL
-    "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN" // 🔴 REPLACE with your anon key
+    "https://oqzceuesqnkmdbsgttcl.supabase.co",
+    "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN"
   );
 
+  // -------------------- Functions --------------------
   function addIngredient() {
     const div = document.createElement("div");
     div.className = "ingredient";
@@ -142,9 +148,12 @@ document.addEventListener("DOMContentLoaded", function() {
       <input type="text" placeholder="Name" class="ing-name" required>
       <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
       <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
-      <button type="button" onclick="this.parentNode.remove()">x</button>
+      <button type="button" class="remove-btn">x</button>
     `;
     ingredientsDiv.appendChild(div);
+
+    // Remove button
+    div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
   }
 
   function addStep() {
@@ -152,34 +161,29 @@ document.addEventListener("DOMContentLoaded", function() {
     div.className = "step";
     div.innerHTML = `
       <textarea placeholder="Step" class="step-text" required></textarea>
-      <button type="button" onclick="this.parentNode.remove()">x</button>
+      <button type="button" class="remove-btn">x</button>
     `;
     instructionsDiv.appendChild(div);
+
+    // Remove button
+    div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
   }
 
-  // Add one ingredient and step by default
-  addIngredient();
-  addStep();
-
-  // ✅ Make the submit handler async so we can use await
-  document.getElementById("recipeForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    const form = e.target;
+  function gatherFormData() {
+    const form = recipeForm;
 
     const ingredients = Array.from(document.querySelectorAll(".ingredient")).map(div => ({
       name: div.querySelector(".ing-name").value,
-      amount: Number(div.querySelector(".ing-amount").value) || 0, // default 0
+      amount: Number(div.querySelector(".ing-amount").value) || 0,
       unit: div.querySelector(".ing-unit").value
     }));
 
-    // Combine manual tags + ingredient names
     const manualTags = form.tags.value.split(",").map(t => t.trim()).filter(Boolean);
     const ingredientTags = ingredients.map(i => i.name.trim()).filter(Boolean);
     const tags = Array.from(new Set([...manualTags, ...ingredientTags]));
 
-    // Force image path to start with "images/"
     let imagePath = form.image.value.trim();
-    if (!imagePath.startsWith("images/food/") && imagePath !== "") {
+    if (imagePath && !imagePath.startsWith("images/food/")) {
       imagePath = `images/${imagePath}`;
     }
 
@@ -196,20 +200,37 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     };
 
-    // // Output only the single recipe JSON
-    // const output = document.getElementById("output");
-    // output.textContent = JSON.stringify(recipe, null, 2);
+    return recipe;
+  }
 
-    // 🔹 Insert into Supabase
+  async function saveRecipe(recipe) {
     const { error } = await supabase.from("recipes").insert([recipe]);
-
     if (error) {
       console.error("Supabase insert failed:", error);
       alert("Failed to save to Supabase");
     } else {
       alert("Saved to Supabase!");
+      recipeForm.reset();
+      ingredientsDiv.innerHTML = "";
+      instructionsDiv.innerHTML = "";
+      addIngredient();
+      addStep();
     }
+  }
+
+  // -------------------- Event Listeners --------------------
+  addIngredientBtn.addEventListener("click", addIngredient);
+  addStepBtn.addEventListener("click", addStep);
+
+  recipeForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const recipe = gatherFormData();
+    await saveRecipe(recipe);
   });
+
+  // Add one ingredient and step by default
+  addIngredient();
+  addStep();
 
 });
 </script>
