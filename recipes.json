@@ -486,9 +486,6 @@
         "tags":["sernik", "flour","dough","cheesecake","vegetarian","cake","dessert","cacao","butter","twarog","quark","eggs","vanilla","Polish"],
         "baseServings": 8,
         "image": "images/food/sernik-krolewski.jpg",
-        "sections": [
-          {
-            "name": "Dough:",
             "ingredients": [
               {"name": "flour", "amount": 400, "unit": "g"},
               {"name": "sugar", "amount": 225, "unit": "g"},
@@ -496,14 +493,7 @@
               {"name": "butter", "amount": 250, "unit": "g"},
               {"name": "twaróg (Polish quark)", "amount": 3, "unit": "tbsp"},
               {"name": "baking powder", "amount": 1, "unit": "sachet"},
-              {"name": "egg yolk", "amount": 4, "unit": ""}
-            ],
-            "instructions": [
-             ]
-          },
-          {
-            "name": "Filling:",
-            "ingredients": [
+              {"name": "egg yolk", "amount": 4, "unit": ""},
               {"name": "twaróg (Polish quark)", "amount": 1, "unit": "kg"},
               {"name": "sugar", "amount": 200, "unit": "g"},
               {"name": "butter", "amount": 250, "unit": "g"},
@@ -513,21 +503,12 @@
               {"name": "vanilla sugar", "amount": 1, "unit": "sachet"}
             ],
             "instructions": [
-            ]
-          },
-          {
-            "name": "",
-            "ingredients": [
-            ],
-            "instructions": [
               "Take the ingredients for the dough and mix them together. Knead it until you get an even dought. Tip: it works best with room temperature butter.",
               "For the filling take all 9 egg egg whites and beat them up till they foam up and become stiff. Take the remaining ingredients and mix them together. Finally, add the egg white foam and gently mix it in with the rest.",
               "Take half of the dough and roll it out flat on your (deep) baking tray or cake dish. Spread out the filling on top. Next crumble the rest of the dough on top of the filling.",
               "Preheat the oven to 180C and bake for approximately 60 minutes. Exact baking time might differ based on dish size and oven.",
               "Let cool down fully before cutting and serving."
-            ]
-          }
-        ],
+            ],
         "credits": {
           "author": "Ronny Bujok",
           "link": ""
