@@ -23,9 +23,7 @@
   <nav>
     <ul class="sidebar">
       <li class = "close-icon-button" onclick=hideSidebar()>
-        <a href="">
           <img src="icons/close.svg" alt="">
-        </a>
       </li>
       <li><a href="about.html">About</a></li>
       <li><a href="research.html">Research</a></li>
@@ -49,13 +47,14 @@
   </nav>
 
   <script>
-    function showSidebar(){
-      const sidebar = document.querySelector('.sidebar')
-      sidebar.style.display = 'flex'
+    function showSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.add('show');
     }
-    function hideSidebar(){
-      const sidebar = document.querySelector('.sidebar')
-      sidebar.style.display = 'none'
+
+    function hideSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        sidebar.classList.remove('show');
     }
   </script>
   
@@ -64,17 +63,17 @@
         <p class="headline">Welcome!</p>
         <div class="intro-text">
           <p>
-            I'm Ronny, a postdoctoral researcher at the <a href="https://www.ru.nl/centre-for-language-studies" target="_blank" style="color: #DDA15E;">Centre for Language Studies</a>.
-            My PhD research at the <a href="https://www.mpi.nl/" target="_blank" style="color: #DDA15E;">MPI for Psycholinguistics</a> focused on how gestures aid speech perception. 
-            Currently, I am working on developing a prosody proficiency test battery for L2 speakers of English. <a href="research.html" style="color: #DDA15E;">Here</a> you can learn more about my research 
+            I'm Ronny, a postdoctoral researcher at the <strong class="highlight">Centre for Language Studies</strong>.
+            My PhD research at the <strong class="highlight">MPI for Psycholinguistics</strong> focused on how gestures aid speech perception. 
+            Currently, I am working on developing a prosody proficiency test battery for L2 speakers of English. <a class="hyperlink" href="research.html">Here</a> you can learn more about my research 
           </p>
           <p>
-            But you can also explore this website to learn more about <a href="about.html" style="color: #DDA15E;">who I am</a> and <a href="projects.html"  style="color: #DDA15E;">what I do</a> outside of academia.
+            Explore this website to learn more about <a class="hyperlink" href="about.html">who I am</a> and <a class="hyperlink" href="projects.html">what I do</a> outside of academia.
           </p>
-          <p>
+          <!-- <p>
             Beware, this website is still a work in progress as I am 
             learning to make my own website. So <em>"happy little accidents"</em> are all over the place.
-          </p>
+          </p> -->
         </div>
       </div> 
     <div class="photo-grid">
@@ -83,7 +82,19 @@
   </div>
 
 
-    <div class = "footer">
+
+
+  <footer class = footer>
+    <div>© 2026 Ronny Bujok</div>
+    <div style="margin-top:8px;">
+        Licensed under 
+        <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">
+            CC BY 4.0
+        </a>
+    </div>
+</footer>
+
+    <!-- <div class = "footer">
       <p>
         <img class="copyright-icons" src="icons/cc.svg" alt="">
         <img class="copyright-icons"src="icons/by.svg" alt="">
@@ -91,7 +102,7 @@
       <p>
         &copy; 2025 Ronny Bujok. This work is licensed under CC BY 4.0
       </p>
-    </div>
+    </div> -->
   </div>
 
 

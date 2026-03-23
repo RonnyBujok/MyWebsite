@@ -19,12 +19,11 @@
     <link rel="stylesheet" href="styles/about.css">
 </head>
 <body>
+  <div class="content">
     <nav>
         <ul class="sidebar">
           <li class = "close-icon-button" onclick=hideSidebar()>
-            <a href="">
               <img src="icons/close.svg" alt="">
-            </a>
           </li>
           <li><a href="about.html">About</a></li>
           <li><a href="research.html">Research</a></li>
@@ -151,7 +150,7 @@
         </div> 
         <div class="description">
           <p>Ever since I remember I have always been curious, easily fascinated by anything and always looking to learn. Even if I cannot do something, I will at least give it a try. 
-            My passion to learn and discover is reflected by my many and varied <a href="projects.html" style="color: #DDA15E;">hobbies</a>, but also in my decision to pursue a career in <a href="research.html" style="color: #DDA15E;">research</a>.</p>
+            My passion to learn and discover is reflected by my many and varied <a href="projects.html" class="hyperlink">hobbies</a>, but also in my decision to pursue a career in <a href="research.html" class="hyperlink">research</a>.</p>
         </div>
         <div class="accordion">
           <div>
@@ -395,16 +394,16 @@
     </div>
 
 
-    
-    <div class = "footer">
-        <p>
-            <img class="copyright-icons" src="icons/cc.svg" alt="">
-            <img class="copyright-icons"src="icons/by.svg" alt="">
-        </p>
-        <p>
-            &copy; 2025 Ronny Bujok. This work is licensed under CC BY 4.0
-        </p>
-    </div>
+  </div class="content">    
+    <footer class = footer>
+      <div>© 2026 Ronny Bujok</div>
+      <div style="margin-top:8px;">
+          Licensed under 
+          <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">
+              CC BY 4.0
+          </a>
+      </div>
+  </footer>
 
     <script>
       function showSidebar(){

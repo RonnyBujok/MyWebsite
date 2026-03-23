@@ -3,22 +3,35 @@
     padding:0;
 }
 
-/* body {
-    min-height: 100vh;
-    background-color: #fffdee;
-    font-family:Arial, Helvetica, sans-serif;
-    color: #283618;
-    margin-top: min(12vw,100px);
-} */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --green: #1B4332;
+    --green_highlight: #23513e;
+    --amber-highlight: #ebad66;
+    --amber: #DDA15E;
+    --cream: #F8F5F0;
+    --text: #1A1A1A;
+    --accent: #3A86FF;
+}
 
 body {
-  background-color: #fffdee;
-  font-family:Arial, Helvetica, sans-serif;
-  display: flex;
-  justify-content: center; /* horizontal centering */
-  align-items: center;     /* vertical centering */
-  height: 100vh;           /* full viewport height */
-  margin: 0;               /* remove default margin */
+    min-height: 100vh;
+    background-color: var(--cream);
+    font-family:Arial, Helvetica, sans-serif;
+    color: var(--green);
+    margin-top: clamp(60px,6vw,100px);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* full viewport height */
+}
+
+.factheader{
+    flex: 1;  /* this pushes footer to the bottom if content is short */
 }
 
 p {
@@ -34,7 +47,7 @@ nav {
     left: 0;
     right: 0;
     align-items: center;
-    background-color: #283618;
+    background-color: var(--green);
 
     box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
     z-index: 100;
@@ -61,13 +74,13 @@ nav a{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fffdee;
+    color: var(--cream);
 }
 
 nav a:hover{
-    background-color: #DDA15E;
+    background-color: var(--green_highlight);
     transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+    box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 }
 
 nav li:first-child{
@@ -82,7 +95,7 @@ nav li:first-child{
     height: 100vp;
     width: 250px;
     z-index: 999;
-    background-color: #2836187e;
+    background-color: var(--green);
     backdrop-filter: blur(10px);
     box-shadow: -10px 0 10px rgba(0,0,0,0.15);
     display: none;
@@ -101,12 +114,21 @@ nav li:first-child{
 
 }
 
-.sidebar .close-icon-button a{
-    justify-content: right;
-}
+.sidebar .close-icon-button{
+    width: 100%;
+    display: flex;}
 
-.sidebar .close-icon-button a img{
-    padding-right: 20px;
+.sidebar .close-icon-button img{
+    margin-left: auto;  /* push to the right */
+    padding: 10px 20px; /* optional padding for click area */
+    cursor: pointer;    /* makes it clear it's clickable */
+    transition: background 0.2s; /* optional hover transition */}
+
+.sidebar .close-icon-button img:hover {
+    background-color: var(--green_highlight);     
+    transition: 200ms;
+    box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
+
 }
 
 .menu-button{
@@ -118,22 +140,20 @@ nav li:first-child{
 
 h1 {
     font-size: clamp(20px,8vw,70px);
-    font-weight: 500 ;
     text-align: center;
-    color: #283618;
+    color: var(--green);
     display: block;
-    background-color: #fffdee;
+    background-color:var(--cream);
     padding-top: 10px;
     padding-bottom: 10px;
     margin-bottom: min(5vw,40px);
-    font-family:Georgia, 'Times New Roman', Times, serif;
     position: relative;
     max-width: fit-content;
 }
 
 h1::after{
     content: "";
-    background: #DDA15E;
+    background: var(--amber);
     height: 5px;
     width: 100%;
     position: absolute;
@@ -157,23 +177,35 @@ h1::after{
 .fact-button{
     padding: clamp(10px,4vw,15px);
     font-size: clamp(10px,4vw,16px);
-    background-color: #DDA15E;
-    color: #fffdee;
+    background-color: var(--amber);
+    color: var(--cream);
     border-style: none;
     border-radius: 10px;
 }
 
 .fact-button:hover{
-    background-color:#e0b17b;
+    background-color:var(--amber);
     transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+    box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 }
 
+.footer{
+    margin-top:80px;padding:1rem;background:var(--green);color:var(--cream);text-align:center;font-size:0.7rem;
+}
 
+.hyperlink{
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.hyperlink:hover{
+    color: var(--accent);
+    text-decoration: underline;
+}
 
 #fact{
     margin-top: 20px;
-    font-size: clamp(10px,4vw,24px);
+    font-size: clamp(1rem,4vw,2rem);
     text-align: center;
     padding: 20px;
     max-width: 50%;
@@ -199,12 +231,17 @@ h1::after{
     .accordion, .person, .description .all-skills-mobile{
         min-width: min(90vw,800px);
     }
+    .sidebar{
+        width:100%;
+        border-radius: 0;
+    }
 
 }
 
 @media(max-width: 400px) {
     .sidebar{
         width:100%;
+        border-radius: 0;
     }
 }
 
