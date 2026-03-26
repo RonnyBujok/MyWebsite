@@ -11,6 +11,10 @@
     box-sizing: border-box;
 }
 
+html {
+  forced-color-adjust: none;
+}
+
 :root {
     color-scheme: light dark;
 
