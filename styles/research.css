@@ -249,7 +249,7 @@ body.menu-open .content {
 
 .navigation-buttons-top p {
     width: calc(50% - 10px); /* Each item takes up 50% of the width minus gap */
-    font-size: clamp(12px,3vw,1rem);
+    font-size: clamp(12px,4vw,1rem);
     /* background-color: var(--container-bg);
     border-radius: 5px;       */
 }
