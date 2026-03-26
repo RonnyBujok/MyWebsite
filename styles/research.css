@@ -174,7 +174,7 @@ body.menu-open .content {
     display: inline-block;
     color: var(--accent);
     border-style: solid;
-    border-width: 0.15rem;
+    border-width: 0.1rem;
     border-color: var(--accent);
     padding: 10px 18px;
     border-radius: 8px;
