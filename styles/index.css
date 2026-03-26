@@ -12,6 +12,8 @@
 }
 
 :root {
+    color-scheme: light dark;
+
     --second: #1B4332;
     --second-highlight: #23513e;
     --third-highlight: #ebad66;
