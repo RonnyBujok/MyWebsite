@@ -23,9 +23,7 @@
 <nav>
         <ul class="sidebar">
           <li class = "close-icon-button" onclick=hideSidebar()>
-            <a href="">
               <img src="icons/close.svg" alt="">
-            </a>
           </li>
           <li><a href="about.html">About</a></li>
           <li><a href="research.html">Research</a></li>
@@ -49,20 +47,34 @@
       </nav>
     
       <script>
-        function showSidebar(){
-          const sidebar = document.querySelector('.sidebar')
-          sidebar.style.display = 'flex'
-        }
-        function hideSidebar(){
-          const sidebar = document.querySelector('.sidebar')
-          sidebar.style.display = 'none'
-        }
+      const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
+      }
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
+      }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
       </script>
 
-
+<div class="content">
   <form id="recipeForm">
+    <div class="h1-parent">
     <h1>Add Recipe</h1>
-
+    </div>
     <h3>General Information</h3>
 
     <div class="inforow">
@@ -87,14 +99,14 @@
     <hr>
     <h3>Ingredients</h3>
     <div id="ingredients"></div>
-    <button class="addbutton" type="button" id="addIngredientBtn">Add Ingredient</button>
+    <button class="cta-blue" type="button" id="addIngredientBtn">Add Ingredient</button>
     <!-- <button class="addbutton" type="button" onclick="addIngredient()">Add Ingredient</button> -->
     <hr>
 
     <h3>Instructions</h3>
     <div id="instructions"></div>
     <!-- <button class="addbutton" type="button" onclick="addStep()">Add Step</button> -->
-    <button class="addbutton" type="button" id="addStepBtn">Add Step</button>
+    <button class="cta-blue" type="button" id="addStepBtn">Add Step</button>
 
     <hr>
 
@@ -110,7 +122,7 @@
     </div>
     
     <div class="jsonbuttonparent">
-    <button class="jsonbutton" type="submit">Save</button>
+    <button class="cta-blue2" type="submit">Save</button>
     </div>
   <!-- <h2>Generated JSON</h2>
   <pre id="output" style="background: #f0f0f0; padding: 10px;"></pre>
@@ -121,6 +133,16 @@
 
   </form>
 
+    <footer class = footer>
+      <div>© 2026 Ronny Bujok</div>
+      <div style="margin-top:8px;">
+          Licensed under 
+          <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">
+              CC BY 4.0
+          </a>
+      </div>
+  </footer>
+</div>
 
 
   <!-- SUPABASE -->
@@ -148,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <input type="text" placeholder="Name" class="ing-name" required>
       <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
       <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
-      <button type="button" class="remove-btn">x</button>
+      <button type="button" class="remove-btn">✖</button>
     `;
     ingredientsDiv.appendChild(div);
 
@@ -161,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
     div.className = "step";
     div.innerHTML = `
       <textarea placeholder="Step" class="step-text" required></textarea>
-      <button type="button" class="remove-btn">x</button>
+      <button type="button" class="remove-btn">✖</button>
     `;
     instructionsDiv.appendChild(div);
 

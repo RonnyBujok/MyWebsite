@@ -1,21 +1,51 @@
+/*_________________ General style settings___________ */
+
 *{
     margin:0;
     padding:0;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --second: #1B4332;
+    --second-highlight: #23513e;
+    --third-highlight: #ebad66;
+    --third: #DDA15E;
+    --primary: #F8F5F0;
+    --container-bg: hsl(0, 0%, 98%);
+    --header-text: hsl(155, 43%, 18%);
+    --body-text: hsl(155, 43%, 18%,0.83);
+    --sub-text: hsl(155, 43%, 18%,0.5);
+    --nav-text: #F8F5F0;
+    --accent: #3A86FF;
+}
+
 body {
-    min-height: 100vh;
-    background-color: white;
-    background-color: #fffdee;
+    height:100%;
+    background-color: var(--primary);
     font-family:Arial, Helvetica, sans-serif;
-    color: #283618;
-    margin-top: min(12vw,100px);
+    color: var(--body-text);
+    margin-top: min(15vw,5rem);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* full viewport height */
+}
+
+.content{
+    flex: 1;  /* this pushes footer to the bottom if content is short */
 }
 
 p {
     margin-top: 0;
+    margin-bottom: 30px;
 }
 
+/* navigation bar on top */
 
 nav {
     justify-content: space-between;
@@ -24,9 +54,8 @@ nav {
     left: 0;
     right: 0;
     align-items: center;
-    background-color: #283618;
-
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
+    background-color: var(--second);
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.01);
     z-index: 100;
 
 }
@@ -51,34 +80,41 @@ nav a{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fffdee;
+    color: var(--nav-text);
 }
 
 nav a:hover{
-    background-color: #DDA15E;
-    transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+    background-color:var(--second-highlight); 
+    transition: 100ms;
+    box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 }
+
 
 nav li:first-child{
     margin-right: auto;
 }
 
 
+/* navigation on side (for mobile) */
 .sidebar{
     position: fixed;
     top: 0px;
     right: 0;
-    height: 100vp;
     width: 250px;
     z-index: 999;
-    background-color: #2836187e;
-    backdrop-filter: blur(10px);
-    box-shadow: -10px 0 10px rgba(0,0,0,0.15);
-    display: none;
+    background-color: var(--second);
+    transform: translateX(100%); /* start off-screen to the right */
+    transition: transform 0.3s ease-in-out; /* smooth animation */
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.sidebar.show {
+    transform: translateX(0); /* slide in */
+    box-shadow: 0px 0.2rem 0.75rem rgba(0,0,0,0.5);
+
 }
 
 .sidebar li{
@@ -91,18 +127,90 @@ nav li:first-child{
 
 }
 
-.sidebar .close-icon-button a{
-    justify-content: right;
-}
+.sidebar .close-icon-button{
+    width: 100%;
+    display: flex;}
 
-.sidebar .close-icon-button a img{
-    padding-right: 20px;
+.sidebar .close-icon-button img{
+    margin-left: auto;  /* push to the right */
+    padding: 10px 20px; /* optional padding for click area */
+    cursor: pointer;    /* makes it clear it's clickable */
+    transition: background 0.2s; /* optional hover transition */}
+
+.sidebar .close-icon-button img:hover {
+    background-color: var(--second-highlight);     
+    transition: 200ms;
+    box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
+
 }
 
 .menu-button{
     display: none;
 }
 
+body.menu-open .content { 
+    filter: blur(10px);
+}
+
+/* buttons, hyperlinks and highlight styles */
+.highlight{
+    color: var(--third);
+    font-weight: bold;
+}
+
+.hyperlink{
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.hyperlink:hover{
+    text-decoration: underline;
+}
+
+.buttons{
+    text-align: left;
+}
+
+.cta-blue,
+.cta-blue2 {
+    display: inline-block;
+    color: var(--accent);
+    border-style: solid;
+    border-width: 0.15rem;
+    border-color: var(--accent);
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.2s;
+    font-size: smaller;
+    margin-left: 20px;
+    background-color: var(--primary);
+    cursor: pointer;    /* makes it clear it's clickable */
+}
+
+.cta-blue:hover,
+.cta-blue2:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;  /* 👈 change 0.6s to whatever you want */
+    box-shadow: 0 0 0.3rem var(--accent);
+
+}
+
+.cta-blue2 {
+    color: white;
+    background-color: var(--accent);
+    margin-left: 0px;
+    padding: 0.75rem 1.5rem;
+}
+
+/* footer */
+.footer{
+    margin-top:80px;padding:1rem;background:var(--second);color:var(--nav-text);text-align:center;font-size:0.7rem;
+}
+
+/* headers */
 
 .h1-parent{
     display: flex;
@@ -113,31 +221,39 @@ nav li:first-child{
 h1 {
     font-size: clamp(20px,8vw,70px);
     text-align: center;
-    color: #283618;
+    color: var(--header-text);
     display: block;
-    background-color: #fffdee;
+    background-color: var(--primary);
     padding: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: min(5vw,40px);
+    margin-bottom: min(4vw,2rem);
     position: relative;
+    max-width: fit-content;
 }
 
 h1::after{
     content: "";
-    background: #DDA15E;
+    background: var(--third);
     height: 5px;
     width: 100%;
     position: absolute;
     bottom: 0;
     right: 0;
     box-shadow: 0px 3px 5px rgba(0,0,0,0.05);
+    border-radius: 1rem;
+
 }
+
+
+
+/*_________________ Site specific settings___________ */
+
 
 
 h3{
     text-align: center;
-    color: #283618;
+    color: var(--header-text);
     display: block; 
     padding-bottom: 10px;
 }
@@ -156,7 +272,7 @@ h2{
     max-width: 600px;      /* never wider than 600px even on huge screens */
     min-width: 300px;      /* never too narrow */
     /* background-color: white; */
-    background-color: #fffdee;
+    background-color: var(--primary);
     margin-bottom: 1rem;
 }
 
@@ -176,7 +292,7 @@ h2{
     text-align: left;       /* left-align label text */
     font-weight: bold;
     margin-right: 10px;     /* spacing between label and input */
-    color: #283618;
+    color: var(--body-text);
 
   }
 
@@ -205,39 +321,19 @@ h2{
   }
 
 
-.addbutton{
-    margin-left: 20px;
-    padding: 8px;
-    /* /border-color: #283618; */
-    border-radius: 7px;
-    background-color:#283618;
-    color:#283618;
-    border-style: hidden;
-    color: #fffdee;
-
-}
 
 hr {
   border: none;           /* remove default border */
   height: 1px;            /* thickness */
-  background-color: #ccc; /* color */
+  background-color: var(--third); /* color */
   margin: 20px 0px;         /* spacing above/below */
 }
 
 .jsonbuttonparent{
     text-align: center;
 }
-.jsonbutton{
-    margin-top: 30px;
-    margin-left: 20px;
-    margin-bottom: 20px ;
-    padding: 15px; 
-    border-color:#a47c4e;
-    border-style: hidden;
-    border-radius: 7px;
-    background-color:#DDA15E;
-    color:white
-}
+
+
 
   .addbutton:hover, .jsonbutton:hover {
     /* #background-color:#d9feae; */
@@ -248,21 +344,6 @@ hr {
 
     /* box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15); */
 }
-
-
-#add-recipe-btn:hover {
-  transform: scale(1.1);
-  background-color: #c99750;
-}
-
-
-/* 
-  .jsonbutton:hover {
-    background-color:#e8b77e;
-        transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
-
-} */
 
 
 
@@ -300,20 +381,18 @@ hr {
   }
 
   /* Remove button fixed size */
-  .ingredient button {
-    flex: 0 0 auto;
-    padding: 0 8px;
-    background-color: rgb(255, 88, 88);
-    border-radius: 5px;
-    /* border-color: red;   */
+  .ingredient button,
+  .step button {
+    background-color: var(--primary);
     border-style: none;
+    cursor: pointer; 
+    margin-left: 0.2rem;
 }
 
-  .ingredient button:hover {
-    /* background-color: rgb(252, 116, 116); */
-        transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
-
+  .ingredient button:hover,
+  .step button:hover {
+    transform: scale(1.2);
+    transition: all 0.2s ease;  
 }
 
 
@@ -359,37 +438,54 @@ hr {
     box-sizing: border-box;
   }
 
-  /* Remove button fixed size */
-  .step button {
-    flex: 0 0 auto;
-    padding: 0 8px;
-    background-color: rgb(255, 88, 88);
-    border-radius: 5px;
-        border-style: none;
 
-    /* border-color: red;   */
+.ing-name,
+.ing-amount,
+.ing-unit,
+.step-text,
+.inforow input{
+    background-color: var(--container-bg);
+    border-style: SOLID;
+    border-width: 1px;
+    color: var(--body-text);
 }
 
-  .step button:hover {
-    background-color: rgb(252, 116, 116);
-        transition: 200ms;
-    box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15);
+/* _________________ dark mode settings_________________ */
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: hsl(120, 0%, 12%);             /* main background */
+    --second: #2c2c2c;              /* nav bar / sections monochrome */
+    --second-highlight: #3a3a3a;    /* hover / active */
+    --third: #DDB571;               /* buttons / highlights */
+    --third-highlight: #F0C27A;     /* button hover */
+    
+    --header-text: hsl(0, 0%, 92%);                /* main text */
+    --container-bg: hsl(0, 0%, 17%);
+
+    --body-text: hsl(0, 0%, 80%,0.83);                /* main text */
+    --sub-text: hsl(0, 0%, 80%,0.5);                /* main text */
+
+    --nav-text: #EAEAEA;            /* nav text */
+    --accent: #5AAEFF;              /* interactive accent */
+  }
+  .ingredient button,
+  .step button{
+    color: var(--nav-text);
+  }
+.ing-name,
+.ing-amount,
+.ing-unit,
+.step-text,
+.inforow input{
+    background-color: var(--container-bg);
+    border-style: SOLID;
+    border-width: 1px;
+    color: var(--body-text);
+    border-color: hsl(0, 0%, 25%);
+}
 }
 
-.footer{
-    text-align: center;
-    font-size: clamp(8px,3vw,16px);
-    margin-top: min(200px,20vw);
-    color: #DDA15E;
-    width: 100%;
-    margin-bottom: 30px;
-}
-
-.copyright-icons{
-    display: inline;
-    width: clamp(15px,5vw,30px);
-}
 
 
 
@@ -400,11 +496,16 @@ hr {
     .menu-button{
         display: block;
     }
+    .sidebar{
+        width:100%;
+        border-radius: 0;
+    }
 }
 
 @media(max-width: 400px) {
     .sidebar{
         width:100%;
+        border-radius: 0;
     }
 }
 

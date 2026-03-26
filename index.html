@@ -45,31 +45,50 @@
       <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
     </ul>
   </nav>
+  
 
   <script>
-    function showSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.add('show');
-    }
+      const sidebar = document.querySelector('.sidebar');
 
-    function hideSidebar() {
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.classList.remove('show');
-    }
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
+      }
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
+      }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
   </script>
   
   <div class="welcome-grid">
       <div class="welcome-text">
-        <p class="headline">Welcome!</p>
+        <p class="headline">Welcome</p>
         <div class="intro-text">
           <p>
-            I'm Ronny, a postdoctoral researcher at the <strong class="highlight">Centre for Language Studies</strong>.
-            My PhD research at the <strong class="highlight">MPI for Psycholinguistics</strong> focused on how gestures aid speech perception. 
-            Currently, I am working on developing a prosody proficiency test battery for L2 speakers of English. <a class="hyperlink" href="research.html">Here</a> you can learn more about my research 
+            I'm Ronny, a postdoctoral researcher at the <strong class="highlight">Donders Centre for Cognition</strong>.
+            My research focuses on speech prosody and gestures, and their role in speech comprehension and production.
+            
+            <!-- My PhD research at the <strong class="highlight">MPI for Psycholinguistics</strong> focused on how gestures aid speech perception. 
+            Currently, I am working on developing a prosody proficiency test battery for L2 speakers of English. <a class="hyperlink" href="research.html">Here</a> you can learn more about my research  -->
           </p>
-          <p>
+          <!-- <p>
             Explore this website to learn more about <a class="hyperlink" href="about.html">who I am</a> and <a class="hyperlink" href="projects.html">what I do</a> outside of academia.
-          </p>
+          </p> -->
+          <div class="buttons">
+          <a class="cta-blue" href="about.html">About Me</a>
+          <a class="cta-blue" href="research.html">My Research</a>
+          </div>
           <!-- <p>
             Beware, this website is still a work in progress as I am 
             learning to make my own website. So <em>"happy little accidents"</em> are all over the place.
@@ -94,15 +113,7 @@
     </div>
 </footer>
 
-    <!-- <div class = "footer">
-      <p>
-        <img class="copyright-icons" src="icons/cc.svg" alt="">
-        <img class="copyright-icons"src="icons/by.svg" alt="">
-      </p>
-      <p>
-        &copy; 2025 Ronny Bujok. This work is licensed under CC BY 4.0
-      </p>
-    </div> -->
+
   </div>
 
 

@@ -11,20 +11,29 @@
 }
 
 :root {
-    --green: #1B4332;
-    --green_highlight: #23513e;
-    --amber-highlight: #ebad66;
-    --amber: #DDA15E;
-    --cream: #F8F5F0;
-    --text: #1A1A1A;
+    --second: #1B4332;
+    --second-highlight: #23513e;
+    --third-highlight: #ebad66;
+    --third: #DDA15E;
+    --primary: #F8F5F0;
+
+    --container-bg: hsl(0, 0%, 98%);
+
+    --header-text: hsl(155, 43%, 18%);
+    --body-text: hsl(155, 43%, 18%,0.83);
+    --sub-text: hsl(155, 43%, 18%,0.5);
+
+    --nav-text: #F8F5F0;
+
     --accent: #3A86FF;
 }
 
+
 body {
     min-height: 100vh;
-    background-color: var(--cream);
+    background-color: var(--primary);
     font-family:Arial, Helvetica, sans-serif;
-    color: var(--green);
+    color: var(--body-text);
     margin-top: clamp(60px,6vw,100px);
     display: flex;
     flex-direction: column;
@@ -36,7 +45,7 @@ body {
 }
 
 .footer{
-    margin-top:80px;padding:1rem;background:var(--green);color:var(--cream);text-align:center;font-size:0.7rem;
+    margin-top:80px;padding:1rem;background:var(--second);color:var(--nav-text);text-align:center;font-size:0.7rem;
 }
 
 
@@ -64,9 +73,8 @@ p {
 h1 {
     font-size: clamp(20px,8vw,70px);
     text-align: center;
-    color: #283618;
+    color: var(--header-text);
     display: block;
-    background-color: var(--cream);
     padding: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -77,13 +85,15 @@ h1 {
 
 h1::after{
     content: "";
-    background: var(--amber);
+    background: var(--third);
     height: 5px;
     width: 100%;
     position: absolute;
     bottom: 0;
     right: 0;
     box-shadow: 0px 3px 5px rgba(0,0,0,0.05);
+    border-radius: 1rem;
+
 }
 
 
@@ -94,7 +104,7 @@ nav {
     left: 0;
     right: 0;
     align-items: center;
-    background-color: var(--green);
+    background-color: var(--second);
 
     box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
     z-index: 100;
@@ -121,11 +131,11 @@ nav a{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--cream);
+    color: var(--nav-text);
 }
 
 nav a:hover{
-    background-color: var(--green_highlight);
+    background-color: var(--second-highlight);
     transition: 200ms;
     box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 }
@@ -135,19 +145,35 @@ nav li:first-child{
 }
 
 
+
+
 .sidebar{
     position: fixed;
     top: 0px;
     right: 0;
-    height: 100vp;
+    /* height: 100vp; */
     width: 250px;
     z-index: 999;
-    background-color: var(--green);
-    box-shadow: -10px 0 10px rgba(0,0,0,0.15);
-    display: none;
+    background-color: var(--second);
+    /* backdrop-filter: blur(10px); */
+    /* box-shadow: 0px 0 10px rgba(0,0,0,0.15); */
+    /* display: none; */
+    transform: translateX(100%); /* start off-screen to the right */
+    transition: transform 0.3s ease-in-out; /* smooth animation */
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.sidebar.show {
+    transform: translateX(0); /* slide in */
+    box-shadow: 0px 0.2rem 0.75rem rgba(0,0,0,0.5);
+}
+
+
+body.menu-open .content {
+    filter: blur(10px);
 }
 
 .sidebar li{
@@ -171,7 +197,7 @@ nav li:first-child{
     transition: background 0.2s; /* optional hover transition */}
 
 .sidebar .close-icon-button img:hover {
-    background-color: var(--green_highlight);     
+    background-color: var(--second-highlight);     
     transition: 200ms;
     box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 
@@ -194,40 +220,43 @@ nav li:first-child{
 .teaching-header{
     font-weight: bold;
     padding-bottom: min(5vw,30px);
-    color: var(--amber);
+    color: var(--header-text);
 }
 
 .teaching-list{
     padding-top: min(2vw,15px);
     padding-left: 40px;
+    color: var(--sub-text);
+    font-size: smaller;
+
 }
 
 .accordion{
-    max-width: 800px;
+    max-width: 100px;
     min-width: min(90vw,800px);
     overflow: hidden;
-    background-color: var(--green);
-    color: var(--green);
+    background-color: var(--header-text);
+    color: var(--body-text);
     border-radius: 10px;
-    border-color: var(--green);
     border-width: min(0.1rem,10vw);
     border-style: none;
     display: flex;
     flex-direction: column;
     place-self: center;
     margin: min(3vw, 30px);
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.10);
+    box-shadow: 0 0.3rem 0.3rem rgba(0, 0, 0, 0.1);
 }
 
 .accordion__label,
 .accordion__content {
     padding: 14px 20px;
     padding-right: 35px;
+
 }
 
 .accordion__label{
     display: block;
-    color: var(--cream);
+    color: var(--nav-text);
     font-weight: 500;
     cursor: pointer;
     position: relative;
@@ -236,7 +265,7 @@ nav li:first-child{
 }
 
 .accordion__label:hover {
-background-color: var(--green_highlight);}
+background-color: var(--second-highlight);}
 
 .accordion__label::after{
     content: "";
@@ -252,7 +281,7 @@ background-color: var(--green_highlight);}
 }
 
 .accordion__content{
-    background: white;
+    background: var(--container-bg);
     line-height: 1.6;
     font-size: clamp(1rem,2.5vw,1.2rem);
     display: none;
@@ -269,6 +298,31 @@ background-color: var(--green_highlight);}
 
 .accordion__input:checked ~ .accordion__label::after{
     transform: translateY(-50%) rotate(0.5turn);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: hsl(120, 0%, 12%);             /* main background */
+    --second: hsl(0, 0%, 17%);              /* nav bar / sections monochrome */
+    --second-highlight: #3a3a3a;    /* hover / active */
+    --third: #DDB571;               /* buttons / highlights */
+    --third-highlight: #F0C27A;     /* button hover */
+    
+    --header-text: hsl(0, 0%, 92%);                /* main text */
+
+    --body-text: hsl(0, 0%, 80%,0.83);                /* main text */
+    --sub-text: hsl(0, 0%, 80%,0.5);                /* main text */
+
+    --nav-text: #EAEAEA;            /* nav text */
+    --accent: #5AAEFF;              /* interactive accent */
+    --container-bg: hsl(0, 0%, 17%);
+  }
+  .accordion__label{
+    background-color: hsl(0, 0%, 25%);;
+  }
+ .accordion__label:hover{
+    background-color: hsl(0, 0%, 27%);;
+  }
 }
 
 

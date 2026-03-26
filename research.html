@@ -44,20 +44,21 @@
           <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
         </ul>
       </nav>
-  <div class="main-page-content">  
+
+  <div class="content">  
 
     <div class="navigation-buttons">
-      <p><a href="#summary-id">Summary</a></p>
-      <p><a href="#publications-id">Publications</a></p>
-      <p><a href="#presentations-id">Presentations</a></p>
-      <p><a href="#ac-id">Academic Contributions</a></p>
+      <p><a class= "cta-blue" href="#summary-id">Summary</a></p>
+      <p><a class= "cta-blue" href="#publications-id">Publications</a></p>
+      <p><a class= "cta-blue" href="#presentations-id">Presentations</a></p>
+      <p><a class= "cta-blue" href="#ac-id">Academic Contributions</a></p>
     </div>
 
     <div class="navigation-buttons-top">
-      <p><a href="#summary-id">Summary</a></p>
-      <p><a href="#publications-id">Publications</a></p>
-      <p><a href="#presentations-id">Presentations</a></p>
-      <p><a href="#ac-id">Academic Contributions</a></p>
+      <p><a class= "cta-blue" href="#summary-id">Summary</a></p>
+      <p><a class= "cta-blue" href="#publications-id">Publications</a></p>
+      <p><a class= "cta-blue" href="#presentations-id">Presentations</a></p>
+      <p><a class= "cta-blue" href="#ac-id">Academic Contributions</a></p>
     </div>
 
     <div class="h1-parent">
@@ -299,7 +300,7 @@
                 <p>Tilburg University: Language, Communication and Cognition (2024) </p>
               </div>
               <div class="ac-entry">
-                <p class="role">PhD Representative</p>
+                <p class="role">PhD Rep.</p>
                 <p>Internal MPI PhD representative, providing support and mentoring to PhDs, and organizing academic and social events (2021 - 2023)</p>
               </div>
               <div class="ac-entry">
@@ -330,15 +331,27 @@
   </footer>
 
     <script>
-      function showSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'flex'
-      }
-      function hideSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'none'
+      const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
       }
 
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
+      }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
 
 
       let lastScrollTop = 0; // Store the last scroll position

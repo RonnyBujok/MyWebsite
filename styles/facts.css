@@ -1,3 +1,5 @@
+/*_________________ General style settings___________ */
+
 *{
     margin:0;
     padding:0;
@@ -10,28 +12,34 @@
 }
 
 :root {
-    --green: #1B4332;
-    --green_highlight: #23513e;
-    --amber-highlight: #ebad66;
-    --amber: #DDA15E;
-    --cream: #F8F5F0;
-    --text: #1A1A1A;
+    --second: #1B4332;
+    --second-highlight: #23513e;
+    --third-highlight: #ebad66;
+    --third: #DDA15E;
+    --primary: #F8F5F0;
+    --container-bg: hsl(0, 0%, 98%);
+    --header-text: hsl(155, 43%, 18%);
+    --body-text: hsl(155, 43%, 18%,0.83);
+    --sub-text: hsl(155, 43%, 18%,0.5);
+    --nav-text: #F8F5F0;
     --accent: #3A86FF;
 }
 
 body {
-    min-height: 100vh;
-    background-color: var(--cream);
+    height:100%;
+    background-color: var(--primary);
     font-family:Arial, Helvetica, sans-serif;
-    color: var(--green);
-    margin-top: clamp(60px,6vw,100px);
+    color: var(--body-text);
+    margin-top: min(15vw,5rem);
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* full viewport height */
 }
 
-.factheader{
+.content{
     flex: 1;  /* this pushes footer to the bottom if content is short */
+    justify-items: center;
+    text-align: center;
 }
 
 p {
@@ -39,6 +47,7 @@ p {
     margin-bottom: 30px;
 }
 
+/* navigation bar on top */
 
 nav {
     justify-content: space-between;
@@ -47,9 +56,8 @@ nav {
     left: 0;
     right: 0;
     align-items: center;
-    background-color: var(--green);
-
-    box-shadow: 0px 5px 20px rgba(0,0,0,0.10);
+    background-color: var(--second);
+    box-shadow: 0px 5px 5px rgba(0,0,0,0.01);
     z-index: 100;
 
 }
@@ -74,34 +82,40 @@ nav a{
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--cream);
+    color: var(--nav-text);
 }
 
 nav a:hover{
-    background-color: var(--green_highlight);
-    transition: 200ms;
+    background-color:var(--second-highlight); 
+    transition: 100ms;
     box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 }
+
 
 nav li:first-child{
     margin-right: auto;
 }
 
 
+/* navigation on side (for mobile) */
 .sidebar{
     position: fixed;
     top: 0px;
     right: 0;
-    height: 100vp;
     width: 250px;
     z-index: 999;
-    background-color: var(--green);
-    backdrop-filter: blur(10px);
-    box-shadow: -10px 0 10px rgba(0,0,0,0.15);
-    display: none;
+    background-color: var(--second);
+    transform: translateX(100%); /* start off-screen to the right */
+    transition: transform 0.3s ease-in-out; /* smooth animation */
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
+    border-bottom-left-radius: 0.5rem;
+}
+
+.sidebar.show {
+    transform: translateX(0); /* slide in */
+    box-shadow: 0px 0.2rem 0.75rem rgba(0,0,0,0.5);
 }
 
 .sidebar li{
@@ -125,7 +139,7 @@ nav li:first-child{
     transition: background 0.2s; /* optional hover transition */}
 
 .sidebar .close-icon-button img:hover {
-    background-color: var(--green_highlight);     
+    background-color: var(--second-highlight);     
     transition: 200ms;
     box-shadow: inset 2px 2px 3px rgba(0,0,0,0.1);
 
@@ -135,35 +149,99 @@ nav li:first-child{
     display: none;
 }
 
+body.menu-open .content { 
+    filter: blur(10px);
+}
+
+/* buttons, hyperlinks and highlight styles */
+.highlight{
+    color: var(--third);
+    font-weight: bold;
+}
+
+.hyperlink{
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.hyperlink:hover{
+    text-decoration: underline;
+}
+
+.buttons{
+    text-align: left;
+}
+
+.cta-blue {
+    display: inline-block;
+    color: var(--nav-text);
+    border-style: solid;
+    border-width: 0.15rem;
+    border-color: var(--accent);
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-right: 10px;
+    transition: 0.2s;
+    font-size: smaller;
+    background-color: var(--accent);
+}
+
+.cta-blue:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;  /* 👈 change 0.6s to whatever you want */
+    box-shadow: 0 0 0.3rem var(--accent);
+
+}
+
+/* footer */
+.footer{
+    margin-top:80px;padding:1rem;background:var(--second);color:var(--nav-text);text-align:center;font-size:0.7rem;
+}
 
 
+
+
+/* headers */
+
+.h1-parent{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
 
 h1 {
     font-size: clamp(20px,8vw,70px);
     text-align: center;
-    color: var(--green);
+    color: var(--header-text);
     display: block;
-    background-color:var(--cream);
+    background-color: var(--primary);
+    padding: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: min(5vw,40px);
+    margin-bottom: min(4vw,2rem);
     position: relative;
     max-width: fit-content;
 }
 
 h1::after{
     content: "";
-    background: var(--amber);
+    background: var(--third);
     height: 5px;
     width: 100%;
     position: absolute;
     bottom: 0;
     right: 0;
     box-shadow: 0px 3px 5px rgba(0,0,0,0.05);
+    border-radius: 1rem;
+
 }
 
 
-
+/* _________________________site specific style_________________ */
 
 .nobreak{
     white-space: nowrap;
@@ -210,6 +288,29 @@ h1::after{
     padding: 20px;
     max-width: 50%;
 }
+
+
+/* _________________ dark mode settings_________________ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: hsl(120, 0%, 12%);             /* main background */
+    --second: #2c2c2c;              /* nav bar / sections monochrome */
+    --second-highlight: #3a3a3a;    /* hover / active */
+    --third: #DDB571;               /* buttons / highlights */
+    --third-highlight: #F0C27A;     /* button hover */
+    
+    --header-text: hsl(0, 0%, 92%);                /* main text */
+    --container-bg: hsl(0, 0%, 17%);
+
+    --body-text: hsl(0, 0%, 80%,0.83);                /* main text */
+    --sub-text: hsl(0, 0%, 80%,0.5);                /* main text */
+
+    --nav-text: #EAEAEA;            /* nav text */
+    --accent: #5AAEFF;              /* interactive accent */
+  }
+}
+
 
 
 @media(max-width: 800px){

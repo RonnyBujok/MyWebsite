@@ -45,10 +45,10 @@
         </ul>
     </nav>
 
-  <div class="factheader">
+  <div class="content">
     <h1>Fun Fact</h1>
     <div id="fact">Loading...</div>
-    <button class="fact-button" onclick="loadFact(true)">New Fact</button>
+    <button class="cta-blue" onclick="loadFact(true)">New Fact</button>
   </div>
 
   <footer class = footer>
@@ -88,14 +88,27 @@
 
     loadFact();
 
-    function showSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'flex'
+     const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
       }
-    function hideSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'none'
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
       }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
   </script>
 
 

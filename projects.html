@@ -46,7 +46,7 @@
       </ul>
     </nav>
   
-<div class="content">
+  <div class="content">
     <div>
       <div class="h1-parent">
         <h1>Projects</h1>
@@ -56,7 +56,7 @@
           with an idea or a goal in mind. Whether it is creating this website from scratch, a personal best in the gym, or the perfection of my loaf of bread.
           A completion of such a little "project" makes me happy and allows me to pursue another of  my countless hobbies. See below for specific projects and a collection of selected hobbies and interests.
         </p>
-        <strong><p>Specific Projects:</p></strong>
+        <strong><h3>Specific Projects:</h3></strong>
           <ul class="project-list">
             <li><a href="cookbook.html" class="hyperlink">My Online Recipe Collection</a></li>
             <li><a href="facts.html" class="hyperlink">Fun Facts</a></li>
@@ -349,7 +349,8 @@
 
 </div>
     
-  </div class="content">    
+  </div class="content">  
+    
     <footer class = footer>
       <div>© 2026 Ronny Bujok</div>
       <div style="margin-top:8px;">
@@ -363,14 +364,27 @@
 
 
     <script>
-      function showSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'flex'
+     const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
       }
-      function hideSidebar(){
-        const sidebar = document.querySelector('.sidebar')
-        sidebar.style.display = 'none'
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
       }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
     </script>
 
   
