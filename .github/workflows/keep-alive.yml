@@ -2,9 +2,10 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs at 00:00 every Tuesday and Friday (Every 3-4 days)
+    # Dit maakt het RECURRING (automatisch herhalend)
+    # Dit cron-schema draait elke dinsdag en vrijdag om 00:00 UTC
     - cron: '0 0 * * 2,5'
-  workflow_dispatch: # Allows you to run this manually anytime
+  workflow_dispatch: # Zorgt dat je handmatig op de knop kunt drukken
 
 jobs:
   ping-supabase:
@@ -12,6 +13,6 @@ jobs:
     steps:
       - name: Send Ping Request
         run: |
-          curl -i -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
+          curl -i -sS -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/recipes?limit=1" \
           -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
           -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
