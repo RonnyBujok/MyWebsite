@@ -7,13 +7,10 @@
   <link rel="stylesheet" href="styles/cookbook.css">
 </head>
 <body>
-
   <nav>
     <ul class="sidebar">
       <li class = "close-icon-button" onclick=hideSidebar()>
-        <a href="">
           <img src="icons/close.svg" alt="">
-        </a>
       </li>
       <li><a href="about.html">About</a></li>
       <li><a href="research.html">Research</a></li>
@@ -22,7 +19,7 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
 
-    <ul>
+    <ul class="menu-button-parent">
       <li><a href="index.html">
         <img style="padding-right: 10px;" src="icons/home.svg">
         Ronny Bujok
@@ -32,9 +29,12 @@
       <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
       <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
       <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
-      <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+      <li class="menu-button" onclick=showSidebar()>
+        <img src="icons/menu.svg" alt="">
+      </li>
     </ul>
   </nav>
+
 
   <div class="search-bar">
     <input type="text" class="search-input" placeholder="Search...">
@@ -51,22 +51,23 @@
         <button class="reset-tag">Reset</button>
       </div>
       <div id="tags-dd-child"></div>
-      <div class = "band"></div>
     </div>
   </div>
-
+<div class="content">
   <div class="recipe-flex">
     <div class="recipe-names">
       <div class="search-bar-full">
         <input type="text" class="search-input" placeholder="Search...">
         <button id="search-btn"><img src="icons/search.svg" alt=""></button>
+        <button id="filter-btn-full"><img src="icons/filter.svg" alt=""></button>
+
       </div>
       <div class="title-container">
-        <h2>All Recipes:</h2>
+        <h2>Recipes</h2>
         <ul id="recipe-list"></ul>
       </div>
       <div class="recipe-tags-container">
-        <h2>All Tags:</h2>
+        <h2>Tags</h2>
         <div class="tags-container"></div>
       </div>
     </div>
@@ -75,7 +76,7 @@
       <!-- Recipe entries will be dynamically loaded here -->
     </div>
   </div>
-
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -235,7 +236,7 @@ function displayRecipeNames(recipes) {
       span.classList.toggle('active');
 
       if (span.classList.contains('active')) {
-        span.style.backgroundColor = "#DDA15E";
+        span.style.backgroundColor = "var(--accent)";
         span.style.color = "white";
 
         if (!selectedTags.includes(tag.toLowerCase())) {
@@ -345,7 +346,7 @@ function displayRecipeNames(recipes) {
       const instTitle = document.createElement('p'); instTitle.className = 'instructions-title'; instTitle.textContent='Instructions';
       const ol = document.createElement('ol');
       recipe.instructions.forEach(step=>{ const li=document.createElement('li'); li.textContent=step; ol.appendChild(li);});
-      right.appendChild(instTitle); right.appendChild(ol);
+      right.appendChild(instTitle); right.appendChild(ol); 
 
       const credit = document.createElement('div'); credit.className='credit';
       const creditP = document.createElement('p'); creditP.textContent='Credits:'; credit.appendChild(creditP);
@@ -354,8 +355,8 @@ function displayRecipeNames(recipes) {
 
       const container = document.createElement('div'); container.className='recipe-container';
       container.appendChild(left); container.appendChild(right);
-
-      entry.appendChild(container); entry.appendChild(credit); page.appendChild(entry);
+      right.appendChild(credit)
+      entry.appendChild(container);  page.appendChild(entry);
 
       servingsSelect.addEventListener('change', e=>updateIngredients(e.target, recipe.baseServings));
       updateIngredients(servingsSelect, recipe.baseServings);
@@ -409,7 +410,7 @@ window.addEventListener('load', () => {
   recipesBtn.addEventListener('click', () => {
     if (recipeDd.style.display === 'none' || recipeDd.style.display === '') {
       recipeDd.style.display = 'flex';
-      recipesBtn.style.backgroundColor = "#DDA15E";
+      recipesBtn.style.backgroundColor = "var(--accent)";
       recipesBtn.style.color = "white";
 
       tagsDd.style.display = 'none';
@@ -429,7 +430,7 @@ window.addEventListener('load', () => {
   tagsBtn.addEventListener('click', () => {
     if (tagsDd.style.display === 'none' || tagsDd.style.display === '') {
       tagsDd.style.display = 'flex';
-      tagsBtn.style.backgroundColor = "#DDA15E";
+      tagsBtn.style.backgroundColor = "var(--accent)";
       tagsBtn.style.color = "white";
 
       recipeDd.style.display = 'none';
@@ -496,19 +497,105 @@ window.addEventListener('load', () => {
 
 </script>
 
-      <script>
-        function showSidebar(){
-          const sidebar = document.querySelector('.sidebar')
-          sidebar.style.display = 'flex'
+
+<script>
+const searchBar = document.querySelector('.search-bar');
+const recipeDropdown = document.querySelector('#recipe-dd');
+const tagsDropdown = document.querySelector('#tags-dd');
+
+
+let lastScroll = window.scrollY;
+let scrollUpDistance = 0;
+
+window.addEventListener('scroll', () => {
+
+    // Don't hide search bar while dropdown is open
+    const recipeDd = recipeDropdown &&
+        getComputedStyle(recipeDropdown).display !== 'none';
+    const tagsDd = tagsDropdown &&
+        getComputedStyle(tagsDropdown).display !== 'none';
+
+    if (recipeDd) {
+        searchBar.classList.remove('hide');
+        return;
+    }
+    if (tagsDd) {
+        searchBar.classList.remove('hide');
+        return;
+    }
+
+    const currentScroll = window.scrollY;
+    const difference = currentScroll - lastScroll;
+
+    if (difference > 0 && currentScroll > 100) {
+        // scrolling down
+        searchBar.classList.add('hide');
+        scrollUpDistance = 0;
+    } 
+    else if (difference < 0) {
+        // scrolling up
+        scrollUpDistance += Math.abs(difference);
+
+        if (scrollUpDistance > 100) {
+            searchBar.classList.remove('hide');
+            scrollUpDistance = 0;
         }
-        function hideSidebar(){
-          const sidebar = document.querySelector('.sidebar')
-          sidebar.style.display = 'none'
-        }
-      </script>
+    }
+
+    lastScroll = currentScroll;
+});
+</script>
+
+<script>
+    const tagsBtnfll = document.getElementById("filter-btn-full");
+    const tagsContainer = document.querySelector(".recipe-tags-container");
+
+    tagsBtnfll.addEventListener("click", () => {
+        tagsContainer.classList.toggle("show");
+    });
+
+</script>
+
+
+
+  <script>
+      const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
+      }
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
+      }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
+  </script>
 
 <!-- Add Recipe Button -->
 <a href="recipeform.html" id="add-recipe-btn" title="Add Recipe">+</a>
 
+
+  <footer class = footer>
+      <div>© 2026 Ronny Bujok</div>
+      <div style="margin-top:8px;">
+          Licensed under 
+          <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">
+              CC BY 4.0
+          </a>
+      </div>
+  </footer>
+
+  
 </body>
 </html>

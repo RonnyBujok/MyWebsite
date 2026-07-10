@@ -619,7 +619,17 @@ background-color: var(--second-highlight);}
 
 }
 
+.audiobutton{
+    border-style: none;
+    background-color: var(--primary);
+    transition: transform 0.2s ease;
 
+}
+
+.audiobutton:hover{
+    transform: scale(1.2);
+    cursor: pointer;
+}
 
 
 

@@ -10,6 +10,8 @@
 
     gtag('config', 'G-LFX2EX8LP8');
   </script>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#121212">
   <meta name="color-scheme" content="light dark">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +72,16 @@
               hideSidebar();
           }
       });
+
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered:', reg))
+          .catch(err => console.log('Service Worker failed:', err));
+      });
+    }
+
   </script>
   
   <div class="welcome-grid">
