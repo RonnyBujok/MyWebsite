@@ -246,223 +246,82 @@ h1::after{
 }
 
 
-
 /*_________________ Site specific settings___________ */
 
 
-
-h3{
-    text-align: center;
-    color: var(--header-text);
-    display: block; 
-    padding-bottom: 10px;
+.content{
+    font-family: Arial, sans-serif;
+    background: var(--primary);
+    align-content: center;
 }
 
-h2{
-    margin-top: 50px;
-    margin-bottom: 10px;
-    text-align: center;
+.container{
+    margin:auto;
+    background:var(--primary);
+    max-width: 30rem;
+    margin: auto;
 }
 
-
-#recipeForm{
-    justify-self: center;
-    align-items: center;     /* vertically align label + input */
-    width: 90%;            /* default width on small screens */
-    max-width: 600px;      /* never wider than 600px even on huge screens */
-    min-width: 300px;      /* never too narrow */
-    /* background-color: white; */
-    background-color: var(--primary);
-    margin-bottom: 1rem;
+h1{
+    text-align:center;
+    margin-bottom:3rem;
 }
 
-
-  .inforow {
-    display: flex;           /* side-by-side layout */
-    align-items: center;     /* vertically align label + input */
-    justify-content: flex-start;
-
-    margin: 10px auto;       /* center horizontally with top/bottom spacing */
-    padding: 0 20px;         /* 20px padding on left/right */
-    box-sizing: border-box;  /* padding included in width */
-  }
-
-  .inforow label {
-    width: 40%;             /* label takes 40% of the row */
-    text-align: left;       /* left-align label text */
-    font-weight: bold;
-    margin-right: 10px;     /* spacing between label and input */
-    color: var(--body-text);
-
-  }
-
-  .inforow input {
-    width: 60%;             /* input takes remaining 60% */
-    padding: 5px;           /* inner padding for text box */
-    box-sizing: border-box;
-  }
-  
-  #ingredients {
-    display: flex;
-    flex-direction: column;   /* stack ingredient rows vertically */
-    align-items: center;      /* center rows horizontally */
-    margin: 10px auto;        /* center horizontally with spacing */
-    padding: 0 20px;          /* 20px padding on sides */
-    box-sizing: border-box;
-  }
-
-  #instructions {
-    display: flex;
-    flex-direction: column;   /* stack ingredient rows vertically */
-    align-items: center;      /* center rows horizontally */
-    margin: 10px auto;        /* center horizontally with spacing */
-    padding: 0 20px;          /* 20px padding on sides */
-    box-sizing: border-box;
-  }
-
-
-
-hr {
-  border: none;           /* remove default border */
-  height: 1px;            /* thickness */
-  background-color: var(--third); /* color */
-  margin: 20px 0px;         /* spacing above/below */
+.row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:12px 0;
+    gap:1rem;
 }
 
-.jsonbuttonparent{
-    text-align: center;
+label{
+    flex:1;
+    font-weight:bold;
+}
+
+input{
+    width:150px;
+    padding:8px;
+    font-size:1rem;
+}
+
+.results{
+    margin-top:35px;
+    border-top:1px solid var(--third);
+    padding-top:25px;
+}
+
+.result{
+    display:flex;
+    justify-content:space-between;
+    margin:10px 0;
+    font-size:1rem;
+}
+
+.highlight{
+    font-weight:bold;
+    color:#8B0000;
+}
+
+.info{
+    margin-top:3rem;
+    font-size:0.8rem;
+    color:var(--sub-text);
 }
 
 
 
-  .addbutton:hover, .jsonbutton:hover {
-    /* #background-color:#d9feae; */
-    transition: 200ms;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    transform: scale(1.1);
-
-
-    /* box-shadow: inset 5px 5px 3px rgba(0,0,0,0.15); */
+.yeast-warning {
+    display: none;
+    margin-left: 8px;
+    color: #dea600;
+    font-size: 1rem;
+    cursor: help;
 }
 
-
-
-  /* Each ingredient row */
-  .ingredient {
-    display: flex;
-    gap: 5px;                 /* spacing between inputs */
-    margin-bottom: 5px;
-    flex-wrap: nowrap;         /* always stay in one row */
-    width: 100%;               /* take full width of container */
-    box-sizing: border-box;
-  }
-
-  /* Name input grows to fill remaining space */
-  .ingredient .ing-name {
-    flex: 1 1 auto;
-    min-width: 50px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  /* Amount and Unit have reasonable widths but shrink if needed */
-  .ingredient .ing-amount {
-    flex: 0 1 70px;
-    min-width: 40px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  .ingredient .ing-unit {
-    flex: 0 1 80px;
-    min-width: 40px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  /* Remove button fixed size */
-  .ingredient button,
-  .step button {
-    background-color: var(--primary);
-    border-style: none;
-    cursor: pointer; 
-    margin-left: 0.2rem;
-}
-
-  .ingredient button:hover,
-  .step button:hover {
-    transform: scale(1.2);
-    transition: all 0.2s ease;  
-}
-
-
-
-.drag-handle {
-    cursor: grab;
-    user-select: none;
-    font-size: 1.2rem;
-    padding: 0 0.5rem;
-}
-
-.drag-handle:active {
-    cursor: grabbing;
-}
-
-.dragging {
-    opacity: 0.5;
-}
-
-
-
-
-
-
-
-
-  /* Each ingredient row */
-  .step {
-    display: flex;
-    gap: 5px;                 /* spacing between inputs */
-    margin-bottom: 5px;
-    flex-wrap: nowrap;         /* always stay in one row */
-    width: 100%;               /* take full width of container */
-    box-sizing: border-box;
-  }
-
-  /* Name input grows to fill remaining space */
-  .step .step-text {
-    flex: 1 1 auto;
-    min-width: 50px;
-    height: 30px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  /* Amount and Unit have reasonable widths but shrink if needed */
-  .step .ing-amount {
-    flex: 0 1 70px;
-    min-width: 40px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  .step .ing-unit {
-    flex: 0 1 80px;
-    min-width: 40px;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-
-.ing-name,
-.ing-amount,
-.ing-unit,
-.step-text,
-.inforow input{
-    background-color: var(--container-bg);
-    border-style: SOLID;
-    border-width: 1px;
-    color: var(--body-text);
+.yeast-warning:hover {
+    transform: scale(5);
 }
 
 /* _________________ dark mode settings_________________ */

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFX2EX8LP8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LFX2EX8LP8');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ronny Bujok, PhD candidate at the Max Planck Institute for Psycholinguistics">
+    <meta name="keywords" content="Ronny, Bujok, Nijmegen, Max Planck Institute, Psycholinguistics, Research, Prosody, Beat gestures">
+    <meta name="author" content="Ronny Bujok">
+    <title>Ronny Bujok - Contact</title>
+    <link rel="stylesheet" href="styles/winecalc.css">
+</head>
+<body>
+
+<nav>
+        <ul class="sidebar">
+          <li class = "close-icon-button" onclick=hideSidebar()>
+              <img src="icons/close.svg" alt="">
+          </li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="research.html">Research</a></li>
+          <li><a href="teaching.html">Teaching</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+    
+        <ul>
+          <li><a href="index.html">
+            <img style="padding-right: 10px;" src="icons/home.svg">
+            Ronny Bujok
+          </a></li>
+          <li class="hideOnMobile"><a href="about.html">About</a></li>
+          <li class="hideOnMobile"><a href="research.html">Research</a></li>
+          <li class="hideOnMobile"><a href="teaching.html">Teaching</a></li>
+          <li class="hideOnMobile"><a href="projects.html">Projects</a></li>
+          <li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+          <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+        </ul>
+      </nav>
+    
+      <script>
+      const sidebar = document.querySelector('.sidebar');
+
+      function showSidebar() {
+          sidebar.classList.add('show');
+          document.body.classList.add('menu-open');
+      }
+
+      function hideSidebar() {
+          sidebar.classList.remove('show');
+          document.body.classList.remove('menu-open');
+      }
+
+      // 👇 put this OUTSIDE any function
+      document.addEventListener('click', (e) => {
+          const isInsideSidebar = sidebar.contains(e.target);
+          const isMenuButton = e.target.closest('.menu-button');
+
+          if (!isInsideSidebar && !isMenuButton) {
+              hideSidebar();
+          }
+      });
+      </script>
+
+
+
+</head>
+<body>
+<div class="content">
+<div class="container">
+<div class="h1-parent">
+<h1>Wine Calculator</h1>
+</div>
+<div class="row">
+<label>Juice Volume (L)</label>
+<input id="juice" type="number" step="0.1" value="10">
+</div>
+
+<div class="row">
+<label>Specific Gravity (SG)</label>
+<input id="sg" type="number" step="0.001" value="1.080">
+</div>
+
+<div class="row">
+<label>Added Water (L)</label>
+<input id="water" type="number" step="0.1" value="0">
+</div>
+
+<div class="row">
+<label>Added Sugar (g)</label>
+<input id="sugar" type="number" step="1" value="0">
+</div>
+
+<div class="row">
+<label>Target Alcohol (%)</label>
+<input id="target" type="number" step="0.5" value="12">
+</div>
+
+<div class="results">
+
+<div class="result">
+<span>Total Volume</span>
+<span id="volumeOut"></span>
+</div>
+
+<div class="result">
+<span>Natural Sugar</span>
+<span id="naturalSugarOut"></span>
+</div>
+
+<div class="result">
+<span>Total Sugar</span>
+<span id="totalSugarOut"></span>
+</div>
+
+<div class="result">
+<span>Sugar Concentration</span>
+<span id="sugarConcOut"></span>
+</div>
+
+<div class="result">
+    <span>Estimated Alcohol</span>
+    <span>
+        <span class="highlight" id="abvOut"></span>
+        <span id="yeastWarning" class="yeast-warning" title="This alcohol percentage may not be possible with every yeast. Make sure your yeast can handle it.">
+            ⚠
+        </span>
+    </span>
+</div>
+
+<div class="result">
+<span>Sugar Needed for Target</span>
+<span class="highlight" id="sugarNeededOut"></span>
+</div>
+
+</div>
+
+<div class="info">
+Information:
+<ul>
+<li>17 g/L fermentable sugar ≈ 1% alcohol</li>
+<li>1 kg dissolved sugar increases volume by ~0.6 L</li>
+<li>ABV greater than 15% may not be possible with every yeast strain</li>
+
+</ul>
+</div>
+
+</div>
+</div>
+
+    <footer class = footer>
+      <div>© 2026 Ronny Bujok</div>
+      <div style="margin-top:8px;">
+          Licensed under 
+          <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">
+              CC BY 4.0
+          </a>
+      </div>
+  </footer>
+
+<script>
+
+const juice=document.getElementById("juice");
+const sg=document.getElementById("sg");
+const water=document.getElementById("water");
+const sugar=document.getElementById("sugar");
+const target=document.getElementById("target");
+
+const volumeOut=document.getElementById("volumeOut");
+const naturalSugarOut=document.getElementById("naturalSugarOut");
+const totalSugarOut=document.getElementById("totalSugarOut");
+const sugarConcOut=document.getElementById("sugarConcOut");
+const abvOut=document.getElementById("abvOut");
+const sugarNeededOut=document.getElementById("sugarNeededOut");
+const yeastWarning=document.getElementById("yeastWarning");
+
+function calculate(){
+
+    const juiceVol=parseFloat(juice.value)||0;
+    const SG=parseFloat(sg.value)||1;
+    const waterVol=parseFloat(water.value)||0;
+
+    // Approximate sugar concentration from SG
+    const sugarPerLiter=Math.max(0,(SG-1)* 1000*2.6);
+
+    // Natural sugar in juice
+    const naturalSugar=sugarPerLiter*juiceVol;
+
+    // Added sugar
+    const addedSugar = parseFloat(sugar.value) || 0;    const targetABV=parseFloat(target.value)||0;
+
+    // Approximate increase in volume from dissolved sugar
+    const totalVolume = juiceVol + waterVol + (addedSugar / 1000) * 0.6;
+    const totalSugar=naturalSugar+addedSugar;
+
+    const sugarConc=totalSugar/Math.max(totalVolume,0.001);
+
+    const estimatedABV=sugarConc/17;
+
+    const requiredSugar=targetABV*17*totalVolume;
+
+    const extraSugar=Math.max(0,requiredSugar-totalSugar);
+
+    volumeOut.textContent=totalVolume.toFixed(2)+" L";
+
+    naturalSugarOut.textContent=(naturalSugar).toFixed(2)+" g";
+
+    totalSugarOut.textContent=(totalSugar).toFixed(2)+" g";
+
+    sugarConcOut.textContent=sugarConc.toFixed(0)+" g/L";
+
+    abvOut.textContent=estimatedABV.toFixed(1)+" %";
+    if (estimatedABV > 15) {
+    yeastWarning.style.display = "inline";
+    } else {
+        yeastWarning.style.display = "none";
+    }
+
+    if(extraSugar>0){
+        sugarNeededOut.textContent=(extraSugar).toFixed(2)+" g";
+        sugarNeededOut.style.color="green";
+    }else{
+        sugarNeededOut.textContent="No extra sugar";
+        sugarNeededOut.style.color="#8B0000";
+    }
+
+}
+
+[juice,sg,water,sugar,target].forEach(input=>{
+    input.addEventListener("input",calculate);
+});
+
+calculate();
+
+</script>
+
+</body>
+</html>
