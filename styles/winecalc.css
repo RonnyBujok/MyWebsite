@@ -311,6 +311,9 @@ input{
     color:var(--sub-text);
 }
 
+.info li{
+    margin-left: 1rem;
+}
 
 
 .yeast-warning {

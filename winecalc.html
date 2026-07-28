@@ -201,14 +201,15 @@ function calculate(){
     const totalVolume = juiceVol + waterVol + (addedSugar / 1000) * 0.6;
     const totalSugar=naturalSugar+addedSugar;
 
-    const sugarConc=totalSugar/Math.max(totalVolume,0.001);
+const fermentationVolume = juiceVol + waterVol;
 
-    const estimatedABV=sugarConc/17;
+const sugarConc = totalSugar / Math.max(fermentationVolume,0.001);
 
-    const requiredSugar=targetABV*17*totalVolume;
+const estimatedABV = sugarConc / 17;
 
-    const extraSugar=Math.max(0,requiredSugar-totalSugar);
+    const requiredSugar=targetABV*17*fermentationVolume;
 
+    const extraSugar = requiredSugar - totalSugar;
     volumeOut.textContent=totalVolume.toFixed(2)+" L";
 
     naturalSugarOut.textContent=(naturalSugar).toFixed(2)+" g";
@@ -224,12 +225,26 @@ function calculate(){
         yeastWarning.style.display = "none";
     }
 
-    if(extraSugar>0){
-        sugarNeededOut.textContent=(extraSugar).toFixed(2)+" g";
-        sugarNeededOut.style.color="green";
-    }else{
-        sugarNeededOut.textContent="No extra sugar";
-        sugarNeededOut.style.color="#8B0000";
+    const abvDifference = estimatedABV - targetABV;
+    const tolerance = 0.1; // allows small rounding differences
+
+    if (abvDifference > tolerance) {
+        sugarNeededOut.textContent = "Too much sugar";
+        sugarNeededOut.style.color = "#8B0000";
+
+        abvOut.style.color = "#8B0000"; // red warning
+    }
+    else if (Math.abs(abvDifference) <= tolerance) {
+        sugarNeededOut.textContent = "Perfect amount";
+        sugarNeededOut.style.color = "green";
+
+        abvOut.style.color = "green"; // normal color
+    }
+    else {
+        sugarNeededOut.textContent = (extraSugar).toFixed(2) + " g";
+        sugarNeededOut.style.color = "#8B0000";
+
+        abvOut.style.color = "#8B0000"; // highlight
     }
 
 }
