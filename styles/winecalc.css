@@ -253,6 +253,7 @@ h1::after{
     font-family: Arial, sans-serif;
     background: var(--primary);
     align-content: center;
+    padding: min(20px,3rem);
 }
 
 .container{
