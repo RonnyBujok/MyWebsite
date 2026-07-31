@@ -334,6 +334,7 @@ input{
     margin-top:3rem;
     font-size:0.8rem;
     color:var(--sub-text);
+    margin-bottom: 3rem;
 }
 
 .info p{
@@ -354,6 +355,8 @@ input{
 .cheat-toggle {
     text-align:center;
     margin-top:20px;
+    border-top:1px solid var(--third);
+
 }
 
 .cheat-toggle button {
@@ -364,6 +367,8 @@ input{
     border:solid 0.1rem;
     background-color: var(--primary);
     cursor:pointer;
+    margin-top: 3rem;
+
 }
 
 .cheat-toggle button:hover{
