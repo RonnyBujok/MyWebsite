@@ -305,16 +305,53 @@ input{
     color:#8B0000;
 }
 
+.info-icon{
+    cursor:help;
+    color:#888;
+    margin-left:5px;
+    font-size:0.9em;
+}
+
+.info-icon:hover{
+    color:#333;
+}
+
 .info{
     margin-top:3rem;
     font-size:0.8rem;
     color:var(--sub-text);
 }
 
+.info p{
+    margin-bottom: 0.5rem;
+}
+
 .info li{
     margin-left: 1rem;
 }
 
+
+.cheat-toggle {
+    text-align:center;
+    margin-top:20px;
+}
+
+.cheat-toggle button {
+    padding:8px 15px;
+    border-radius:6px;
+    color: var(--accent);
+    border-color: var(--accent);
+    border:solid 0.1rem;
+    background-color: var(--primary);
+    cursor:pointer;
+}
+
+.cheat-toggle button:hover{
+        filter: brightness(1.1);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;  /* 👈 change 0.6s to whatever you want */
+    box-shadow: 0 0 0.3rem var(--accent);
+}
 
 .yeast-warning {
     display: none;
