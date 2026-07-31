@@ -384,19 +384,43 @@ function calculate() {
 
     const estimatedABV = Math.max(0, (newOG - finalSG) * 131.25);
 
-    // ------------------------------
-    // Required sugar
-    // ------------------------------
+// ------------------------------
+// Required sugar (iterative solution)
+// ------------------------------
 
-    const targetOG = finalSG + targetABV / 131.25;
+let extraSugar = 0;
+let guess = 0;
 
-    const targetPlato = sgToPlato(targetOG);
+for(let i = 0; i < 20; i++){
 
-    const targetSugarConc = platoToSugar(targetPlato, targetOG);
+    // Sugar addition increases volume
+    const newVolume = totalVolume + guess * 0.0006;
 
-    const requiredSugar = targetSugarConc * totalVolume;
+    // Total sugar after addition
+    const newTotalSugar = totalSugar + guess;
 
-    const extraSugar = requiredSugar - totalSugar;
+    // New sugar concentration
+    const newSugarConc = newTotalSugar / newVolume;
+
+    // Convert sugar concentration to OG
+    const newPlato = sugarToPlato(newSugarConc);
+    const newOG = platoToSG(newPlato);
+
+    // Calculate ABV
+    const newABV = (newOG - finalSG) * 131.25;
+
+    // Correct the error
+    const difference = targetABV - newABV;
+
+    // 17 g/L ≈ 1% ABV correction
+    guess += difference * 17 * newVolume;
+
+    if(Math.abs(difference) < 0.01){
+        break;
+    }
+}
+
+extraSugar = guess;
 
     // ------------------------------
     // Output
