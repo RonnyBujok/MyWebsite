@@ -85,6 +85,33 @@
             }
 
         }
+
+
+
+        function toggleGravityInfo(){
+
+            const info = document.getElementById("gravityInfo");
+
+            if(info.style.display === "block"){
+                info.style.display = "none";
+            } else {
+                info.style.display = "block";
+            }
+
+        }
+
+
+        function toggleYeastInfo(){
+
+            const info = document.getElementById("yeastInfo");
+
+            if(info.style.display === "block"){
+                info.style.display = "none";
+            } else {
+                info.style.display = "block";
+            }
+
+        }
       </script>
 
 
@@ -119,17 +146,17 @@
 <div class="row">
     <label>
         Final Gravity (FG)
-        <span class="info-icon"
-        title="Typical final gravities after a complete fermentation:
-
-10% ABV: 0.998–1.000
-12% ABV: 0.996–0.999
-15% ABV: 0.994–0.998
-18% ABV: 0.992–0.997"
-
->
-        ⓘ
+        <span class="info-icon" onclick="toggleGravityInfo()">
+    ⓘ
         </span>
+
+        <div id="gravityInfo" class="tooltip-box">
+            Typical final gravities after complete fermentation:<br><br>
+            10% ABV: 0.998–1.000<br>
+            12% ABV: 0.996–0.999<br>
+            15% ABV: 0.994–1.000<br>
+            18% ABV: 0.992–0.997
+        </div>
     </label>
 
     <input id="tg" type="number" step="0.001" value="1.000">
@@ -164,11 +191,18 @@
 
 <div class="result">
     <span>Estimated Alcohol</span>
+
     <span>
         <span class="highlight" id="abvOut"></span>
-        <span id="yeastWarning" class="yeast-warning" title="This alcohol percentage may not be possible with every yeast. Make sure your yeast can handle it.">
+
+        <span id="yeastWarning" class="yeast-warning" onclick="toggleYeastInfo()">
             ⚠
         </span>
+
+        <div id="yeastInfo" class="tooltip-box">
+            High alcohol levels may not be possible with every yeast strain.
+            Check the yeast alcohol tolerance before fermentation.
+        </div>
     </span>
 </div>
 

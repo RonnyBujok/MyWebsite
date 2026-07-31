@@ -305,11 +305,25 @@ input{
     color:#8B0000;
 }
 
-.info-icon{
-    cursor:help;
-    color:#888;
+.info-icon {
+    cursor:pointer;
+    color:#666;
     margin-left:5px;
-    font-size:0.9em;
+}
+
+.tooltip-box {
+    display:none;
+    position:absolute;
+    background:white;
+    border:1px solid #ccc;
+    padding:10px;
+    border-radius:6px;
+    font-size:0.8rem;
+    width:250px;
+    z-index:10;
+    margin-top:5px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+    font-weight: 200;
 }
 
 .info-icon:hover{
@@ -329,6 +343,12 @@ input{
 .info li{
     margin-left: 1rem;
 }
+
+.yeast-warning {
+    cursor:pointer;
+    margin-left:5px;
+}
+
 
 
 .cheat-toggle {
