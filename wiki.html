@@ -1,0 +1,2806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =========================================================
+         GOOGLE ANALYTICS
+         ========================================================= -->
+
+    <script async
+        src="https://www.googletagmanager.com/gtag/js?id=G-LFX2EX8LP8">
+    </script>
+
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+        gtag('config', 'G-LFX2EX8LP8');
+    </script>
+
+
+    <!-- =========================================================
+         META
+         ========================================================= -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Mushroom Wiki - search mushroom names, translations, images and identification traits">
+
+    <meta
+        name="keywords"
+        content="mushrooms, mushroom wiki, fungi, mycology, mushroom identification">
+
+    <meta
+        name="author"
+        content="Ronny Bujok">
+
+    <title>Ronny Bujok - Mushroom Wiki</title>
+
+
+    <!-- =========================================================
+         EXISTING STYLESHEET
+         ========================================================= -->
+
+    <link
+        rel="stylesheet"
+        href="styles/wiki.css">
+
+
+    <!-- =========================================================
+         MUSHROOM WIKI STYLES
+         ========================================================= -->
+
+    <style>
+
+  
+
+        /* =====================================================
+           EDIBILITY
+           ===================================================== */
+
+        .edibility {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            width: fit-content;
+
+            margin: 20px 0 0 auto;
+
+            padding: 10px 16px;
+
+            border-radius: 999px;
+
+            font-weight: 600;
+
+        }
+
+
+        .edibility-dot {
+
+            width: 14px;
+
+            height: 14px;
+
+            min-width: 14px;
+
+            border-radius: 50%;
+
+            display: inline-block;
+
+        }
+
+
+        .edibility.green {
+
+            background: #e7f6e7;
+
+            color: #176b17;
+
+        }
+
+
+        .edibility.green .edibility-dot {
+
+            background: #2e9d2e;
+
+        }
+
+
+        .edibility.yellow {
+
+            background: #fff5cc;
+
+            color: #765d00;
+
+        }
+
+
+        .edibility.yellow .edibility-dot {
+
+            background: #e5b800;
+
+        }
+
+
+        .edibility.red {
+
+            background: #fbe4e4;
+
+            color: #9b1717;
+
+        }
+
+
+        .edibility.red .edibility-dot {
+
+            background: #d62828;
+
+        }
+
+
+        .edibility.unknown {
+
+            background: #eeeeee;
+
+            color: #555555;
+
+        }
+
+
+        .edibility.unknown .edibility-dot {
+
+            background: #888888;
+
+        }
+
+
+        /* =====================================================
+           LANGUAGE NAMES
+           ===================================================== */
+
+        .mushroom-names {
+
+            grid-column: 1 / -1;
+
+            display: grid;
+
+            gap: 0;
+
+            margin-top: 0;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #ddd;
+
+        }
+
+
+        .names {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(250px, 1fr));
+
+            gap: 0 30px;
+
+            margin-top: 0;
+
+            padding-bottom: 10px;
+
+        }
+
+
+        .name {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 10px 20px;
+
+            border-bottom: 1px solid #eee;
+
+        }
+
+
+        .name .label {
+
+            font-weight: 600;
+
+        }
+
+
+        .name .value {
+
+            text-align: right;
+
+        }
+
+
+        /* =====================================================
+           SOURCE
+           ===================================================== */
+
+        .source {
+
+            margin-top: 30px;
+
+            font-size: 0.85rem;
+
+            opacity: 0.75;
+
+        }
+
+
+        /* =====================================================
+           RESULT
+           ===================================================== */
+
+        .result {
+
+            display: none;
+
+        }
+
+
+        .result.show {
+
+            display: block;
+
+        }
+
+
+        #status {
+
+            margin: 15px 0;
+
+        }
+
+
+        #status.error {
+
+            color: #b00020;
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+           ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .mushroom-result-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 25px;
+
+            }
+
+
+            .mushroom-image-column {
+
+                height: 400px;
+
+            }
+
+
+            .mushroom-photo {
+
+                width: 100%;
+
+                height: 100%;
+
+                object-fit: cover;
+
+            }
+
+
+            .mushroom-names {
+
+                grid-column: 1;
+
+            }
+
+
+            .trait {
+
+                grid-template-columns: 1fr;
+
+                gap: 4px;
+
+            }
+
+
+            .trait-value {
+
+                text-align: left;
+
+            }
+
+
+            .names {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .name {
+
+                flex-direction: column;
+
+                gap: 2px;
+
+            }
+
+
+            .name .value {
+
+                text-align: left;
+
+            }
+
+
+            .edibility {
+
+                margin-left: 0;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVIGATION
+     ========================================================= -->
+
+<nav>
+
+    <ul class="sidebar">
+
+        <li
+            class="close-icon-button"
+            onclick="hideSidebar()">
+
+            <img
+                src="icons/close.svg"
+                alt="Close menu">
+
+        </li>
+
+
+        <li>
+            <a href="about.html">
+                About
+            </a>
+        </li>
+
+
+        <li>
+            <a href="research.html">
+                Research
+            </a>
+        </li>
+
+
+        <li>
+            <a href="teaching.html">
+                Teaching
+            </a>
+        </li>
+
+
+        <li>
+            <a href="projects.html">
+                Projects
+            </a>
+        </li>
+
+
+        <li>
+            <a href="contact.html">
+                Contact
+            </a>
+        </li>
+
+    </ul>
+
+
+    <ul>
+
+        <li>
+
+            <a href="index.html">
+
+                <img
+                    style="padding-right: 10px;"
+                    src="icons/home.svg"
+                    alt="">
+
+                Ronny Bujok
+
+            </a>
+
+        </li>
+
+
+        <li class="hideOnMobile">
+
+            <a href="about.html">
+                About
+            </a>
+
+        </li>
+
+
+        <li class="hideOnMobile">
+
+            <a href="research.html">
+                Research
+            </a>
+
+        </li>
+
+
+        <li class="hideOnMobile">
+
+            <a href="teaching.html">
+                Teaching
+            </a>
+
+        </li>
+
+
+        <li class="hideOnMobile">
+
+            <a href="projects.html">
+                Projects
+            </a>
+
+        </li>
+
+
+        <li class="hideOnMobile">
+
+            <a href="contact.html">
+                Contact
+            </a>
+
+        </li>
+
+
+        <li
+            class="menu-button"
+            onclick="showSidebar()">
+
+            <a href="#">
+
+                <img
+                    src="icons/menu.svg"
+                    alt="Menu">
+
+            </a>
+
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- =========================================================
+     SIDEBAR SCRIPT
+     ========================================================= -->
+
+<script>
+
+    const sidebar =
+        document.querySelector('.sidebar');
+
+
+    function showSidebar() {
+
+        sidebar.classList.add('show');
+
+        document.body.classList.add(
+            'menu-open'
+        );
+
+    }
+
+
+    function hideSidebar() {
+
+        sidebar.classList.remove('show');
+
+        document.body.classList.remove(
+            'menu-open'
+        );
+
+    }
+
+
+    document.addEventListener(
+        'click',
+        function(event) {
+
+            const isInsideSidebar =
+                sidebar.contains(event.target);
+
+
+            const isMenuButton =
+                event.target.closest(
+                    '.menu-button'
+                );
+
+
+            if (
+                !isInsideSidebar &&
+                !isMenuButton
+            ) {
+
+                hideSidebar();
+
+            }
+
+        }
+    );
+
+</script>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
+
+<div class="content">
+
+<main class="wrap">
+
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header>
+
+
+
+        
+        <h1>
+            Mushroom Wiki
+        </h1>
+
+
+        <p>
+            Search for a mushroom to find its name,
+            image and identification traits.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         SEARCH FORM
+         ===================================================== -->
+
+    <form
+        class="search"
+        id="searchForm">
+
+        <input
+            id="query"
+            type="search"
+            placeholder="e.g., Boletus edulis"
+            autocomplete="off"
+            required>
+
+
+        <button
+            id="searchButton"
+            type="submit">
+
+            Search
+
+        </button>
+
+    </form>
+
+
+    <!-- =====================================================
+         STATUS
+         ===================================================== -->
+
+    <div
+        id="status"
+        aria-live="polite">
+    </div>
+
+
+    <!-- =====================================================
+         RESULT
+         ===================================================== -->
+
+    <section
+        class="result"
+        id="result">
+
+
+        <!-- =================================================
+             TITLE + LATIN NAME
+             ================================================= -->
+
+        <div class="mushroom-heading">
+
+            <h2 id="title"></h2>
+
+            <div
+                class="latin"
+                id="latin">
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PHOTO + CHEAT SHEET + NAMES
+             ================================================= -->
+
+        <div class="mushroom-result-grid">
+
+
+            <!-- =================================================
+                 PHOTO
+                 ================================================= -->
+
+            <div class="mushroom-image-column">
+
+                <img
+                    id="mushroomImage"
+                    class="mushroom-photo"
+                    alt="Mushroom image"
+                    style="display:none;">
+
+            </div>
+
+
+            <!-- =================================================
+                 IDENTIFICATION PANEL
+                 ================================================= -->
+
+            <div>
+
+
+                <div class="identification-panel">
+
+
+                    <div class="identification-header">
+
+                        <h3>
+                            Identification traits
+                        </h3>
+
+                    </div>
+
+
+                    <div class="trait-list">
+
+
+                        <!-- Hymenium -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Hymenium
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-hymenium">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Cap -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Cap shape
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-cap">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Attachment -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Hymenium attachment
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-attachment">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Stipe -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Stipe / stem
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-stipe">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Spore -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Spore print
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-spore">
+                            </span>
+
+                        </div>
+
+
+                        <!-- Ecology -->
+
+                        <div class="trait">
+
+                            <span class="trait-label">
+                                Ecology
+                            </span>
+
+                            <span
+                                class="trait-value"
+                                id="trait-ecology">
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     EDIBILITY BADGE
+                     ================================================= -->
+
+                <div
+                    id="edibility"
+                    class="edibility unknown">
+
+                    <span
+                        class="edibility-dot">
+                    </span>
+
+                    <span id="edibilityText">
+                        Edibility unknown
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 LANGUAGE NAMES
+
+                 This row spans the entire width.
+                 ================================================= -->
+
+            <div class="mushroom-names">
+
+
+                <div class="names">
+
+
+                    <div class="name">
+
+                        <span class="label">
+                            English
+                        </span>
+
+                        <span
+                            class="value"
+                            id="en">
+                        </span>
+
+                    </div>
+
+
+                    <div class="name">
+
+                        <span class="label">
+                            Deutsch
+                        </span>
+
+                        <span
+                            class="value"
+                            id="de">
+                        </span>
+
+                    </div>
+
+
+                    <div class="name">
+
+                        <span class="label">
+                            Polski
+                        </span>
+
+                        <span
+                            class="value"
+                            id="pl">
+                        </span>
+
+                    </div>
+
+
+                    <div class="name">
+
+                        <span class="label">
+                            Nederlands
+                        </span>
+
+                        <span
+                            class="value"
+                            id="nl">
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             SOURCE
+             ================================================= -->
+
+        <div
+            class="source"
+            id="source">
+        </div>
+
+
+    </section>
+
+
+</main>
+
+</div>
+
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
+<footer class="footer">
+
+    <div>
+        © 2026 Ronny Bujok
+    </div>
+
+
+    <div style="margin-top:8px;">
+
+        Licensed under
+
+        <a
+            class="hyperlink"
+            href="https://creativecommons.org/licenses/by/4.0/deed.en"
+            target="_blank"
+            rel="noopener">
+
+            CC BY 4.0
+
+        </a>
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     MUSHROOM WIKI JAVASCRIPT
+     ========================================================= -->
+
+<script>
+
+
+/* ============================================================
+   LANGUAGES
+   ============================================================ */
+
+const LANGS = [
+    "en",
+    "de",
+    "pl",
+    "nl",
+    "la"
+];
+
+
+/* ============================================================
+   DOM ELEMENTS
+   ============================================================ */
+
+const form =
+    document.getElementById(
+        "searchForm"
+    );
+
+
+const queryInput =
+    document.getElementById(
+        "query"
+    );
+
+
+const button =
+    document.getElementById(
+        "searchButton"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+
+/* ============================================================
+   WIKIPEDIA API HELPER
+   ============================================================ */
+
+function wikiApi(
+    lang,
+    params
+) {
+
+    return (
+        `https://${lang}.wikipedia.org/w/api.php?` +
+        `origin=*&format=json&` +
+        new URLSearchParams(params)
+    );
+
+}
+
+
+/* ============================================================
+   SEARCH WIKIPEDIA
+   ============================================================ */
+
+async function searchWiki(
+    lang,
+    query
+) {
+
+    const url =
+        wikiApi(
+            lang,
+            {
+
+                action: "query",
+
+                list: "search",
+
+                srsearch: query,
+
+                srlimit: "5",
+
+                formatversion: "2"
+
+            }
+        );
+
+
+    const response =
+        await fetch(url);
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Wikipedia (${lang}) request failed`
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    return (
+        data.query?.search ||
+        []
+    );
+
+}
+
+
+/* ============================================================
+   GET WIKIPEDIA PAGE
+   ============================================================ */
+
+async function getPage(
+    lang,
+    title
+) {
+
+    const url =
+        wikiApi(
+            lang,
+            {
+
+                action: "query",
+
+                prop:
+                    "info|pageprops|pageimages",
+
+                inprop: "url",
+
+                piprop: "original",
+
+                ppprop: "wikibase_item",
+
+                redirects: "1",
+
+                titles: title,
+
+                formatversion: "2"
+
+            }
+        );
+
+
+    const response =
+        await fetch(url);
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Wikipedia (${lang}) request failed`
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    const page =
+        data.query?.pages?.[0];
+
+
+    if (
+        !page ||
+        page.missing
+    ) {
+
+        return null;
+
+    }
+
+
+    return {
+
+        title:
+            page.title,
+
+        url:
+            page.fullurl,
+
+        qid:
+            page.pageprops
+                ?.wikibase_item ||
+            null,
+
+        image:
+            page.original
+                ?.source ||
+            null,
+
+        language:
+            lang
+
+    };
+
+}
+
+
+/* ============================================================
+   GET WIKIDATA ENTITY
+   ============================================================ */
+
+async function getWikidata(
+    qid
+) {
+
+    if (!qid) {
+
+        return null;
+
+    }
+
+
+    const url =
+        `https://www.wikidata.org/w/api.php?` +
+        `origin=*&format=json&` +
+        new URLSearchParams({
+
+            action:
+                "wbgetentities",
+
+            ids:
+                qid,
+
+            props:
+                "labels|claims",
+
+            languages:
+                "en|de|pl|nl|la",
+
+            languagefallback:
+                "1"
+
+        });
+
+
+    const response =
+        await fetch(url);
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Wikidata request failed."
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    return (
+        data.entities?.[qid] ||
+        null
+    );
+
+}
+
+
+/* ============================================================
+   GET WIKIDATA LABEL
+   ============================================================ */
+
+function getLabel(
+    entity,
+    lang
+) {
+
+    return (
+        entity
+            ?.labels
+            ?.[lang]
+            ?.value ||
+        ""
+    );
+
+}
+
+
+/* ============================================================
+   GET LABELS FOR Q-IDS
+   ============================================================ */
+
+async function getEntityLabels(
+    qids
+) {
+
+    const uniqueQids =
+        [
+            ...new Set(qids)
+        ];
+
+
+    if (
+        uniqueQids.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    const url =
+        `https://www.wikidata.org/w/api.php?` +
+        `origin=*&format=json&` +
+        new URLSearchParams({
+
+            action:
+                "wbgetentities",
+
+            ids:
+                uniqueQids.join("|"),
+
+            props:
+                "labels",
+
+            languages:
+                "en|de|pl|nl|la",
+
+            languagefallback:
+                "1"
+
+        });
+
+
+    const response =
+        await fetch(url);
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Could not read Wikidata labels."
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    return uniqueQids
+
+        .map(
+            qid => {
+
+                const entity =
+                    data.entities
+                        ?.[qid];
+
+
+                return (
+
+                    entity
+                        ?.labels
+                        ?.en
+                        ?.value ||
+
+                    entity
+                        ?.labels
+                        ?.de
+                        ?.value ||
+
+                    entity
+                        ?.labels
+                        ?.pl
+                        ?.value ||
+
+                    entity
+                        ?.labels
+                        ?.nl
+                        ?.value ||
+
+                    entity
+                        ?.labels
+                        ?.la
+                        ?.value ||
+
+                    ""
+
+                );
+
+            }
+        )
+
+        .filter(Boolean);
+
+}
+
+
+/* ============================================================
+   GET CLAIM Q-IDS
+   ============================================================ */
+
+function getClaimQids(
+    entity,
+    property
+) {
+
+    const claims =
+        entity
+            ?.claims
+            ?.[property];
+
+
+    if (
+        !claims ||
+        claims.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    const preferred =
+        claims.filter(
+            claim =>
+                claim.rank ===
+                "preferred"
+        );
+
+
+    const statements =
+        preferred.length > 0
+            ? preferred
+            : claims;
+
+
+    return statements
+
+        .map(
+            claim =>
+                claim
+                    ?.mainsnak
+                    ?.datavalue
+                    ?.value
+                    ?.id
+        )
+
+        .filter(Boolean);
+
+}
+
+
+/* ============================================================
+   GET MUSHROOM TRAIT
+   ============================================================ */
+
+async function getMushroomTrait(
+    entity,
+    property
+) {
+
+    const qids =
+        getClaimQids(
+            entity,
+            property
+        );
+
+
+    if (
+        qids.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    return await getEntityLabels(
+        qids
+    );
+
+}
+
+
+/* ============================================================
+   GET MUSHROOM IDENTIFICATION TRAITS
+   ============================================================
+
+   P783 = hymenium type
+   P784 = mushroom cap shape
+   P785 = hymenium attachment
+   P786 = stipe character
+   P787 = spore print color
+   P788 = mushroom ecological type
+
+   P789 = edibility, handled separately.
+   ============================================================ */
+
+async function getMushroomTraits(
+    entity
+) {
+
+    if (!entity) {
+
+        return {
+
+            hymenium: [],
+
+            cap: [],
+
+            attachment: [],
+
+            stipe: [],
+
+            spore: [],
+
+            ecology: []
+
+        };
+
+    }
+
+
+    const [
+
+        hymenium,
+
+        cap,
+
+        attachment,
+
+        stipe,
+
+        spore,
+
+        ecology
+
+    ] = await Promise.all([
+
+        getMushroomTrait(
+            entity,
+            "P783"
+        ),
+
+        getMushroomTrait(
+            entity,
+            "P784"
+        ),
+
+        getMushroomTrait(
+            entity,
+            "P785"
+        ),
+
+        getMushroomTrait(
+            entity,
+            "P786"
+        ),
+
+        getMushroomTrait(
+            entity,
+            "P787"
+        ),
+
+        getMushroomTrait(
+            entity,
+            "P788"
+        )
+
+    ]);
+
+
+    return {
+
+        hymenium,
+
+        cap,
+
+        attachment,
+
+        stipe,
+
+        spore,
+
+        ecology
+
+    };
+
+}
+
+
+/* ============================================================
+   EDIBILITY
+   ============================================================ */
+
+async function getEdibility(
+    entity
+) {
+
+    const claims =
+        entity
+            ?.claims
+            ?.P789;
+
+
+    if (
+        !claims ||
+        claims.length === 0
+    ) {
+
+        return {
+
+            className:
+                "unknown",
+
+            text:
+                "Edibility unknown"
+
+        };
+
+    }
+
+
+    const preferred =
+        claims.filter(
+            claim =>
+                claim.rank ===
+                "preferred"
+        );
+
+
+    const statements =
+        preferred.length > 0
+            ? preferred
+            : claims;
+
+
+    const qids =
+        statements
+
+            .map(
+                claim =>
+                    claim
+                        ?.mainsnak
+                        ?.datavalue
+                        ?.value
+                        ?.id
+            )
+
+            .filter(Boolean);
+
+
+    if (
+        qids.length === 0
+    ) {
+
+        return {
+
+            className:
+                "unknown",
+
+            text:
+                "Edibility unknown"
+
+        };
+
+    }
+
+
+    const labels =
+        await getEntityLabels(
+            qids
+        );
+
+
+    if (
+        labels.length === 0
+    ) {
+
+        return {
+
+            className:
+                "unknown",
+
+            text:
+                "Edibility unknown"
+
+        };
+
+    }
+
+
+    const lower =
+        labels.map(
+            label =>
+                label.toLowerCase()
+        );
+
+
+    /* ========================================================
+       POISONOUS / TOXIC
+       ======================================================== */
+
+    if (
+        lower.some(
+            label =>
+
+                label.includes(
+                    "poisonous"
+                ) ||
+
+                label.includes(
+                    "deadly"
+                ) ||
+
+                label.includes(
+                    "toxic"
+                ) ||
+
+                label.includes(
+                    "poison"
+                )
+        )
+    ) {
+
+        return {
+
+            className:
+                "red",
+
+            text:
+                "Poisonous / toxic — " +
+                labels.join(", ")
+
+        };
+
+    }
+
+
+    /* ========================================================
+       CAUTION / INEDIBLE
+       ======================================================== */
+
+    if (
+        lower.some(
+            label =>
+
+                label.includes(
+                    "inedible"
+                ) ||
+
+                label.includes(
+                    "caution"
+                ) ||
+
+                label.includes(
+                    "edible when cooked"
+                ) ||
+
+                label.includes(
+                    "must be cooked"
+                )
+        )
+    ) {
+
+        return {
+
+            className:
+                "yellow",
+
+            text:
+                labels.join(", ")
+
+        };
+
+    }
+
+
+    /* ========================================================
+       EDIBLE
+       ======================================================== */
+
+    if (
+        lower.some(
+            label =>
+
+                label ===
+                "edible" ||
+
+                label.includes(
+                    "edible mushroom"
+                ) ||
+
+                label.includes(
+                    "choice mushroom"
+                )
+        )
+    ) {
+
+        return {
+
+            className:
+                "green",
+
+            text:
+                labels.join(", ")
+
+        };
+
+    }
+
+
+    return {
+
+        className:
+            "unknown",
+
+        text:
+            labels.join(", ")
+
+    };
+
+}
+
+
+/* ============================================================
+   FIND MUSHROOM
+   ============================================================ */
+
+async function findMushroom(
+    query
+) {
+
+    /* ========================================================
+       SEARCH ALL LANGUAGES
+       ======================================================== */
+
+    const searchResults =
+        await Promise.all(
+
+            LANGS.map(
+                async lang => {
+
+                    try {
+
+                        const results =
+                            await searchWiki(
+                                lang,
+                                query
+                            );
+
+
+                        return {
+
+                            lang,
+
+                            results
+
+                        };
+
+                    }
+
+                    catch (error) {
+
+                        console.warn(
+                            `Search failed for ${lang}:`,
+                            error
+                        );
+
+
+                        return {
+
+                            lang,
+
+                            results: []
+
+                        };
+
+                    }
+
+                }
+            )
+
+        );
+
+
+    /* ========================================================
+       FIND PRIMARY PAGE
+       ======================================================== */
+
+    let primaryPage =
+        null;
+
+
+    for (
+        const languageResult
+        of searchResults
+    ) {
+
+        for (
+            const searchResult
+            of languageResult.results
+        ) {
+
+            const page =
+                await getPage(
+                    languageResult.lang,
+                    searchResult.title
+                );
+
+
+            if (
+                page?.qid
+            ) {
+
+                primaryPage =
+                    page;
+
+                break;
+
+            }
+
+        }
+
+
+        if (
+            primaryPage
+        ) {
+
+            break;
+
+        }
+
+    }
+
+
+    /* ========================================================
+       FALLBACK
+       ======================================================== */
+
+    if (
+        !primaryPage
+    ) {
+
+        for (
+            const languageResult
+            of searchResults
+        ) {
+
+            if (
+                languageResult
+                    .results
+                    .length > 0
+            ) {
+
+                primaryPage =
+                    await getPage(
+                        languageResult.lang,
+                        languageResult
+                            .results[0]
+                            .title
+                    );
+
+
+                if (
+                    primaryPage
+                ) {
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    if (
+        !primaryPage
+    ) {
+
+        return null;
+
+    }
+
+
+    /* ========================================================
+       WIKIDATA
+       ======================================================== */
+
+    const entity =
+        await getWikidata(
+            primaryPage.qid
+        );
+
+
+    /* ========================================================
+       PAGES
+       ======================================================== */
+
+    const pages = {};
+
+
+    pages[
+        primaryPage.language
+    ] =
+        primaryPage;
+
+
+    /* ========================================================
+       NAMES
+       ======================================================== */
+
+    const names = {
+
+        en:
+            entity
+                ? getLabel(
+                    entity,
+                    "en"
+                )
+                : "",
+
+        de:
+            entity
+                ? getLabel(
+                    entity,
+                    "de"
+                )
+                : "",
+
+        pl:
+            entity
+                ? getLabel(
+                    entity,
+                    "pl"
+                )
+                : "",
+
+        nl:
+            entity
+                ? getLabel(
+                    entity,
+                    "nl"
+                )
+                : "",
+
+        la:
+            entity
+                ? getLabel(
+                    entity,
+                    "la"
+                )
+                : ""
+
+    };
+
+
+    /* ========================================================
+       FIND OTHER LANGUAGE PAGES
+       ======================================================== */
+
+    if (entity) {
+
+        await Promise.all(
+
+            LANGS.map(
+                async lang => {
+
+                    if (
+                        lang ===
+                        primaryPage.language
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const name =
+                        names[lang];
+
+
+                    if (!name) {
+
+                        pages[lang] =
+                            null;
+
+                        return;
+
+                    }
+
+
+                    try {
+
+                        const results =
+                            await searchWiki(
+                                lang,
+                                name
+                            );
+
+
+                        let matchingPage =
+                            null;
+
+
+                        for (
+                            const resultItem
+                            of results
+                        ) {
+
+                            const candidate =
+                                await getPage(
+                                    lang,
+                                    resultItem.title
+                                );
+
+
+                            if (
+                                candidate &&
+                                candidate.qid ===
+                                primaryPage.qid
+                            ) {
+
+                                matchingPage =
+                                    candidate;
+
+                                break;
+
+                            }
+
+                        }
+
+
+                        if (
+                            !matchingPage &&
+                            results.length > 0
+                        ) {
+
+                            matchingPage =
+                                await getPage(
+                                    lang,
+                                    results[0]
+                                        .title
+                                );
+
+                        }
+
+
+                        pages[lang] =
+                            matchingPage;
+
+                    }
+
+                    catch (error) {
+
+                        console.warn(
+                            `Could not find ${lang} page:`,
+                            error
+                        );
+
+
+                        pages[lang] =
+                            null;
+
+                    }
+
+                }
+            )
+
+        );
+
+    }
+
+
+    /* ========================================================
+       SCIENTIFIC NAME
+       ======================================================== */
+
+    let latin =
+        "";
+
+
+    const scientificClaims =
+        entity
+            ?.claims
+            ?.P225;
+
+
+    if (
+        scientificClaims?.length
+    ) {
+
+        latin =
+            scientificClaims[0]
+                ?.mainsnak
+                ?.datavalue
+                ?.value ||
+            "";
+
+    }
+
+
+    /* Latin Wikipedia fallback */
+
+    if (
+        !latin &&
+        pages.la?.title
+    ) {
+
+        latin =
+            pages.la.title;
+
+    }
+
+
+    /* English Wikipedia fallback */
+
+    if (
+        !latin &&
+        pages.en?.title &&
+        /^[A-Z][a-z]+(?: [a-z-]+){1,3}$/
+            .test(
+                pages.en.title
+            )
+    ) {
+
+        latin =
+            pages.en.title;
+
+    }
+
+
+    /* ========================================================
+       EDIBILITY
+       ======================================================== */
+
+    const edibility =
+        entity
+            ? await getEdibility(
+                entity
+            )
+            : {
+
+                className:
+                    "unknown",
+
+                text:
+                    "Edibility unknown"
+
+            };
+
+
+    /* ========================================================
+       IDENTIFICATION TRAITS
+       ======================================================== */
+
+    const traits =
+        entity
+            ? await getMushroomTraits(
+                entity
+            )
+            : {
+
+                hymenium: [],
+
+                cap: [],
+
+                attachment: [],
+
+                stipe: [],
+
+                spore: [],
+
+                ecology: []
+
+            };
+
+
+    /* ========================================================
+       IMAGE
+       ======================================================== */
+
+    let image =
+        null;
+
+
+    let imagePage =
+        null;
+
+
+    for (
+        const lang
+        of LANGS
+    ) {
+
+        if (
+            pages[lang]?.image
+        ) {
+
+            image =
+                pages[lang].image;
+
+            imagePage =
+                pages[lang];
+
+            break;
+
+        }
+
+    }
+
+
+    /* ========================================================
+       RETURN RESULT
+       ======================================================== */
+
+    return {
+
+        pages,
+
+        names,
+
+        latin,
+
+        image,
+
+        imagePage,
+
+        edibility,
+
+        traits,
+
+        qid:
+            primaryPage.qid ||
+            null
+
+    };
+
+}
+
+
+/* ============================================================
+   DISPLAY A TRAIT
+   ============================================================ */
+
+function displayTrait(
+    elementId,
+    values
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    /*
+     * Prevent:
+     *
+     * Cannot set properties of null
+     *
+     * if a trait element is removed from the HTML.
+     */
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    if (
+        !values ||
+        values.length === 0
+    ) {
+
+        element.textContent =
+            "Not available";
+
+
+        element.classList.add(
+            "missing"
+        );
+
+
+        return;
+
+    }
+
+
+    /* Remove duplicate values */
+
+    const uniqueValues =
+        [
+            ...new Set(values)
+        ];
+
+
+    element.textContent =
+        uniqueValues.join(", ");
+
+
+    element.classList.remove(
+        "missing"
+    );
+
+}
+
+
+/* ============================================================
+   DISPLAY RESULT
+   ============================================================ */
+
+function displayResult(
+    data,
+    query
+) {
+
+    /* ========================================================
+       TITLE
+       ======================================================== */
+
+    const titleElement =
+        document.getElementById(
+            "title"
+        );
+
+
+    if (titleElement) {
+
+        titleElement.textContent =
+
+            data.names.en ||
+
+            data.names.de ||
+
+            data.names.pl ||
+
+            data.names.nl ||
+
+            data.names.la ||
+
+            query;
+
+    }
+
+
+    /* ========================================================
+       SCIENTIFIC NAME
+       ======================================================== */
+
+    const latinElement =
+        document.getElementById(
+            "latin"
+        );
+
+
+    if (latinElement) {
+
+        latinElement.textContent =
+
+            data.latin ||
+
+            "Scientific name not found";
+
+    }
+
+
+    /* ========================================================
+       IMAGE
+       ======================================================== */
+
+    const mushroomImage =
+        document.getElementById(
+            "mushroomImage"
+        );
+
+
+    if (
+        data.image
+    ) {
+
+        mushroomImage.src =
+            data.image;
+
+
+        mushroomImage.alt =
+
+            data.names.en ||
+
+            data.names.de ||
+
+            data.names.pl ||
+
+            data.names.nl ||
+
+            data.latin ||
+
+            "Mushroom";
+
+
+        mushroomImage.style.display =
+            "block";
+
+    }
+
+    else {
+
+        mushroomImage.removeAttribute(
+            "src"
+        );
+
+
+        mushroomImage.style.display =
+            "none";
+
+    }
+
+
+    /* ========================================================
+       EDIBILITY BADGE
+       ======================================================== */
+
+    const edibilityBox =
+        document.getElementById(
+            "edibility"
+        );
+
+
+    const edibilityText =
+        document.getElementById(
+            "edibilityText"
+        );
+
+
+    if (
+        edibilityBox &&
+        edibilityText
+    ) {
+
+        edibilityBox.className =
+            "edibility " +
+            data.edibility.className;
+
+
+        edibilityText.textContent =
+            data.edibility.text;
+
+    }
+
+
+    /* ========================================================
+       IDENTIFICATION TRAITS
+       ======================================================== */
+
+    displayTrait(
+        "trait-hymenium",
+        data.traits?.hymenium
+    );
+
+
+    displayTrait(
+        "trait-cap",
+        data.traits?.cap
+    );
+
+
+    displayTrait(
+        "trait-attachment",
+        data.traits?.attachment
+    );
+
+
+    displayTrait(
+        "trait-stipe",
+        data.traits?.stipe
+    );
+
+
+    displayTrait(
+        "trait-spore",
+        data.traits?.spore
+    );
+
+
+    displayTrait(
+        "trait-ecology",
+        data.traits?.ecology
+    );
+
+
+    /* ========================================================
+       LANGUAGE NAMES
+       ======================================================== */
+
+    const enElement =
+        document.getElementById(
+            "en"
+        );
+
+
+    const deElement =
+        document.getElementById(
+            "de"
+        );
+
+
+    const plElement =
+        document.getElementById(
+            "pl"
+        );
+
+
+    const nlElement =
+        document.getElementById(
+            "nl"
+        );
+
+
+    if (enElement) {
+
+        enElement.textContent =
+            data.names.en ||
+            "Not found";
+
+    }
+
+
+    if (deElement) {
+
+        deElement.textContent =
+            data.names.de ||
+            "Not found";
+
+    }
+
+
+    if (plElement) {
+
+        plElement.textContent =
+            data.names.pl ||
+            "Not found";
+
+    }
+
+
+    if (nlElement) {
+
+        nlElement.textContent =
+            data.names.nl ||
+            "Not found";
+
+    }
+
+
+    /* ========================================================
+       SOURCE
+       ======================================================== */
+
+    const sourcePage =
+
+        data.pages.en ||
+
+        data.pages.de ||
+
+        data.pages.pl ||
+
+        data.pages.nl ||
+
+        data.pages.la;
+
+
+    const sourceElement =
+        document.getElementById(
+            "source"
+        );
+
+
+    if (
+        sourceElement
+    ) {
+
+        if (
+            sourcePage?.url
+        ) {
+
+            sourceElement.innerHTML =
+
+                `Data from ` +
+
+                `<a href="${sourcePage.url}" ` +
+
+                `target="_blank" ` +
+
+                `rel="noopener">` +
+
+                `Wikipedia` +
+
+                `</a> and Wikidata.`;
+
+        }
+
+        else {
+
+            sourceElement.textContent =
+                "Data from Wikipedia and Wikidata.";
+
+        }
+
+    }
+
+
+    /* ========================================================
+       SHOW RESULT
+       ======================================================== */
+
+    result.classList.add(
+        "show"
+    );
+
+}
+
+
+/* ============================================================
+   FORM SUBMISSION
+   ============================================================ */
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const query =
+            queryInput.value.trim();
+
+
+        if (!query) {
+
+            return;
+
+        }
+
+
+        /* Disable search */
+
+        button.disabled =
+            true;
+
+
+        status.className =
+            "";
+
+
+        status.textContent =
+            "Searching Wikipedia and Wikidata…";
+
+
+        result.classList.remove(
+            "show"
+        );
+
+
+        try {
+
+            const data =
+                await findMushroom(
+                    query
+                );
+
+
+            if (!data) {
+
+                throw new Error(
+                    "No matching mushroom article was found."
+                );
+
+            }
+
+
+            displayResult(
+                data,
+                query
+            );
+
+
+            status.textContent =
+                "";
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                error
+            );
+
+
+            status.textContent =
+                error.message ||
+                "Something went wrong.";
+
+
+            status.className =
+                "error";
+
+        }
+
+
+        finally {
+
+            button.disabled =
+                false;
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
