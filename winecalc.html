@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-      <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LFX2EX8LP8"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-LFX2EX8LP8');
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ronny Bujok, PhD candidate at the Max Planck Institute for Psycholinguistics">
-    <meta name="keywords" content="Ronny, Bujok, Nijmegen, Max Planck Institute, Psycholinguistics, Research, Prosody, Beat gestures">
     <meta name="author" content="Ronny Bujok">
-    <title>Ronny Bujok - Contact</title>
+    <title>Wine Calculator</title>
     <link rel="stylesheet" href="styles/winecalc.css">
 </head>
 <body>
@@ -45,241 +42,92 @@
           <li class="menu-button" onclick=showSidebar()><a href="#"><img src="icons/menu.svg" alt=""></a></li>
         </ul>
       </nav>
-    
-      <script>
-      const sidebar = document.querySelector('.sidebar');
 
-      function showSidebar() {
-          sidebar.classList.add('show');
-          document.body.classList.add('menu-open');
-      }
+<script>
+  const sidebar = document.querySelector('.sidebar');
+  function showSidebar() { sidebar.classList.add('show'); document.body.classList.add('menu-open'); }
+  function hideSidebar() { sidebar.classList.remove('show'); document.body.classList.remove('menu-open'); }
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !e.target.closest('.menu-button')) hideSidebar();
+  });
+  const toggle = id => { const el = document.getElementById(id); el.hidden = !el.hidden; };
+</script>
 
-      function hideSidebar() {
-          sidebar.classList.remove('show');
-          document.body.classList.remove('menu-open');
-      }
-
-      // 👇 put this OUTSIDE any function
-      document.addEventListener('click', (e) => {
-          const isInsideSidebar = sidebar.contains(e.target);
-          const isMenuButton = e.target.closest('.menu-button');
-
-          if (!isInsideSidebar && !isMenuButton) {
-              hideSidebar();
-          }
-      });
-
-
-
-      function toggleCheatSheet(){
-
-            const sheet = document.getElementById("cheatSheet");
-            const button = document.querySelector(".cheat-toggle button");
-
-            if(sheet.style.display === "none"){
-                sheet.style.display = "block";
-                button.textContent = "Hide Wine Making Cheat Sheet";
-            } else {
-                sheet.style.display = "none";
-                button.textContent = "Show Wine Making Cheat Sheet";
-            }
-
-        }
-
-
-
-        function toggleGravityInfo(){
-
-            const info = document.getElementById("gravityInfo");
-
-            if(info.style.display === "block"){
-                info.style.display = "none";
-            } else {
-                info.style.display = "block";
-            }
-
-        }
-
-
-        function toggleYeastInfo(){
-
-            const info = document.getElementById("yeastInfo");
-
-            if(info.style.display === "block"){
-                info.style.display = "none";
-            } else {
-                info.style.display = "block";
-            }
-
-        }
-      </script>
-
-
-
-</head>
-<body>
 <div class="content">
-<div class="container">
-<div class="h1-parent">
-<h1>Wine Calculator</h1>
-</div>
-<div class="row">
-<label>Juice Volume (L)</label>
-<input id="juice" type="number" step="0.1" value="10">
-</div>
+<main class="calc">
 
-<div class="row">
-<label>Original Gravity (OG)</label>
-<input id="sg" type="number" step="0.001" value="1.080">
-</div>
+  <header class="page-head">
+    <h1>Wine calculator</h1>
+    <p>Work out sugar, volume and alcohol for your batch.</p>
+  </header>
 
-<div class="row">
-<label>Added Water (L)</label>
-<input id="water" type="number" step="0.1" value="0">
-</div>
+  <section class="hero" data-state="under" aria-live="polite">
+    <div>
+      <span class="k">Estimated alcohol</span>
+      <span class="big" id="abvOut"></span>
+      <button type="button" id="yeastWarning" class="warn" onclick="toggle('yeastInfo')" hidden>&#9888; High alcohol</button>
+      <span id="yeastInfo" class="note" hidden>High alcohol levels may not be possible with every yeast strain. Check the yeast's alcohol tolerance before fermentation.</span>
+    </div>
+    <div>
+      <span class="k">Sugar to add</span>
+      <span class="big" id="sugarNeededOut"></span>
+    </div>
+  </section>
 
-<div class="row">
-<label>Added Sugar (g)</label>
-<input id="sugar" type="number" step="1" value="0">
-</div>
+  <section class="inputs">
+    <div class="fields">
+      <label class="field"><span class="lbl">Juice volume</span><span class="input-wrap"><input id="juice" type="number" inputmode="decimal" step="0.1" value="10"><em>L</em></span></label>
+      <label class="field"><span class="lbl">Original gravity</span><span class="input-wrap"><input id="sg" type="number" inputmode="decimal" step="0.001" value="1.080"><em>OG</em></span></label>
+      <label class="field"><span class="lbl">Water added</span><span class="input-wrap"><input id="water" type="number" inputmode="decimal" step="0.1" value="0"><em>L</em></span></label>
+      <label class="field"><span class="lbl">Sugar added</span><span class="input-wrap"><input id="sugar" type="number" inputmode="decimal" step="1" value="0"><em>g</em></span></label>
+      <div class="field">
+        <span class="lbl"><label for="tg">Final gravity</label><button type="button" class="help-btn" onclick="toggle('gravityInfo')" aria-label="Typical final gravities">?</button></span>
+        <span class="input-wrap"><input id="tg" type="number" inputmode="decimal" step="0.001" value="1.000"><em>FG</em></span>
+      </div>
+      <label class="field"><span class="lbl">Target alcohol</span><span class="input-wrap"><input id="target" type="number" inputmode="decimal" step="0.5" value="12"><em>% ABV</em></span></label>
+    </div>
+    <p id="gravityInfo" class="note" hidden>
+      Typical final gravities after complete fermentation:<br>
+      10% ABV: 0.998&ndash;1.000 &middot; 12% ABV: 0.996&ndash;0.999<br>
+      15% ABV: 0.994&ndash;1.000 &middot; 18% ABV: 0.992&ndash;0.997
+    </p>
+  </section>
 
-<div class="row">
-    <label>
-        Final Gravity (FG)
-        <span class="info-icon" onclick="toggleGravityInfo()">
-    ⓘ
-        </span>
+  <dl class="stats">
+    <div><dt>Total volume</dt><dd id="volumeOut"></dd></div>
+    <div><dt>Natural sugar</dt><dd id="naturalSugarOut"></dd></div>
+    <div><dt>Total sugar</dt><dd id="totalSugarOut"></dd></div>
+    <div><dt>Sugar concentration</dt><dd id="sugarConcOut"></dd></div>
+  </dl>
 
-        <div id="gravityInfo" class="tooltip-box">
-            Typical final gravities after complete fermentation:<br><br>
-            10% ABV: 0.998–1.000<br>
-            12% ABV: 0.996–0.999<br>
-            15% ABV: 0.994–1.000<br>
-            18% ABV: 0.992–0.997
-        </div>
-    </label>
+  <section class="notes">
+    <details class="acc">
+      <summary>How it's calculated</summary>
+      <ul>
+        <li>Natural sugar is derived from the original gravity using the ASBC Plato equation.</li>
+        <li>Sugar concentration = total sugar / total volume.</li>
+        <li>Total volume = juice + water + 0.625 &times; sugar (kg).</li>
+        <li>Estimated ABV = (OG &minus; FG) &times; 131.25.</li>
+        <li>Target OG = FG + (target ABV / 131.25).</li>
+        <li>Required sugar = target sugar concentration &times; total volume.</li>
+      </ul>
+    </details>
+    <details class="acc">
+      <summary>Wine-making cheat sheet</summary>
+      <dl class="cheats">
+        <div><dt>Sanitizing equipment</dt><dd>Campden: 1 g/L + acid</dd></div>
+        <div><dt>Stabilization</dt><dd>Campden: 0.1 g/L<br>Potassium sorbate: 0.5&ndash;0.75 g/L (for backsweetening)</dd></div>
+        <div><dt>Sugar &rarr; alcohol</dt><dd>17 g/L sugar &asymp; 1% ABV</dd></div>
+        <div><dt>Sparkling sugar</dt><dd>Light fizz: 4 g/L<br>Sparkling: 6&ndash;8 g/L<br>Champagne style: 8&ndash;10 g/L</dd></div>
+        <div><dt>Yeast nutrient</dt><dd>0.2&ndash;0.4 g/L</dd></div>
+      </dl>
+    </details>
+  </section>
 
-    <input id="tg" type="number" step="0.001" value="1.000">
-</div>
-
-<div class="row">
-<label>Target Alcohol (ABV)</label>
-<input id="target" type="number" step="0.5" value="12">
-</div>
-
-<div class="results">
-
-<div class="result">
-<span>Total Volume</span>
-<span id="volumeOut"></span>
-</div>
-
-<div class="result">
-<span>Natural Sugar</span>
-<span id="naturalSugarOut"></span>
-</div>
-
-<div class="result">
-<span>Total Sugar</span>
-<span id="totalSugarOut"></span>
-</div>
-
-<div class="result">
-<span>Sugar Concentration</span>
-<span id="sugarConcOut"></span>
-</div>
-
-<div class="result">
-    <span>Estimated Alcohol</span>
-
-    <span>
-        <span class="highlight" id="abvOut"></span>
-
-        <span id="yeastWarning" class="yeast-warning" onclick="toggleYeastInfo()">
-            ⚠
-        </span>
-
-        <div id="yeastInfo" class="tooltip-box tooltip-box-yeast">
-            High alcohol levels may not be possible with every yeast strain.
-            Check the yeast alcohol tolerance before fermentation.
-        </div>
-    </span>
+</main>
 </div>
 
-<div class="result">
-<span>Sugar Needed for Target</span>
-<span class="highlight" id="sugarNeededOut"></span>
-</div>
-
-</div>
-
-
-
-<div class="info">
-<p>Information:</p>
-<ul>
-<li>Natural sugar is derived from the original Gravity using the ASBC Plato equation.</li>
-
-<li>Sugar concentration = Total sugar / Total volume</li>
-
-<li>Total volume = Juice + Water + 0.625 × Sugar (kg)</li>
-
-<li>Estimated ABV = (OG − FG) × 131.25</li>
-
-<li>Target OG = FG + (Target ABV / 131.25)</li>
-
-<li>Required sugar = Target sugar concentration × Total volume</li>
-</ul>
-
-</div>
-
-
-
-
-
-
-
-
-
-<div class="cheat-toggle">
-    <button onclick="toggleCheatSheet()">Show Wine Making Cheat Sheet</button>
-</div>
-
-<div class="info" id="cheatSheet" style="display:none;">
-
-<ul>
-<li><b>Sanitizing equipment:</b><br>
-• Campden: 1 g/L + acid<br>
-</li>
-<li><b>Stabilization:</b><br>
-• Campden: 0.1 g/L<br>
-• Potassium sorbate: 0.5–0.75 g/L (for backsweetening)
-</li>
-
-<li><b>Sugar → alcohol:</b><br>
-• 17 g/L sugar ≈ 1% ABV
-</li>
-
-<li><b>Sparkling sugar:</b><br>
-• Light fizz: 4 g/L<br>
-• Sparkling: 6–8 g/L<br>
-• Champagne style: 8–10 g/L
-</li>
-
-<li><b>Yeast nutrient:</b><br>
-• 0.2–0.4 g/L
-</li>
-
-
-
-</ul>
-</div>
-
-
-</div>
-</div>
-
-    <footer class = footer>
+<footer class = footer>
       <div>© 2026 Ronny Bujok</div>
       <div style="margin-top:8px;">
           Licensed under 
@@ -432,30 +280,21 @@ extraSugar = guess;
     sugarConcOut.textContent = sugarConc.toFixed(0) + " g/L";
     abvOut.textContent = estimatedABV.toFixed(1) + " %";
 
-    yeastWarning.style.display = estimatedABV > 15 ? "inline" : "none";
+    yeastWarning.hidden = estimatedABV <= 15;
 
+    const hero = document.querySelector(".hero");
     const tolerance = 0.1;
 
     if (estimatedABV > targetABV + tolerance) {
-
         sugarNeededOut.textContent = "Too much sugar";
-        sugarNeededOut.style.color = "#8B0000";
-        abvOut.style.color = "#8B0000";
-
+        hero.dataset.state = "over";
     } else if (Math.abs(estimatedABV - targetABV) <= tolerance) {
-
         sugarNeededOut.textContent = "Perfect amount";
-        sugarNeededOut.style.color = "green";
-        abvOut.style.color = "green";
-
+        hero.dataset.state = "perfect";
     } else {
-
         sugarNeededOut.textContent = extraSugar.toFixed(0) + " g";
-        sugarNeededOut.style.color = "#8B0000";
-        abvOut.style.color = "#8B0000";
-
+        hero.dataset.state = "under";
     }
-
 }
 
 [juice, sg, water, sugar, tg, target].forEach(input => {

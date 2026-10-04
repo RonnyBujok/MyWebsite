@@ -328,13 +328,10 @@ h2 {
     display: flex;
     align-content: center;
     justify-self: center;
-    background-color: var(--primary);
-    padding: 20px;
     padding-top: 5vw;
-    padding-bottom: 10px;
     max-width: fit-content;
-    margin-bottom: 1rem;
     position: relative;
+    margin-top: 2rem;
 }
 
 h3{
@@ -432,6 +429,115 @@ h3{
 
 
 
+/* _________________________project cards_____________________ */
+:root{
+    --card-border: color-mix(in srgb, var(--second) 14%, transparent);
+    --card-shadow: 0 10px 28px rgba(0,0,0,0.12);
+}
+
+.project-cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: min(20px, 4vw);
+    width: min(900px, 90vw);
+    margin: 1rem auto 0;
+}
+
+.project-card{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--header-text);
+    background-color: var(--container-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.project-card:hover,
+.project-card:focus-visible{
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow);
+    border-color: var(--accent);
+}
+
+.project-card:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.project-card.cookbook{ --c: #E76F51; }
+.project-card.ferment{ --c: #9C3D54; }
+.project-card.mushrooms{ --c: #DDA15E; }
+
+.pictogram{
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    color: var(--header-text);
+    background-color: color-mix(in srgb, var(--c) 22%, var(--container-bg));
+    transition: transform 0.25s ease;
+}
+
+.pictogram svg{
+    width: 54px;
+    height: 54px;
+}
+
+.pg-a{
+    fill: var(--c);
+}
+
+.project-card:hover .pictogram,
+.project-card:focus-visible .pictogram{
+    transform: scale(1.08) rotate(-4deg);
+}
+
+.card-body{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.card-title{
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.card-text{
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--body-text);
+}
+
+@media(max-width: 700px){
+    .project-cards{
+        grid-template-columns: 1fr;
+    }
+    .project-card{
+        flex-direction: row;
+        text-align: left;
+        padding: 1rem 1.1rem;
+    }
+    .pictogram{
+        width: 64px;
+        height: 64px;
+    }
+    .pictogram svg{
+        width: 42px;
+        height: 42px;
+    }
+}
+
+
+
 /* _________________ dark mode settings_________________ */
 
 @media (prefers-color-scheme: dark) {
@@ -450,6 +556,9 @@ h3{
 
     --nav-text: #EAEAEA;            /* nav text */
     --accent: #5AAEFF;              /* interactive accent */
+
+    --card-border: hsl(0, 0%, 26%);
+    --card-shadow: 0 10px 28px rgba(0,0,0,0.5);
   }
 }
 

@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cookbook</title>
+  <title>Ronny's Cookbook</title>
   <link rel="stylesheet" href="styles/cookbook.css">
+  <link rel="stylesheet" href="styles/ui.css">
 </head>
 <body>
   <nav>
@@ -35,556 +36,51 @@
     </ul>
   </nav>
 
-
-  <div class="search-bar">
-    <input type="text" class="search-input" placeholder="Search...">
-    <button id="search-btn"><img src="icons/search.svg" alt=""></button>
-
-    <div class="dropdown-buttons">
-      <button id="recipes-btn">Recipes</button>
-      <button id="tags-btn">Tags</button>
+  <section class="cb-hero" id="cb-hero">
+    <div class="cb-hero-inner">
+      <h1>Ronny's Cookbook</h1>
+      <p class="cb-sub">A collection of my favorite recipes</p>
     </div>
-    <div id="recipe-dd"></div>
-    <div id="tags-dd">
-      <div class = "button-container">
-        <button class="apply">Apply Filter</button>
-        <button class="reset-tag">Reset</button>
+    <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
+  </section>
+
+  <header class="toolbar" id="toolbar">
+    <div class="toolbar-inner">
+      <label class="search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" class="search-input" placeholder="Search" aria-label="Search recipes">
+      </label>
+      <button type="button" id="recipes-btn" class="pill-btn">Recipes</button>
+      <button type="button" id="filter-toggle" class="pill-btn">Filter<span id="filter-count"></span></button>
+    </div>
+  </header>
+
+  <div id="overlay" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet">
+      <div class="sheet-head">
+        <h2 id="sheet-title"></h2>
+        <button type="button" id="sheet-close" class="icon-btn" aria-label="Close"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <div id="tags-dd-child"></div>
+      <div class="sheet-body">
+        <ul id="recipe-dd" hidden></ul>
+        <div id="filter-view" hidden><div class="tags-container"></div></div>
+      </div>
+      <div class="sheet-foot" id="filter-foot" hidden>
+        <button type="button" class="reset-filters" id="panel-reset" hidden>Reset</button>
+        <button type="button" id="sheet-done" class="done-btn">Show recipes</button>
+      </div>
     </div>
   </div>
-<div class="content">
-  <div class="recipe-flex">
-    <div class="recipe-names">
-      <div class="search-bar-full">
-        <input type="text" class="search-input" placeholder="Search...">
-        <button id="search-btn"><img src="icons/search.svg" alt=""></button>
-        <button id="filter-btn-full"><img src="icons/filter.svg" alt=""></button>
 
-      </div>
-      <div class="title-container">
-        <h2>Recipes</h2>
-        <ul id="recipe-list"></ul>
-      </div>
-      <div class="recipe-tags-container">
-        <h2>Tags</h2>
-        <div class="tags-container"></div>
-      </div>
-    </div>
-  
-    <div class="recipe-page">
-      <!-- Recipe entries will be dynamically loaded here -->
+  <div class="content">
+    <div class="layout">
+      <aside class="index"><div class="panel-title">Recipes</div><ul id="recipe-list"></ul></aside>
+      <main class="recipe-page" aria-live="polite"></main>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  // -------------------- Global Variables --------------------
-  let allRecipes = [];
-  let selectedTags = [];
-  const SUPABASE_URL = "https://oqzceuesqnkmdbsgttcl.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN";
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  const recipesBtn = document.getElementById('recipes-btn');
-  const tagsBtn = document.getElementById('tags-btn');
-  const recipeDd = document.getElementById('recipe-dd');
-  const tagsDd = document.getElementById('tags-dd');
-
-  // -------------------- Load Recipes from Supabase --------------------
-  async function loadRecipes() {
-    const recipePage = document.querySelector('.recipe-page');
-    recipePage.innerHTML = "<p>Loading recipes from Supabase...</p>";
-
-    try {
-      const { data: recipes, error } = await supabaseClient
-        .from("recipes")
-        .select("*")
-        .order("id");
-
-      if (error) throw error;
-      if (!recipes || recipes.length === 0) {
-        recipePage.innerHTML = "<p>No recipes found in Supabase yet.</p>";
-        return;
-      }
-
-      // Parse JSON fields safely
-      allRecipes = recipes.map(r => ({
-        name: r.name || "Unnamed",
-        baseServings: r.baseServings || 4,
-        image: r.image || "",
-        tags: typeof r.tags === 'string' ? JSON.parse(r.tags) : (r.tags || []),
-        ingredients: typeof r.ingredients === 'string' ? JSON.parse(r.ingredients) : (r.ingredients || []),
-        instructions: typeof r.instructions === 'string' ? JSON.parse(r.instructions) : (r.instructions || []),
-        credits: typeof r.credits === 'string' ? JSON.parse(r.credits) : (r.credits || { author: "", link: "" })
-      }));
-
-      // Sort alphabetically
-      allRecipes.sort((a, b) => a.name.localeCompare(b.name));
-
-      displayRecipeNames(allRecipes);
-      displayRecipes(allRecipes);
-
-      // Attach search listeners
-      document.querySelectorAll('.search-input').forEach(input => {
-        input.addEventListener('input', e => {
-          selectedTags = [];
-          document.querySelectorAll('.recipe-tag').forEach(t => {
-            t.classList.remove('active');
-            t.style.backgroundColor = '';
-            t.style.color = '';
-          });
-          filterRecipesBySearchTerm(input.value.trim().toLowerCase());
-        });
-      });
-
-    } catch (err) {
-      console.error("Failed to load recipes:", err);
-      recipePage.innerHTML = `<p style="color:red;">Error fetching recipes: ${err.message}</p>`;
-    }
-  }
-function displayRecipeNames(recipes) {
-  const recipeList = document.getElementById('recipe-list');
-  const recipeDd = document.getElementById('recipe-dd');
-  const tagsContainer = document.querySelector('.tags-container');
-  const tagsDdChild = document.getElementById('tags-dd-child');
-
-  recipeList.innerHTML = '';
-  recipeDd.innerHTML = '';
-  tagsContainer.innerHTML = '';
-  tagsDdChild.innerHTML = '';
-
-  let allTags = [];
-
-  // ---------- CREATE RECIPE LIST ----------
-  recipes.forEach(recipe => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-
-    a.href = `#${recipe.name.replace(/\s+/g,'-').toLowerCase()}`;
-    a.textContent = recipe.name;
-
-    // ✅ RESET FILTERS WHEN CLICKING RECIPE
-    a.addEventListener('click', () => {
-      selectedTags = [];
-
-      document.querySelectorAll('.recipe-tag').forEach(tag => {
-        tag.classList.remove('active');
-        tag.style.backgroundColor = '';
-        tag.style.color = '';
-      });
-
-      document.querySelectorAll('.search-input').forEach(input => input.value = '');
-
-      displayRecipes(allRecipes);
-
-      // optional UI reset
-      recipeDd.style.display = 'none';
-      tagsDd.style.display = 'none';
-      recipesBtn.style.backgroundColor = '';
-      recipesBtn.style.color = '';
-      tagsBtn.style.backgroundColor = '';
-      tagsBtn.style.color = '';
-    });
-
-    li.appendChild(a);
-    recipeList.appendChild(li);
-
-    // ⚠️ cloneNode does NOT copy event listeners → re-add click
-    const liClone = li.cloneNode(true);
-    const cloneLink = liClone.querySelector('a');
-
-    cloneLink.addEventListener('click', () => {
-      selectedTags = [];
-
-      document.querySelectorAll('.recipe-tag').forEach(tag => {
-        tag.classList.remove('active');
-        tag.style.backgroundColor = '';
-        tag.style.color = '';
-      });
-
-      document.querySelectorAll('.search-input').forEach(input => input.value = '');
-
-      displayRecipes(allRecipes);
-
-      recipeDd.style.display = 'none';
-      tagsDd.style.display = 'none';
-      recipesBtn.style.backgroundColor = '';
-      recipesBtn.style.color = '';
-      tagsBtn.style.backgroundColor = '';
-      tagsBtn.style.color = '';
-    });
-
-    recipeDd.appendChild(liClone);
-
-    // collect tags
-    recipe.tags.forEach(t => {
-      if (!allTags.includes(t)) allTags.push(t);
-    });
-  });
-
-  // ---------- TAG CREATOR ----------
-  function createTagElement(tag) {
-    const span = document.createElement('span');
-    span.classList.add('recipe-tag');
-    span.textContent = tag;
-
-    span.addEventListener('click', () => {
-      document.querySelectorAll('.search-input').forEach(input => input.value = '');
-
-      span.classList.toggle('active');
-
-      if (span.classList.contains('active')) {
-        span.style.backgroundColor = "var(--accent)";
-        span.style.color = "white";
-
-        if (!selectedTags.includes(tag.toLowerCase())) {
-          selectedTags.push(tag.toLowerCase());
-        }
-      } else {
-        span.style.backgroundColor = "";
-        span.style.color = "";
-
-        selectedTags = selectedTags.filter(t => t !== tag.toLowerCase());
-      }
-
-      filterRecipesBySelectedTags();
-    });
-
-    return span;
-  }
-
-  // ---------- CREATE TAGS ----------
-  allTags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
-
-  allTags.forEach(tag => {
-    tagsContainer.appendChild(createTagElement(tag));
-    tagsDdChild.appendChild(createTagElement(tag));
-  });
-
-  // ---------- APPLY BUTTON ----------
-  const applyBtn = document.querySelector('.apply');
-  applyBtn.replaceWith(applyBtn.cloneNode(true)); // prevent duplicate listeners
-
-  document.querySelector('.apply').addEventListener('click', () => {
-    filterRecipesBySelectedTags();
-
-    tagsDd.style.display = 'none';
-    tagsBtn.style.backgroundColor = '';
-    tagsBtn.style.color = '';
-  });
-
-  // ---------- RESET BUTTON ----------
-  const resetBtn = document.querySelector('.reset-tag');
-  resetBtn.replaceWith(resetBtn.cloneNode(true)); // prevent duplicate listeners
-
-  document.querySelector('.reset-tag').addEventListener('click', () => {
-    selectedTags = [];
-
-    document.querySelectorAll('.recipe-tag').forEach(t => {
-      t.classList.remove('active');
-      t.style.backgroundColor = '';
-      t.style.color = '';
-    });
-
-    displayRecipes(allRecipes);
-  });
-}
-
-  function displayRecipes(recipes) {
-    const page = document.querySelector('.recipe-page');
-    page.innerHTML = '';
-    if (recipes.length === 0) {
-      page.innerHTML = `<p style="text-align:center;margin-top:2rem;">No recipes found.</p>`;
-      return;
-    }
-
-    recipes.forEach(recipe => {
-      const entry = document.createElement('div');
-      entry.className = 'entry';
-      entry.id = recipe.name.replace(/\s+/g, '-').toLowerCase();
-
-      const h1 = document.createElement('h1'); h1.textContent = recipe.name; entry.appendChild(h1);
-
-      const left = document.createElement('div'); left.className='container-left';
-      const imgDiv = document.createElement('div'); imgDiv.className='image';
-      if(recipe.image) { const img = document.createElement('img'); img.src=recipe.image; img.alt=recipe.name; imgDiv.appendChild(img); }
-      left.appendChild(imgDiv);
-
-      const ingDiv = document.createElement('div'); ingDiv.className='ingredients';
-      const ingTitle = document.createElement('p'); ingTitle.className='ingredients-title'; ingTitle.textContent='Ingredients';
-      ingDiv.appendChild(ingTitle);
-
-      const servingsDiv = document.createElement('div'); servingsDiv.className='serving';
-      const servingsLabel = document.createElement('p'); servingsLabel.textContent='Servings:';
-      const servingsSelect = document.createElement('select');
-      for(let i=1;i<=8;i++){ const opt=document.createElement('option'); opt.value=i; opt.textContent=i; servingsSelect.appendChild(opt);}
-      servingsSelect.value = recipe.baseServings;
-      servingsDiv.appendChild(servingsLabel); servingsDiv.appendChild(servingsSelect); ingDiv.appendChild(servingsDiv);
-
-      const ul = document.createElement('ul'); 
-      ul.className = 'ingredients-list';
-
-      recipe.ingredients.forEach(ing => {
-        const li = document.createElement('li');
-        li.setAttribute('data-base', ing.amount);
-        li.dataset.name = ing.name;   // store name
-        li.dataset.unit = ing.unit;   // store unit
-
-        // Display initially
-        li.textContent = ing.amount > 0 
-            ? `${ing.amount} ${ing.unit} ${ing.name}`.trim() 
-            : ing.name;
-
-        ul.appendChild(li);
-      });
-
-      ingDiv.appendChild(ul); left.appendChild(ingDiv);
-
-      const right = document.createElement('div'); right.className='description';
-      const instTitle = document.createElement('p'); instTitle.className = 'instructions-title'; instTitle.textContent='Instructions';
-      const ol = document.createElement('ol');
-      recipe.instructions.forEach(step=>{ const li=document.createElement('li'); li.textContent=step; ol.appendChild(li);});
-      right.appendChild(instTitle); right.appendChild(ol); 
-
-      const credit = document.createElement('div'); credit.className='credit';
-      const creditP = document.createElement('p'); creditP.textContent='Credits:'; credit.appendChild(creditP);
-      if(recipe.credits.link){ const a=document.createElement('a'); a.href=recipe.credits.link; a.target='_blank'; a.textContent=recipe.credits.author; credit.appendChild(a);}
-      else { const span=document.createElement('span'); span.textContent=recipe.credits.author; credit.appendChild(span);}
-
-      const container = document.createElement('div'); container.className='recipe-container';
-      container.appendChild(left); container.appendChild(right);
-      right.appendChild(credit)
-      entry.appendChild(container);  page.appendChild(entry);
-
-      servingsSelect.addEventListener('change', e=>updateIngredients(e.target, recipe.baseServings));
-      updateIngredients(servingsSelect, recipe.baseServings);
-    });
-  }
-
-  function updateIngredients(select, baseServings){
-    const entry = select.closest('.entry');
-    const ulList = entry.querySelectorAll('.ingredients-list li');
-    const servings = parseInt(select.value);
-
-    ulList.forEach(li => {
-      const baseAmount = parseFloat(li.getAttribute('data-base'));
-      const updatedAmount = parseFloat((baseAmount * (servings / baseServings)).toFixed(2));
-
-      // Get ingredient name and unit from li.dataset
-      const name = li.dataset.name || li.textContent.trim();
-      const unit = li.dataset.unit || '';
-
-      // Display ingredient
-      li.textContent = updatedAmount > 0
-        ? `${updatedAmount} ${unit} ${name}`.trim()
-        : name;
-    });
-  }
-
-  function filterRecipesBySelectedTags(){
-    if(selectedTags.length===0) displayRecipes(allRecipes);
-    else {
-      const filtered = allRecipes.filter(r=>selectedTags.every(t=>r.tags.map(tt=>tt.toLowerCase()).includes(t)));
-      displayRecipes(filtered);
-    }
-  }
-
-  function filterRecipesBySearchTerm(term){
-    if(term==='') displayRecipes(allRecipes);
-    else {
-      const filtered = allRecipes.filter(r=>{
-        return r.name.toLowerCase().includes(term) || r.tags.some(t=>t.toLowerCase().includes(term));
-      });
-      displayRecipes(filtered);
-    }
-  }
-
-  // -------------------- Initialize --------------------
-// -------------------- Initialize --------------------
-window.addEventListener('load', () => {
-  loadRecipes();
-
-  // ---------- Recipes dropdown ----------
-  recipesBtn.addEventListener('click', () => {
-    if (recipeDd.style.display === 'none' || recipeDd.style.display === '') {
-      recipeDd.style.display = 'flex';
-      recipesBtn.style.backgroundColor = "var(--accent)";
-      recipesBtn.style.color = "white";
-
-      tagsDd.style.display = 'none';
-      tagsBtn.style.backgroundColor = '';
-      tagsBtn.style.color = '';
-
-      document.querySelectorAll('.search-input').forEach(input => input.value = '');
-      filterRecipesBySearchTerm('');
-    } else {
-      recipeDd.style.display = 'none';
-      recipesBtn.style.backgroundColor = '';
-      recipesBtn.style.color = '';
-    }
-  });
-
-  // ---------- Tags dropdown ----------
-  tagsBtn.addEventListener('click', () => {
-    if (tagsDd.style.display === 'none' || tagsDd.style.display === '') {
-      tagsDd.style.display = 'flex';
-      tagsBtn.style.backgroundColor = "var(--accent)";
-      tagsBtn.style.color = "white";
-
-      recipeDd.style.display = 'none';
-      recipesBtn.style.backgroundColor = '';
-      recipesBtn.style.color = '';
-
-      // Reset search if no tags selected
-      if (selectedTags.length === 0) {
-        document.querySelectorAll('.search-input').forEach(input => input.value = '');
-        displayRecipes(allRecipes);
-      }
-    } else {
-      tagsDd.style.display = 'none';
-      tagsBtn.style.backgroundColor = '';
-      tagsBtn.style.color = '';
-    }
-  });
-
-  // ---------- Search button logic ----------
-  const searchButtons = document.querySelectorAll('#search-btn');
-
-  searchButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const input = btn.parentElement.querySelector('.search-input');
-      const value = input.value.trim().toLowerCase();
-
-      // Always reset tags when searching
-      selectedTags = [];
-      document.querySelectorAll('.recipe-tag').forEach(tag => {
-        tag.classList.remove('active');
-        tag.style.backgroundColor = '';
-        tag.style.color = '';
-      });
-
-      if (value === '') {
-        // Empty search → show all recipes
-        displayRecipes(allRecipes);
-      } else {
-        filterRecipesBySearchTerm(value);
-      }
-
-      // Optional UI reset
-      recipeDd.style.display = 'none';
-      tagsDd.style.display = 'none';
-      recipesBtn.style.backgroundColor = '';
-      recipesBtn.style.color = '';
-      tagsBtn.style.backgroundColor = '';
-      tagsBtn.style.color = '';
-    });
-  });
-
-  // ---------- Optional: trigger search on Enter ----------
-  document.querySelectorAll('.search-input').forEach(input => {
-    input.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const btn = input.parentElement.querySelector('#search-btn');
-        btn.click();
-      }
-    });
-  });
-});
-
-
-</script>
-
-
-<script>
-const searchBar = document.querySelector('.search-bar');
-const recipeDropdown = document.querySelector('#recipe-dd');
-const tagsDropdown = document.querySelector('#tags-dd');
-
-
-let lastScroll = window.scrollY;
-let scrollUpDistance = 0;
-
-window.addEventListener('scroll', () => {
-
-    // Don't hide search bar while dropdown is open
-    const recipeDd = recipeDropdown &&
-        getComputedStyle(recipeDropdown).display !== 'none';
-    const tagsDd = tagsDropdown &&
-        getComputedStyle(tagsDropdown).display !== 'none';
-
-    if (recipeDd) {
-        searchBar.classList.remove('hide');
-        return;
-    }
-    if (tagsDd) {
-        searchBar.classList.remove('hide');
-        return;
-    }
-
-    const currentScroll = window.scrollY;
-    const difference = currentScroll - lastScroll;
-
-    if (difference > 0 && currentScroll > 100) {
-        // scrolling down
-        searchBar.classList.add('hide');
-        scrollUpDistance = 0;
-    } 
-    else if (difference < 0) {
-        // scrolling up
-        scrollUpDistance += Math.abs(difference);
-
-        if (scrollUpDistance > 100) {
-            searchBar.classList.remove('hide');
-            scrollUpDistance = 0;
-        }
-    }
-
-    lastScroll = currentScroll;
-});
-</script>
-
-<script>
-    const tagsBtnfll = document.getElementById("filter-btn-full");
-    const tagsContainer = document.querySelector(".recipe-tags-container");
-
-    tagsBtnfll.addEventListener("click", () => {
-        tagsContainer.classList.toggle("show");
-    });
-
-</script>
-
-
-
-  <script>
-      const sidebar = document.querySelector('.sidebar');
-
-      function showSidebar() {
-          sidebar.classList.add('show');
-          document.body.classList.add('menu-open');
-      }
-
-      function hideSidebar() {
-          sidebar.classList.remove('show');
-          document.body.classList.remove('menu-open');
-      }
-
-      // 👇 put this OUTSIDE any function
-      document.addEventListener('click', (e) => {
-          const isInsideSidebar = sidebar.contains(e.target);
-          const isMenuButton = e.target.closest('.menu-button');
-
-          if (!isInsideSidebar && !isMenuButton) {
-              hideSidebar();
-          }
-      });
-  </script>
-
-<!-- Add Recipe Button -->
-<a href="recipeform.html" id="add-recipe-btn" title="Add Recipe">+</a>
-
+  <button type="button" id="to-top" class="to-top" aria-label="Back to top"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+  <a href="recipeform.html" id="add-recipe-btn" title="Add recipe" aria-label="Add recipe"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></a>
 
   <footer class = footer>
       <div>© 2026 Ronny Bujok</div>
@@ -596,6 +92,225 @@ window.addEventListener('scroll', () => {
       </div>
   </footer>
 
-  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabaseClient = supabase.createClient(
+  "https://oqzceuesqnkmdbsgttcl.supabase.co",
+  "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN"
+);
+const $ = s => document.querySelector(s);
+let allRecipes = [], selectedTags = [], searchTerm = '';
+
+// ---------- helpers ----------
+const slug = n => n.replace(/\s+/g, '-').toLowerCase();
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const parse = (v, d) => { try { return typeof v === 'string' ? JSON.parse(v) : (v ?? d); } catch { return d; } };
+const fmt = n => String(+n.toFixed(2));
+
+// ---------- load ----------
+async function loadRecipes() {
+  const page = $('.recipe-page');
+  page.innerHTML = '<p class="empty">Loading recipes…</p>';
+  const { data, error } = await supabaseClient.from('recipes').select('*').order('id');
+  if (error) { page.innerHTML = `<p class="empty">Could not load recipes: ${esc(error.message)}</p>`; return; }
+
+  allRecipes = data.map(r => {
+    const seen = new Set(); // saved tags + ingredient names, one entry per name
+    const tags = [...parse(r.tags, []), ...parse(r.ingredients, []).map(i => i && i.name)]
+      .map(t => String(t ?? '').trim()).filter(t => t && !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase()));
+    return {
+      name: r.name || 'Unnamed', baseServings: r.baseServings || 4, image: r.image || '',
+      tags, tagKeys: tags.map(t => t.toLowerCase()),
+      ingredients: parse(r.ingredients, []), instructions: parse(r.instructions, []), credits: parse(r.credits, {})
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+
+  renderNav();
+  render();
+  if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
+}
+
+// ---------- render ----------
+function renderNav() {
+  $('#recipe-list').innerHTML = $('#recipe-dd').innerHTML =
+    allRecipes.map(r => `<li><a href="#${esc(slug(r.name))}">${esc(r.name)}</a></li>`).join('');
+
+  const tags = new Map(); // one entry per tag, case-insensitive
+  allRecipes.forEach(r => r.tags.forEach(t => tags.has(t.toLowerCase()) || tags.set(t.toLowerCase(), t)));
+  $('.tags-container').innerHTML = [...tags.values()].sort((a, b) => a.localeCompare(b))
+    .map(t => `<button type="button" class="recipe-tag" data-tag="${esc(t.toLowerCase())}">${esc(t)}</button>`).join('');
+}
+
+function recipeHTML(r) {
+  const opts = Array.from({ length: Math.max(12, r.baseServings) }, (_, i) =>
+    `<option${i + 1 === r.baseServings ? ' selected' : ''}>${i + 1}</option>`).join('');
+  const ings = r.ingredients.map(i => {
+    const a = Number(i.amount) || 0, u = i.unit || '';
+    return `<li data-base="${a}" data-unit="${esc(u)}"><span class="amt">${a > 0 ? esc(`${fmt(a)} ${u}`.trim()) : ''}</span><span>${esc(i.name)}</span></li>`;
+  }).join('');
+  const steps = r.instructions.map(s => `<li><span>${esc(s)}</span></li>`).join('');
+  const c = r.credits || {};
+  const credit = !c.author ? '' : /^https?:\/\//i.test(c.link || '')
+    ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.author)}</a>` : esc(c.author);
+
+  return `<article class="recipe" id="${esc(slug(r.name))}" data-base="${r.baseServings}">
+    <p class="kicker">${r.tags.slice(0, 3).map(t => `<span class="kick">${esc(t)}</span>`).join('')}</p>
+    <h2>${esc(r.name)}</h2>
+    <div class="recipe-body">
+      <div class="side">
+        ${r.image ? `<figure class="recipe-image"><img src="${esc(r.image)}" alt="${esc(r.name)}" loading="lazy" decoding="async"></figure>` : ''}
+        <section>
+          <div class="section-head"><h3><button type="button" class="ing-toggle" aria-expanded="true">Ingredients<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3><label class="servings">Servings<select>${opts}</select></label></div>
+          <ul class="ingredients-list">${ings}</ul>
+        </section>
+      </div>
+      <section>
+        <h3>Method</h3>
+        <ol class="steps">${steps}</ol>
+        ${credit ? `<p class="credit">Source: ${credit}</p>` : ''}
+      </section>
+    </div>
+  </article>`;
+}
+
+function visibleRecipes() {
+  return allRecipes.filter(r =>
+    selectedTags.every(t => r.tagKeys.includes(t)) &&
+    (!searchTerm || r.name.toLowerCase().includes(searchTerm) || r.tagKeys.some(t => t.includes(searchTerm))));
+}
+
+function render() {
+  const list = visibleRecipes();
+  $('.recipe-page').innerHTML = list.length ? list.map(recipeHTML).join('')
+    : '<div class="empty"><p>No recipes match your filters.</p><button type="button" class="reset-filters">Reset filters</button></div>';
+  document.querySelectorAll('.recipe-tag').forEach(t => t.classList.toggle('active', selectedTags.includes(t.dataset.tag)));
+  $('#filter-count').textContent = selectedTags.length ? ` · ${selectedTags.length}` : '';
+  $('#filter-toggle').classList.toggle('on', selectedTags.length > 0);
+  $('#panel-reset').hidden = !selectedTags.length && !searchTerm;
+  $('#sheet-done').textContent = `Show ${list.length} recipe${list.length === 1 ? '' : 's'}`;
+  markRest();
+}
+
+function resetFilters() {
+  selectedTags = []; searchTerm = '';
+  $('.search-input').value = '';
+  render();
+}
+
+// ---------- full-screen sheets (Recipes / Filter) ----------
+const overlay = $('#overlay');
+function openSheet(view) {
+  $('#sheet-title').textContent = view === 'recipes' ? 'Recipes' : 'Filter';
+  $('#recipe-dd').hidden = view !== 'recipes';
+  $('#filter-view').hidden = $('#filter-foot').hidden = view !== 'filter';
+  overlay.hidden = false;
+  document.body.classList.add('lock');
+  $('#sheet-close').focus();
+}
+function closeSheet() { overlay.hidden = true; document.body.classList.remove('lock'); }
+
+// ---------- search bar: hides while scrolling down, returns on scroll up ----------
+const toolbar = $('#toolbar');
+let lastY = scrollY, jumping = false;
+addEventListener('scroll', () => {
+  const y = scrollY, d = y - lastY;
+  if (jumping) { toolbar.classList.add('hide'); lastY = y; return; }
+  if (Math.abs(d) < 6) return;
+  toolbar.classList.toggle('hide', d > 0 && y > 80);
+  lastY = y;
+}, { passive: true });
+
+// ---------- snap to the start of a recipe ----------
+// Free scrolling inside a recipe. Once a scroll carries you into a different recipe
+// (up or down), it settles at the START of that recipe. Tiny nudges spring back.
+const snapOffset = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 72;
+let rest = { y: 0, idx: -1 }, endTimer, snapping = false;
+
+function recipeIndexAt() { // recipe under the snap line; -1 while still above the first recipe
+  const line = snapOffset() + 1;
+  let idx = -1;
+  document.querySelectorAll('.recipe').forEach((el, i) => { if (el.getBoundingClientRect().top <= line) idx = i; });
+  return idx;
+}
+function markRest() { rest = { y: scrollY, idx: recipeIndexAt() }; }
+
+function snapToRecipe(i) {
+  const el = document.querySelectorAll('.recipe')[i];
+  if (!el) return markRest();
+  const top = el.getBoundingClientRect().top + scrollY - snapOffset();
+  if (Math.abs(top - scrollY) < 2) return markRest();
+  snapping = true; jumping = true; // keep the search bar tucked away during the move
+  scrollTo({ top, behavior: 'smooth' });
+  setTimeout(() => { if (snapping) { snapping = false; jumping = false; markRest(); } }, 1500);
+}
+
+addEventListener('scroll', () => {
+  clearTimeout(endTimer);
+  if (snapping) {
+    endTimer = setTimeout(() => { snapping = false; jumping = false; markRest(); }, 160);
+    return;
+  }
+  endTimer = setTimeout(() => {
+    const idx = recipeIndexAt();
+    if (idx < 0 || idx === rest.idx) return markRest();
+    const nudge = Math.abs(scrollY - rest.y) < 120;
+    if (nudge && rest.idx < 0) return markRest();
+    snapToRecipe(nudge ? rest.idx : idx);
+  }, 140);
+}, { passive: true });
+
+// ---------- back to top ----------
+const toTop = $('#to-top');
+addEventListener('scroll', () => toTop.classList.toggle('show', scrollY > innerHeight * 1.2), { passive: true });
+toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ---------- events ----------
+$('.search-input').addEventListener('input', e => { searchTerm = e.target.value.trim().toLowerCase(); render(); });
+$('#recipes-btn').addEventListener('click', () => openSheet('recipes'));
+$('#filter-toggle').addEventListener('click', () => openSheet('filter'));
+$('#sheet-close').addEventListener('click', closeSheet);
+$('#sheet-done').addEventListener('click', closeSheet);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+document.addEventListener('click', e => {
+  if (e.target === overlay) return closeSheet(); // click on the dimmed backdrop (desktop)
+
+  const tag = e.target.closest('.recipe-tag');
+  if (tag) {
+    const k = tag.dataset.tag;
+    selectedTags = selectedTags.includes(k) ? selectedTags.filter(t => t !== k) : [...selectedTags, k];
+    render();
+  } else if (e.target.closest('.ing-toggle')) {
+    const btn = e.target.closest('.ing-toggle');
+    btn.setAttribute('aria-expanded', !btn.closest('section').classList.toggle('collapsed'));
+  } else if (e.target.closest('.reset-filters')) {
+    resetFilters();
+  } else if (e.target.closest('#recipe-list a, #recipe-dd a')) {
+    if (selectedTags.length || searchTerm) resetFilters(); // make sure the target recipe is on the page
+    closeSheet();
+    jumping = true; setTimeout(() => jumping = false, 1200); // keep the bar hidden during the jump
+  }
+});
+
+// servings scaling
+$('.recipe-page').addEventListener('change', e => {
+  if (!e.target.matches('.servings select')) return;
+  const art = e.target.closest('.recipe'), k = e.target.value / art.dataset.base;
+  art.querySelectorAll('.ingredients-list li').forEach(li => {
+    const a = li.dataset.base * k;
+    li.querySelector('.amt').textContent = a > 0 ? `${fmt(a)} ${li.dataset.unit}`.trim() : '';
+  });
+});
+
+loadRecipes();
+</script>
+
+<script>
+  const sidebar = document.querySelector('.sidebar');
+  function showSidebar() { sidebar.classList.add('show'); document.body.classList.add('menu-open'); }
+  function hideSidebar() { sidebar.classList.remove('show'); document.body.classList.remove('menu-open'); }
+  document.addEventListener('click', (e) => {
+    if (!sidebar.contains(e.target) && !e.target.closest('.menu-button')) hideSidebar();
+  });
+</script>
 </body>
 </html>

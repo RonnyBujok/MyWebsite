@@ -12,11 +12,10 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ronny Bujok, PhD candidate at the Max Planck Institute for Psycholinguistics">
-    <meta name="keywords" content="Ronny, Bujok, Nijmegen, Max Planck Institute, Psycholinguistics, Research, Prosody, Beat gestures">
     <meta name="author" content="Ronny Bujok">
-    <title>Ronny Bujok - Contact</title>
+    <title>Add Recipe</title>
     <link rel="stylesheet" href="styles/recipeform.css">
+    <link rel="stylesheet" href="styles/ui.css">
 </head>
 <body>
 
@@ -71,66 +70,85 @@
       </script>
 
 <div class="content">
-  <form id="recipeForm">
-    <div class="h1-parent">
-    <h1>Add Recipe</h1>
-    </div>
-    <h3>General Information</h3>
+  <section class="cb-hero">
 
-    <div class="inforow">
-        <label>Name</label>
-        <input type="text" name="name" required>
+    <div class="cb-hero-inner">
+      <h1>New recipe</h1>
+      <p class="cb-sub">Add a dish to your cookbook</p>
     </div>
+    <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
+  </section>
+  <section id="loginCard" class="login-card" hidden>
+    <h2>Sign in</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" autocomplete="username" required>
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+      <button class="cta-blue2" type="submit">Sign in</button>
+      <p id="loginError" class="form-error"></p>
+    </form>
+  </section>
+  <div id="userBar" class="user-bar" hidden>
+    <span id="userEmail"></span>
+    <button type="button" id="logoutBtn" class="link-btn">Sign out</button>
+  </div>
 
-    <div class="inforow">
-        <label>Tags (comma-separated)</label>
-        <input type="text" name="tags">
+  <form id="recipeForm" class="recipe-form" hidden>
+
+    <section class="form-section">
+      <h2 class="section-title">Basics</h2>
+      <div class="field">
+        <label for="recipeName">Name</label>
+        <input type="text" id="recipeName" name="name" placeholder="e.g. Spaghetti carbonara" required>
+      </div>
+      <div class="field">
+        <label for="tagsInput">Tags</label>
+        <input type="text" name="tags" id="tagsInput" autocomplete="off" placeholder="dinner, italian, quick">
+        <div class="tag-suggestions" id="tagSuggestions"></div>
+      </div>
+      <div class="field field-sm">
+        <label for="baseServings">Servings</label>
+        <input type="number" id="baseServings" name="baseServings" value="4" min="1">
+      </div>
+      <div class="field">
+        <span class="label">Photo</span>
+        <label class="dropzone" id="dropzone">
+          <input type="file" id="imageFile" name="imageFile" accept="image/*" class="visually-hidden">
+          <span class="dz-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-8 8"/></svg></span>
+          <span class="dz-text"><strong>Add a photo</strong><small>JPG, PNG or WebP, resized automatically</small></span>
+        </label>
+        <div class="image-preview" id="imagePreviewWrap" hidden>
+          <img id="imagePreview" alt="Preview of the selected image">
+          <button type="button" id="removeImageBtn" class="remove-btn" title="Remove image" aria-label="Remove image"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <h2 class="section-title">Ingredients</h2>
+      <p class="hint">Amount and unit are optional. Drag to reorder.</p>
+      <div id="ingredients"></div>
+      <button class="add-btn" type="button" id="addIngredientBtn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add ingredient</button>
+    </section>
+
+    <section class="form-section">
+      <h2 class="section-title">Method</h2>
+      <p class="hint">One step per box.</p>
+      <div id="instructions"></div>
+      <button class="add-btn" type="button" id="addStepBtn"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add step</button>
+    </section>
+
+    <section class="form-section">
+      <h2 class="section-title">Source</h2>
+      <p class="hint">Optional. Credit where the recipe came from.</p>
+      <div class="field-row">
+        <div class="field"><label for="author">Author</label><input type="text" id="author" name="author" placeholder="Who is it from?"></div>
+        <div class="field"><label for="link">Link</label><input type="text" inputmode="url" id="link" name="link" placeholder="https://"></div>
+      </div>
+    </section>
+
+    <div class="form-actions">
+      <button class="cta-blue2" type="submit">Save recipe</button>
     </div>
-
-    <div class="inforow">
-        <label>Base Servings</label>
-        <input type="number" name="baseServings" value="4">
-    </div>
-    
-    <div class="inforow">
-        <label>Image URL</label>
-        <input type="text" name="image">
-    </div>
-    <hr>
-    <h3>Ingredients</h3>
-    <div id="ingredients"></div>
-    <button class="cta-blue" type="button" id="addIngredientBtn">Add Ingredient</button>
-    <!-- <button class="addbutton" type="button" onclick="addIngredient()">Add Ingredient</button> -->
-    <hr>
-
-    <h3>Instructions</h3>
-    <div id="instructions"></div>
-    <!-- <button class="addbutton" type="button" onclick="addStep()">Add Step</button> -->
-    <button class="cta-blue" type="button" id="addStepBtn">Add Step</button>
-
-    <hr>
-
-    <h3>Credits</h3>
-    <div class="inforow">
-    <label>Author</label>
-    <input type="text" name="author">
-    </div>
-
-    <div class="inforow">
-    <label>Link</label>
-    <input type="text" name="link">
-    </div>
-    
-    <div class="jsonbuttonparent">
-    <button class="cta-blue2" type="submit">Save</button>
-    </div>
-  <!-- <h2>Generated JSON</h2>
-  <pre id="output" style="background: #f0f0f0; padding: 10px;"></pre>
-  
-<div class="jsonbuttonparent" style="margin-top: 10px;">
-  <button class="jsonbutton" type="button" onclick="copyJSON()">Copy JSON to Clipboard</button>
-</div> -->
-
   </form>
 
     <footer class = footer>
@@ -145,143 +163,291 @@
 </div>
 
 
-  <!-- SUPABASE -->
+  <!-- SUPABASE + SORTABLE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", () => {
 
+  // -------------------- Config --------------------
+  const SUPABASE_URL = "https://oqzceuesqnkmdbsgttcl.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN";
+  const BUCKET = "recipe-images";
+  const MAX_INPUT_BYTES = 20 * 1024 * 1024; // refuse absurdly large originals
+  const MAX_DIMENSION = 1600;               // longest side after resizing (px)
+  const IMAGE_QUALITY = 0.85;
+
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // -------------------- Elements --------------------
   const ingredientsDiv = document.getElementById("ingredients");
   const instructionsDiv = document.getElementById("instructions");
-  const addIngredientBtn = document.getElementById("addIngredientBtn");
-  const addStepBtn = document.getElementById("addStepBtn");
   const recipeForm = document.getElementById("recipeForm");
+  const saveBtn = recipeForm.querySelector('button[type="submit"]');
+  const imageInput = document.getElementById("imageFile");
+  const previewWrap = document.getElementById("imagePreviewWrap");
+  const previewImg = document.getElementById("imagePreview");
 
-  //sortfunction
+  let previewUrl = null;
 
-  Sortable.create(ingredientsDiv, {
-  animation: 150,
-  ghostClass: "dragging",
-  handle: ".drag-handle"
+  // -------------------- Auth (only the owner can add recipes) --------------------
+  const $ = id => document.getElementById(id);
+  let tagsLoaded = false;
+
+  function showAuthState(session) {
+    $("loginCard").hidden = !!session;
+    recipeForm.hidden = !session;
+    $("userBar").hidden = !session;
+    if (session) {
+      $("userEmail").textContent = session.user.email;
+      if (!tagsLoaded) loadTags();
+    }
+  }
+  db.auth.getSession().then(({ data }) => showAuthState(data.session));
+  db.auth.onAuthStateChange((_event, session) => showAuthState(session));
+
+  $("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("loginError").textContent = "";
+    const { error } = await db.auth.signInWithPassword({
+      email: $("loginEmail").value.trim(),
+      password: $("loginPassword").value
+    });
+    if (error) $("loginError").textContent = error.message;
   });
+  $("logoutBtn").addEventListener("click", () => db.auth.signOut());
 
-  // Initialize Supabase client
-  const supabase = window.supabase.createClient(
-    "https://oqzceuesqnkmdbsgttcl.supabase.co",
-    "sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN"
-  );
+  // -------------------- Tag suggestions --------------------
+  const tagsInput = $("tagsInput");
+  const suggestionsDiv = $("tagSuggestions");
+  let knownTags = [];
 
-  // -------------------- Functions --------------------
+  function parseTags(v) {
+    try { const t = typeof v === "string" ? JSON.parse(v) : v; return Array.isArray(t) ? t : []; }
+    catch { return []; }
+  }
+
+  async function loadTags() {
+    const { data } = await db.from("recipes").select("tags");
+    const map = new Map(); // lowercase -> first-seen spelling, so duplicates collapse
+    (data || []).forEach(r => parseTags(r.tags).forEach(t => {
+      const clean = String(t).trim(), key = clean.toLowerCase();
+      if (key && !map.has(key)) map.set(key, clean);
+    }));
+    knownTags = [...map.values()].sort((a, b) => a.localeCompare(b));
+    tagsLoaded = true;
+    renderSuggestions();
+  }
+
+  function renderSuggestions() {
+    const parts = tagsInput.value.split(",");
+    const current = parts.pop().trim().toLowerCase();
+    const entered = new Set(parts.map(p => p.trim().toLowerCase()));
+    const matches = knownTags
+      .filter(t => !entered.has(t.toLowerCase()) && t.toLowerCase().includes(current))
+      .slice(0, 30);
+    suggestionsDiv.replaceChildren(...matches.map(tag => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "tag-chip";
+      b.textContent = tag;
+      b.addEventListener("click", () => {
+        const done = tagsInput.value.split(",").slice(0, -1).map(p => p.trim()).filter(Boolean);
+        tagsInput.value = [...done, tag].join(", ") + ", ";
+        tagsInput.focus();
+        renderSuggestions();
+      });
+      return b;
+    }));
+  }
+  tagsInput.addEventListener("input", renderSuggestions);
+
+  // One spelling per tag: case-insensitive dedupe, reusing existing spellings
+  function normalizeTags(list) {
+    const canonical = new Map(knownTags.map(t => [t.toLowerCase(), t]));
+    const used = new Set();
+    return list.reduce((out, raw) => {
+      const t = raw.trim().replace(/\s+/g, " "), key = t.toLowerCase();
+      if (key && !used.has(key)) { used.add(key); out.push(canonical.get(key) || t); }
+      return out;
+    }, []);
+  }
+
+  // Drag-to-reorder for both lists
+  Sortable.create(ingredientsDiv, { animation: 150, ghostClass: "dragging", handle: ".drag-handle" });
+  Sortable.create(instructionsDiv, { animation: 150, ghostClass: "dragging", handle: ".drag-handle" });
+
+  // -------------------- Ingredient / step rows --------------------
   function addIngredient() {
     const div = document.createElement("div");
     div.className = "ingredient";
     div.innerHTML = `
-      <span class="drag-handle">☰</span>
-      <input type="text" placeholder="Name" class="ing-name" required>
-      <input type="number" placeholder="Amount" class="ing-amount" style="width:80px;" value="0">
-      <input type="text" placeholder="Unit" class="ing-unit" style="width:100px;">
-      <button type="button" class="remove-btn">✖</button>
+      <span class="drag-handle"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></span>
+      <input type="text" placeholder="Ingredient" class="ing-name" required>
+      <input type="number" placeholder="Amount" class="ing-amount" min="0" step="any" inputmode="decimal">
+      <input type="text" placeholder="Unit" class="ing-unit">
+      <button type="button" class="remove-btn" title="Remove" aria-label="Remove"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     `;
-    ingredientsDiv.appendChild(div);
-
-    // Remove button
     div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+    ingredientsDiv.appendChild(div);
   }
 
   function addStep() {
     const div = document.createElement("div");
     div.className = "step";
     div.innerHTML = `
-      <textarea placeholder="Step" class="step-text" required></textarea>
-      <button type="button" class="remove-btn">✖</button>
+      <span class="drag-handle"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg></span>
+      <textarea placeholder="Describe this step…" class="step-text" rows="2" required></textarea>
+      <button type="button" class="remove-btn" title="Remove" aria-label="Remove"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     `;
-    instructionsDiv.appendChild(div);
-
-    // Remove button
     div.querySelector(".remove-btn").addEventListener("click", () => div.remove());
+    instructionsDiv.appendChild(div);
   }
 
-  function gatherFormData() {
-    const form = recipeForm;
-
-    const ingredients = Array.from(document.querySelectorAll(".ingredient")).map(div => ({
-      name: div.querySelector(".ing-name").value,
-      amount: Number(div.querySelector(".ing-amount").value) || 0,
-      unit: div.querySelector(".ing-unit").value
-    }));
-
-    const manualTags = form.tags.value.split(",").map(t => t.trim()).filter(Boolean);
-    const ingredientTags = ingredients.map(i => i.name.trim()).filter(Boolean);
-    const tags = Array.from(new Set([...manualTags, ...ingredientTags]));
-
-    let imagePath = form.image.value.trim();
-    if (imagePath && !imagePath.startsWith("images/food/")) {
-      imagePath = `images/food/${imagePath}`;
-    }
-
-    const recipe = {
-      name: form.name.value,
-      tags: tags,
-      baseServings: Number(form.baseServings.value),
-      image: imagePath,
-      ingredients: ingredients,
-      instructions: Array.from(document.querySelectorAll(".step")).map(div => div.querySelector(".step-text").value),
-      credits: {
-        author: form.author.value,
-        link: form.link.value
-      }
-    };
-
-    return recipe;
-  }
-
-  async function saveRecipe(recipe) {
-    const { error } = await supabase.from("recipes").insert([recipe]);
-    if (error) {
-      console.error("Supabase insert failed:", error);
-      alert("Failed to save to Supabase");
-    } else {
-      alert("Saved to Supabase!");
-      recipeForm.reset();
-      ingredientsDiv.innerHTML = "";
-      instructionsDiv.innerHTML = "";
-      addIngredient();
-      addStep();
-    }
-  }
-
-  // -------------------- Event Listeners --------------------
-  addIngredientBtn.addEventListener("click", addIngredient);
-  addStepBtn.addEventListener("click", addStep);
-
-  recipeForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const recipe = gatherFormData();
-    await saveRecipe(recipe);
+  // Step boxes grow with their text
+  instructionsDiv.addEventListener("input", e => {
+    if (e.target.matches(".step-text")) { e.target.style.height = "auto"; e.target.style.height = e.target.scrollHeight + "px"; }
   });
 
-  // Add one ingredient and step by default
+  // -------------------- Image handling --------------------
+  function clearImage() {
+    imageInput.value = "";
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+    previewImg.removeAttribute("src");
+    previewWrap.hidden = true;
+    document.getElementById("dropzone").hidden = false;
+  }
+
+  imageInput.addEventListener("change", () => {
+    const file = imageInput.files[0];
+    if (!file) return clearImage();
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please choose an image file.");
+      return clearImage();
+    }
+    if (file.size > MAX_INPUT_BYTES) {
+      alert("That image is too large (max 20 MB).");
+      return clearImage();
+    }
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(file);
+    previewImg.src = previewUrl;
+    previewWrap.hidden = false;
+    document.getElementById("dropzone").hidden = true;
+  });
+
+  document.getElementById("removeImageBtn").addEventListener("click", clearImage);
+
+  // Resize + compress in the browser so uploads stay small and fast to load.
+  async function compressImage(file) {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const scale = Math.min(1, MAX_DIMENSION / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    // Prefer WebP; if the browser can't encode it, toBlob falls back to PNG, so retry as JPEG.
+    let blob = await new Promise(res => canvas.toBlob(res, "image/webp", IMAGE_QUALITY));
+    if (!blob || blob.type !== "image/webp") {
+      blob = await new Promise(res => canvas.toBlob(res, "image/jpeg", IMAGE_QUALITY));
+    }
+    if (!blob) throw new Error("Could not process the image.");
+    return blob;
+  }
+
+  function slugify(text) {
+    return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "recipe";
+  }
+
+  async function uploadImage(file, recipeName) {
+    const blob = await compressImage(file);
+    const ext = blob.type === "image/webp" ? "webp" : "jpg";
+    const path = `${slugify(recipeName)}-${Date.now()}.${ext}`;
+
+    const { error } = await db.storage.from(BUCKET).upload(path, blob, {
+      contentType: blob.type,
+      cacheControl: "31536000" // 1 year; filenames are unique so this is safe
+    });
+    if (error) throw error;
+
+    const { data } = db.storage.from(BUCKET).getPublicUrl(path);
+    return { path, url: data.publicUrl };
+  }
+
+  // -------------------- Form data --------------------
+  function gatherFormData(imageUrl) {
+    const ingredients = Array.from(ingredientsDiv.querySelectorAll(".ingredient")).map(div => ({
+      name: div.querySelector(".ing-name").value.trim(),
+      amount: Number(div.querySelector(".ing-amount").value) || 0,
+      unit: div.querySelector(".ing-unit").value.trim()
+    }));
+
+    const tags = normalizeTags([...tagsInput.value.split(","), ...ingredients.map(i => i.name)]);
+
+    return {
+      name: recipeForm.elements["name"].value.trim(),
+      tags,
+      baseServings: Number(recipeForm.baseServings.value) || 4,
+      image: imageUrl,
+      ingredients,
+      instructions: Array.from(instructionsDiv.querySelectorAll(".step-text")).map(t => t.value.trim()),
+      credits: {
+        author: recipeForm.author.value.trim(),
+        link: recipeForm.link.value.trim()
+      }
+    };
+  }
+
+  function resetForm() {
+    recipeForm.reset();
+    clearImage();
+    ingredientsDiv.innerHTML = "";
+    instructionsDiv.innerHTML = "";
+    addIngredient();
+    addStep();
+  }
+
+  // -------------------- Submit --------------------
+  recipeForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving…";
+
+    let uploaded = null;
+    try {
+      const file = imageInput.files[0];
+      if (file) uploaded = await uploadImage(file, recipeForm.elements["name"].value);
+
+      const recipe = gatherFormData(uploaded ? uploaded.url : "");
+      const { error } = await db.from("recipes").insert([recipe]);
+      if (error) throw error;
+
+      alert("Saved!");
+      loadTags();
+      resetForm();
+    } catch (err) {
+      console.error("Saving failed:", err);
+      // Don't leave an orphaned image behind if the recipe insert failed
+      if (uploaded) await db.storage.from(BUCKET).remove([uploaded.path]);
+      alert("Failed to save: " + (err.message || err));
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save recipe";
+    }
+  });
+
+  document.getElementById("addIngredientBtn").addEventListener("click", addIngredient);
+  document.getElementById("addStepBtn").addEventListener("click", addStep);
+
+  // One ingredient and one step by default
   addIngredient();
   addStep();
-
 });
-</script>
-
-
-
-<script>
-  function copyJSON() {
-    const output = document.getElementById("output");
-    if (output.textContent.trim() === "") {
-      alert("Nothing to copy! Generate the JSON first.");
-      return;
-    }
-    navigator.clipboard.writeText(output.textContent).then(() => {
-      alert("JSON copied to clipboard!");
-    }).catch(err => {
-      console.error("Failed to copy: ", err);
-    });
-  }
 </script>
 
 </body>
