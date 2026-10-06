@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <link rel="stylesheet" href="styles/mushrooms.css">
 </head>
-<body>
+<body class="viewonly loading">
 
 <nav>
   <ul class="sidebar">
@@ -32,7 +32,7 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
   <section class="cb-hero">
     <div class="cb-hero-inner">
       <h1>Mushroom log</h1>
-      <p class="cb-sub">Work in progress — Use at your own risk</p>
+      <p class="cb-sub">Where, when and what I found</p>
     </div>
     <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><path d="M8 52C8 22 30 6 56 6s48 16 48 46z" fill="#E76F51"/><circle cx="34" cy="30" r="7" fill="#FFFDF8"/><circle cx="62" cy="22" r="5" fill="#FFFDF8"/><circle cx="80" cy="38" r="7" fill="#FFFDF8"/><path d="M42 52h28l-3 34H45z" fill="#FFFDF8"/></svg></div>
     <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
@@ -40,14 +40,14 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
 
   <main class="wrap">
     <div class="bar" role="tablist">
-      <button class="tab" data-v="log">Logbook</button>
+      <button class="tab on" data-v="log">Logbook</button>
       <button class="tab" data-v="lex">Lexicon</button>
       <button class="tab" data-v="quiz">Quiz</button>
       <span class="grow"></span>
       <button class="btn main edit-only" id="newFind">+ New find</button>
     </div>
 
-    <div class="bar logNav" id="logNav" hidden><button class="stab" data-sub="map">Map</button><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button></div>
+    <div class="bar logNav" id="logNav"><button class="stab on" data-sub="map">Map</button><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button></div>
 
     <!-- MAP -->
     <section class="view" id="v-map">
@@ -1242,7 +1242,8 @@ async function authChanged(){setAuthUI();await loadAll();show(view==='edit'?'map
 (async()=>{
   if(CLOUD){const {data:{session}}=await db.auth.getSession();user=session?.user||null}
   else if(SUPABASE_URL)toast('Could not load Supabase, so entries are only saved in this browser.');
-  await loadAll();setAuthUI();show('map');offerImport();
+  setAuthUI(); // the session is known now, so the owner buttons show or stay hidden right away
+  await loadAll();setAuthUI();show('map');document.body.classList.remove('loading');offerImport();
   if(CLOUD)db.auth.onAuthStateChange((_e,s)=>{const u=s?.user||null;if((u?.id||'')===(user?.id||''))return;user=u;setTimeout(authChanged,0)});
 })();
 </script>

@@ -64,6 +64,7 @@
       <div class="sheet-body">
         <ul id="recipe-dd" hidden></ul>
         <div id="filter-view" hidden>
+          <div class="settings-bar"><button type="button" id="tag-settings-btn" class="settings-link" hidden>⚙ Tag settings</button></div>
           <div id="popular-block" hidden>
             <p class="tag-heading">Most used</p>
             <div class="tags-container popular-tags"></div>
@@ -71,6 +72,10 @@
           <p class="tag-heading" id="all-heading" hidden>All tags</p>
           <div class="tags-container all-tags"></div>
         </div>
+        <div id="settings-view" hidden></div>
+      </div>
+      <div class="sheet-foot" id="settings-foot" hidden>
+        <button type="button" id="settings-done" class="done-btn">Done</button>
       </div>
       <div class="sheet-foot" id="filter-foot" hidden>
         <button type="button" class="reset-filters" id="panel-reset" hidden>Reset</button>
@@ -107,12 +112,27 @@ const supabaseClient = supabase.createClient(
 );
 const $ = s => document.querySelector(s);
 let allRecipes = [], selectedTags = [], searchTerm = '';
+// tag settings (favorites + groups), saved in Supabase table cookbook_settings and readable by everyone
+let settings = { favorites: [], groups: [] };
+let rawTags = new Map();   // lowercase tag -> { name, n }
+let items = [], itemMap = new Map(); // what the filter shows: single tags and groups
 
 // ---------- helpers ----------
 const slug = n => n.replace(/\s+/g, '-').toLowerCase();
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const parse = (v, d) => { try { return typeof v === 'string' ? JSON.parse(v) : (v ?? d); } catch { return d; } };
 const fmt = n => String(+n.toFixed(2));
+
+// ---------- tag settings ----------
+const normSettings = d => ({
+  favorites: Array.isArray(d?.favorites) ? d.favorites.map(String) : [],
+  groups: Array.isArray(d?.groups) ? d.groups.filter(g => g && g.id && Array.isArray(g.members))
+    .map(g => ({ id: String(g.id), name: String(g.name || '').trim(), members: g.members.map(m => String(m).toLowerCase()) })) : []
+});
+async function loadSettings() {
+  const { data } = await supabaseClient.from('cookbook_settings').select('data').eq('id', 'tags').maybeSingle();
+  settings = normSettings(data?.data);
+}
 
 // ---------- load ----------
 async function loadRecipes() {
@@ -132,30 +152,51 @@ async function loadRecipes() {
     };
   }).sort((a, b) => a.name.localeCompare(b.name));
 
+  await loadSettings();
   renderNav();
   render();
   if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
 }
 
 // ---------- render ----------
+function buildItems() {
+  const inGroup = new Set();
+  settings.groups.forEach(g => g.members.forEach(m => inGroup.add(m)));
+  items = [];
+  settings.groups.forEach(g => {
+    const keys = g.members.filter(m => rawTags.has(m));
+    if (!keys.length) return;
+    items.push({ key: 'g:' + g.id, label: g.name || rawTags.get(keys[0]).name, keys, group: true,
+      n: allRecipes.filter(r => keys.some(k => r.tagKeys.includes(k))).length });
+  });
+  rawTags.forEach((e, k) => { if (!inGroup.has(k)) items.push({ key: k, label: e.name, keys: [k], n: e.n }); });
+  items.sort((a, b) => a.label.localeCompare(b.label));
+  itemMap = new Map(items.map(i => [i.key, i]));
+}
+
 function renderNav() {
   $('#recipe-list').innerHTML = $('#recipe-dd').innerHTML =
     allRecipes.map(r => `<li><a href="#${esc(slug(r.name))}">${esc(r.name)}</a></li>`).join('');
 
   // count how many recipes use each tag (one entry per tag, case-insensitive)
-  const counts = new Map();
+  rawTags = new Map();
   allRecipes.forEach(r => r.tags.forEach(t => {
-    const k = t.toLowerCase(), e = counts.get(k) || { name: t, n: 0 };
-    e.n++; counts.set(k, e);
+    const k = t.toLowerCase(), e = rawTags.get(k) || { name: t, n: 0 };
+    e.n++; rawTags.set(k, e);
   }));
-  const all = [...counts.values()].sort((a, b) => a.name.localeCompare(b.name));
-  const popular = all.filter(e => e.n > 1).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 20);
-  const pill = e => `<button type="button" class="recipe-tag" data-tag="${esc(e.name.toLowerCase())}">${esc(e.name)}</button>`;
+  buildItems();
+  selectedTags = selectedTags.filter(k => itemMap.has(k));
 
-  const showPopular = popular.length >= 3 && all.length > popular.length; // only worth it with plenty of tags
-  $('#popular-block').hidden = $('#all-heading').hidden = !showPopular;
-  $('.popular-tags').innerHTML = showPopular ? popular.map(pill).join('') : '';
-  $('.all-tags').innerHTML = all.map(pill).join('');
+  const pill = e => `<button type="button" class="recipe-tag${e.group ? ' group' : ''}" data-tag="${esc(e.key)}"${e.group ? ` title="${esc(e.keys.map(k => rawTags.get(k).name).join(', '))}"` : ''}>${esc(e.label)}</button>`;
+  const favs = settings.favorites.map(k => itemMap.get(k)).filter(Boolean).sort((a, b) => a.label.localeCompare(b.label));
+  const popular = items.filter(e => e.n > 1).sort((a, b) => b.n - a.n || a.label.localeCompare(b.label)).slice(0, 20);
+  // your favorites come first; until you pick some, the most used tags are shown instead
+  const useFav = favs.length > 0;
+  const showTop = useFav || (popular.length >= 3 && items.length > popular.length);
+  $('#popular-block').hidden = $('#all-heading').hidden = !showTop;
+  $('#popular-block .tag-heading').textContent = useFav ? '★ Favorites' : 'Most used';
+  $('.popular-tags').innerHTML = showTop ? (useFav ? favs : popular).map(pill).join('') : '';
+  $('.all-tags').innerHTML = items.map(pill).join('');
 }
 
 function recipeHTML(r) {
@@ -191,9 +232,12 @@ function recipeHTML(r) {
 }
 
 function visibleRecipes() {
+  const sel = selectedTags.map(k => itemMap.get(k)).filter(Boolean);
+  const has = (r, it) => it.keys.some(k => r.tagKeys.includes(k));
   return allRecipes.filter(r =>
-    selectedTags.every(t => r.tagKeys.includes(t)) &&
-    (!searchTerm || r.name.toLowerCase().includes(searchTerm) || r.tagKeys.some(t => t.includes(searchTerm))));
+    sel.every(it => has(r, it)) &&
+    (!searchTerm || r.name.toLowerCase().includes(searchTerm) || r.tagKeys.some(t => t.includes(searchTerm)) ||
+      items.some(it => it.group && it.label.toLowerCase().includes(searchTerm) && has(r, it))));
 }
 
 function render() {
@@ -216,9 +260,11 @@ function resetFilters() {
 // ---------- full-screen sheets (Recipes / Filter) ----------
 const overlay = $('#overlay');
 function openSheet(view) {
-  $('#sheet-title').textContent = view === 'recipes' ? 'Recipes' : 'Filter';
+  $('#sheet-title').textContent = view === 'recipes' ? 'Recipes' : view === 'settings' ? 'Tag settings' : 'Filter';
   $('#recipe-dd').hidden = view !== 'recipes';
   $('#filter-view').hidden = $('#filter-foot').hidden = view !== 'filter';
+  $('#settings-view').hidden = $('#settings-foot').hidden = view !== 'settings';
+  if (view === 'settings') renderSettings();
   overlay.hidden = false;
   document.body.classList.add('lock');
   $('#sheet-close').focus();
@@ -240,6 +286,102 @@ addEventListener('scroll', () => {
 const toTop = $('#to-top');
 addEventListener('scroll', () => toTop.classList.toggle('show', scrollY > innerHeight * 1.2), { passive: true });
 toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
+
+// ---------- tag settings: favorites and groups (only for the signed-in owner; the database enforces it too) ----------
+let isOwner = false, setTab = 'fav', setQuery = '', memberQuery = '', editing = null;
+const gid = () => Math.random().toString(36).slice(2, 10);
+function setOwner(v) {
+  isOwner = !!v;
+  $('#tag-settings-btn').hidden = !isOwner;
+  if (!isOwner && !$('#settings-view').hidden) { closeSheet(); }
+}
+supabaseClient.auth.getSession().then(({ data }) => setOwner(data.session));
+supabaseClient.auth.onAuthStateChange((_e, session) => setOwner(session));
+
+async function persistSettings() {
+  const { error } = await supabaseClient.from('cookbook_settings').upsert({ id: 'tags', data: settings, updated_at: new Date().toISOString() });
+  const msg = $('#set-msg');
+  if (msg) msg.textContent = error ? 'Could not save: ' + error.message : '';
+  return !error;
+}
+async function settingsChanged() { // save, then refresh the filter and the settings view
+  await persistSettings();
+  renderNav(); render(); renderSettings();
+}
+const favTags = () => {
+  const q = setQuery.toLowerCase(), list = items.filter(i => !q || i.label.toLowerCase().includes(q));
+  return list.map(i => { const on = settings.favorites.includes(i.key);
+    return `<button type="button" class="set-tag${on ? ' on' : ''}" data-fav="${esc(i.key)}">${on ? '★ ' : ''}${esc(i.label)}${i.group ? ' <small>group</small>' : ''}</button>`; }).join('')
+    || '<p class="set-hint">No tags match.</p>';
+};
+const memberTags = () => {
+  const q = memberQuery.toLowerCase();
+  return [...rawTags.entries()].sort((a, b) => a[1].name.localeCompare(b[1].name)).filter(([k, e]) => !q || e.name.toLowerCase().includes(q))
+    .map(([k, e]) => {
+      const other = settings.groups.find(g => g.id !== editing.id && g.members.includes(k));
+      const on = editing.members.includes(k);
+      return `<button type="button" class="set-tag${on ? ' on' : ''}${other ? ' taken' : ''}" data-m="${esc(k)}" ${other ? `disabled title="Already in the group ${esc(other.name)}"` : ''}>${on ? '✓ ' : ''}${esc(e.name)}</button>`;
+    }).join('') || '<p class="set-hint">No tags match.</p>';
+};
+function renderSettings() {
+  const tabs = `<div class="set-seg" role="tablist"><button type="button" data-st="fav" class="${setTab === 'fav' ? 'on' : ''}">Favorites</button><button type="button" data-st="groups" class="${setTab === 'groups' ? 'on' : ''}">Groups</button></div>`;
+  let body = '';
+  if (setTab === 'fav') {
+    body = `<p class="set-hint">Tap a tag to make it a favorite. Favorites are shown first in the filter.</p>
+      <input class="set-input" id="set-q" type="search" placeholder="Find a tag…" value="${esc(setQuery)}" aria-label="Find a tag">
+      <div class="tags-container set-tags" id="set-tags">${favTags()}</div>`;
+  } else if (editing) {
+    body = `<label class="set-label" for="g-name">Group name</label>
+      <input class="set-input" id="g-name" value="${esc(editing.name)}" placeholder="e.g. Tomato" maxlength="40">
+      <p class="set-label">Tags in this group <span class="set-count" id="g-count">${editing.members.length} selected</span></p>
+      <input class="set-input" id="g-q" type="search" placeholder="Find a tag…" value="${esc(memberQuery)}" aria-label="Find a tag">
+      <div class="tags-container set-tags" id="g-tags">${memberTags()}</div>
+      <div class="set-actions"><button type="button" class="set-btn" id="g-cancel">Cancel</button><button type="button" class="set-btn primary" id="g-save">Save group</button></div>`;
+  } else {
+    body = `<p class="set-hint">Group tags that mean the same, like tomato and tomatoes or Asian and asian. The filter then shows one tag for the whole group, and it finds recipes with any of them.</p>
+      ${settings.groups.map(g => `<div class="group-row"><div class="group-main"><b>${esc(g.name || '(no name)')}</b><span>${esc(g.members.map(m => rawTags.get(m)?.name || m).join(', '))}</span></div>
+        <button type="button" class="set-btn" data-edit="${esc(g.id)}">Edit</button><button type="button" class="set-btn danger" data-del="${esc(g.id)}">Delete</button></div>`).join('')}
+      <button type="button" class="set-btn primary" id="new-group">+ New group</button>`;
+  }
+  $('#settings-view').innerHTML = tabs + body + '<p class="set-msg" id="set-msg" role="status"></p>';
+}
+$('#settings-view').addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.st) { setTab = b.dataset.st; editing = null; renderSettings(); }
+  else if (b.dataset.fav) {
+    const k = b.dataset.fav;
+    settings.favorites = settings.favorites.includes(k) ? settings.favorites.filter(f => f !== k) : [...settings.favorites, k];
+    await settingsChanged();
+  } else if (b.id === 'new-group') { editing = { id: gid(), name: '', members: [], isNew: true }; memberQuery = ''; renderSettings(); }
+  else if (b.dataset.edit) { const g = settings.groups.find(x => x.id === b.dataset.edit); editing = { ...g, members: [...g.members] }; memberQuery = ''; renderSettings(); }
+  else if (b.dataset.del) {
+    if (b.dataset.armed) {
+      settings.groups = settings.groups.filter(g => g.id !== b.dataset.del);
+      settings.favorites = settings.favorites.filter(f => f !== 'g:' + b.dataset.del);
+      await settingsChanged();
+    } else { b.dataset.armed = '1'; b.textContent = 'Tap again to delete'; setTimeout(() => { if (b.isConnected) { delete b.dataset.armed; b.textContent = 'Delete'; } }, 3000); }
+  } else if (b.dataset.m) {
+    const k = b.dataset.m;
+    editing.members = editing.members.includes(k) ? editing.members.filter(m => m !== k) : [...editing.members, k];
+    $('#g-tags').innerHTML = memberTags(); $('#g-count').textContent = editing.members.length + ' selected';
+  } else if (b.id === 'g-cancel') { editing = null; renderSettings(); }
+  else if (b.id === 'g-save') {
+    if (!editing.members.length) { $('#set-msg').textContent = 'Select at least one tag.'; return; }
+    const name = editing.name.trim() || rawTags.get(editing.members[0])?.name || 'Group';
+    const g = { id: editing.id, name, members: editing.members };
+    settings.groups = editing.isNew ? [...settings.groups, g] : settings.groups.map(x => x.id === g.id ? g : x);
+    // a favorite that just became part of a group stays a favorite, as the group
+    settings.favorites = [...new Set(settings.favorites.map(f => g.members.includes(f) ? 'g:' + g.id : f))];
+    editing = null; await settingsChanged();
+  }
+});
+$('#settings-view').addEventListener('input', e => {
+  if (e.target.id === 'set-q') { setQuery = e.target.value; $('#set-tags').innerHTML = favTags(); }
+  else if (e.target.id === 'g-q') { memberQuery = e.target.value; $('#g-tags').innerHTML = memberTags(); }
+  else if (e.target.id === 'g-name') editing.name = e.target.value;
+});
+$('#tag-settings-btn').addEventListener('click', () => { setTab = 'fav'; editing = null; setQuery = ''; openSheet('settings'); });
+$('#settings-done').addEventListener('click', () => { editing = null; openSheet('filter'); });
 
 // ---------- events ----------
 $('.search-input').addEventListener('input', e => { searchTerm = e.target.value.trim().toLowerCase(); render(); });

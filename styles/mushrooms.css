@@ -374,3 +374,7 @@ select.mini{width:auto!important;padding:.3rem .6rem!important;font-size:.85rem}
 #askDlg{border:0;border-radius:20px;padding:1.6rem;background:var(--container-bg);color:var(--body-text);width:min(92vw,360px);margin:auto;text-align:center}
 #askDlg::backdrop{background:rgba(0,0,0,.6)}
 #askDlg h2{font-family:var(--serif);font-size:1.4rem;color:var(--header-text);margin:.2rem 0 .5rem}
+
+/* no flash of half-loaded content: the views stay hidden until the first render (shown anyway after 4 s as a safety net) */
+body.loading .view{visibility:hidden;animation:reveal 0s 4s forwards!important}
+@keyframes reveal{to{visibility:visible}}

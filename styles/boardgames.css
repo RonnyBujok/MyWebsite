@@ -179,3 +179,25 @@ body{min-height:calc(100vh - 50px);min-height:calc(100dvh - 50px)}
 .ctable td{min-width:8.6rem}
 details.cheat{margin:0 0 .9rem}
 details.cheat summary{font-size:.95rem}
+
+/* no flash of half-loaded content: the views stay hidden until the first render (shown anyway after 4 s as a safety net) */
+body.loading .view{visibility:hidden;animation:reveal 0s 4s forwards!important}
+@keyframes reveal{to{visibility:visible}}
+
+/* calculator rounds */
+.rtabs{display:flex;flex-wrap:wrap;gap:.2rem 1.1rem;align-items:center;margin:0 0 .8rem;border-bottom:1px solid var(--border)}
+.rtabs .btn{margin:0 0 .35rem}
+#rAdd{margin-left:auto}
+.ctable tfoot .rrow th,.ctable tfoot .rrow td{font-size:.82rem;font-weight:400;color:var(--sub-text);padding:.3rem .45rem}
+.ctable tfoot .rrow.curr th,.ctable tfoot .rrow.curr td{font-weight:700;color:var(--header-text)}
+.ctable tfoot .grand th,.ctable tfoot .grand td{border-top:2px solid var(--border)}
+
+/* calculator groups */
+.ctable tr.ghead th,.ctable tr.ghead td{background:color-mix(in srgb,var(--third) 16%,var(--container-bg));font-family:var(--serif);font-weight:700;color:var(--header-text);font-size:.95rem}
+.ctable tr.ghead th small{display:block;font-family:Arial,Helvetica,sans-serif;font-weight:400;font-size:.7rem;color:var(--sub-text)}
+.ctable tr.ghead td.win{background:color-mix(in srgb,var(--ok) 18%,var(--container-bg))}
+.ggroup{margin:.6rem 0;padding:.8rem;border-left:4px solid var(--third)}
+.ghead2{display:flex;gap:.4rem;align-items:center;margin-bottom:.5rem}
+.ghead2 .gname{font-family:var(--serif);font-weight:700}
+.inl.wide{display:flex;margin-bottom:.7rem}
+.inl.wide input{flex:1;width:auto!important}
