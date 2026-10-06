@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Board game collection</title>
+<link rel="stylesheet" href="styles/recipeform.css">
+<link rel="stylesheet" href="styles/boardgames.css">
+</head>
+<body>
+
+<nav>
+  <ul class="sidebar">
+    <li class="close-icon-button" onclick="hideSidebar()"><img src="icons/close.svg" alt=""></li>
+    <li><a href="about.html">About</a></li><li><a href="research.html">Research</a></li><li><a href="teaching.html">Teaching</a></li><li><a href="projects.html">Projects</a></li><li><a href="contact.html">Contact</a></li>
+  </ul>
+  <ul>
+    <li><a href="index.html"><img style="padding-right:10px" src="icons/home.svg" alt="">Ronny Bujok</a></li>
+    <li class="hideOnMobile"><a href="about.html">About</a></li><li class="hideOnMobile"><a href="research.html">Research</a></li><li class="hideOnMobile"><a href="teaching.html">Teaching</a></li><li class="hideOnMobile"><a href="projects.html">Projects</a></li><li class="hideOnMobile"><a href="contact.html">Contact</a></li>
+    <li class="menu-button" onclick="showSidebar()"><a href="#"><img src="icons/menu.svg" alt=""></a></li>
+  </ul>
+</nav>
+<script>
+const sidebar=document.querySelector('.sidebar');
+function showSidebar(){sidebar.classList.add('show');document.body.classList.add('menu-open')}
+function hideSidebar(){sidebar.classList.remove('show');document.body.classList.remove('menu-open')}
+document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.closest('.menu-button'))hideSidebar()});
+</script>
+
+<div class="content">
+  <section class="cb-hero">
+    <div class="cb-hero-inner">
+      <h1>Board games</h1>
+      <!-- <p class="cb-sub">What I own, what I play and who wins</p> -->
+    </div>
+    <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><g transform="rotate(-8 58 46)"><rect x="30" y="18" width="56" height="56" rx="11" fill="#E76F51"/><circle cx="44" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="58" cy="46" r="5.5" fill="#FFFDF8"/><circle cx="44" cy="60" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="60" r="5.5" fill="#FFFDF8"/></g></svg></div>
+    <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
+  </section>
+
+  <main class="wrap">
+    <div class="bar tabs" role="tablist">
+      <button class="tab" data-v="lib">Library</button>
+      <button class="tab" data-v="log">Log</button>
+      <button class="tab" data-v="calc">Calculator</button>
+      <span class="grow"></span>
+      <button class="btn main edit-only" id="newPlay">+ New play</button>
+    </div>
+    <div class="bar logNav" id="logNav" hidden><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button><button class="stab" data-sub="game">By game</button></div>
+
+    <!-- shared search and date filter of History and Stats -->
+    <div class="card panel" id="logFilter" hidden>
+      <div class="field"><label class="l" for="lq">Search game, player or date</label><input id="lq" type="search" placeholder="Search..."></div>
+      <details id="lDate"><summary id="lSum">Filter by date</summary>
+        <div class="field dates" style="margin-top:.9rem"><div><label class="l" for="lFrom">From</label><input type="date" id="lFrom"></div><div><label class="l" for="lTo">To</label><input type="date" id="lTo"></div></div>
+      </details>
+      <div class="resetRow"><button class="btn sm" id="lReset" type="button">Reset filters</button></div>
+    </div>
+
+    <!-- LIBRARY -->
+    <section class="view" id="v-lib">
+      <div class="tiles3" id="overview"></div>
+      <div class="card panel">
+        <div class="field"><label class="l" for="gq">Search the library</label><input id="gq" type="search" placeholder="Search…"></div>
+        <details id="gFilters"><summary id="gSum">Filters</summary>
+          <div class="filters">
+            <div class="field"><label class="l" for="gOwn">Ownership</label><select id="gOwn"><option value="">All</option><option value="own">Owned</option><option value="not">Not owned</option></select></div>
+            <div class="field"><label class="l" for="gType">Type</label><select id="gType"><option value="">All</option><option value="comp">Competitive</option><option value="coop">Co-op</option></select></div>
+            <div class="field"><label class="l" for="gGenre">Genre</label><select id="gGenre"></select></div>
+            <div class="field"><label class="l" for="gPl">Players (number)</label><input id="gPl" type="number" min="1" inputmode="numeric" placeholder="e.g. 4"></div>
+            <div class="field"><label class="l" for="gTime">Max playtime (min)</label><input id="gTime" type="number" min="1" inputmode="numeric" placeholder="e.g. 60"></div>
+            <div class="field dates"><div><label class="l" for="gY1">Year from</label><input id="gY1" type="number" inputmode="numeric"></div><div><label class="l" for="gY2">to</label><input id="gY2" type="number" inputmode="numeric"></div></div>
+          </div>
+          <div class="chips" style="margin:.2rem 0 .6rem"><label class="chip" style="--c:var(--gold)"><input type="checkbox" id="gFav"><span>★ Favorites only</span></label></div>
+        </details>
+        <div class="resetRow"><button class="btn sm" id="gReset" type="button">Reset filters</button></div>
+      </div>
+      <div class="bar"><h2 style="margin:0">Games</h2><span class="meta" id="gCount"></span><span class="grow"></span><button class="btn main edit-only" id="newGame">+ Add game</button></div>
+      <div class="list" id="gameList"></div>
+      <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+    </section>
+
+    <!-- LOG: history -->
+    <section class="view" id="v-hist" hidden>
+      <div class="bar"><h2 style="margin:0">History</h2><span class="meta" id="hCount"></span></div>
+      <div class="list" id="histList"></div>
+    </section>
+
+    <!-- LOG: stats -->
+    <section class="view" id="v-stats" hidden><div id="statsBox"></div></section>
+
+    <!-- LOG: one game -->
+    <section class="view" id="v-game" hidden>
+      <div class="card panel"><div class="field" style="margin-bottom:.5rem"><label class="l" for="bgName">Check the stats of a game</label><input id="bgName" list="gameNames" autocomplete="off" placeholder="Start typing a game…"></div></div>
+      <div id="gameStatsBox"></div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="view" id="v-calc" hidden>
+      <div class="bar"><h2 style="margin:0">Game calculator</h2><span class="grow"></span><button class="btn main edit-only" id="newCalc">+ New calculator</button></div>
+      <p class="meta" style="margin-top:-.4rem">Pick a game to add up the points at the end of a round.</p>
+      <div class="list" id="calcList"></div>
+    </section>
+    <section class="view" id="v-calcplay" hidden><div id="calcPlayBox"></div></section>
+    <section class="view narrow" id="v-calcedit" hidden><div id="calcEditBox"></div></section>
+
+    <!-- EDIT GAME -->
+    <section class="view narrow" id="v-editgame" hidden>
+      <h2 id="gameTitle"></h2>
+      <form id="gf" autocomplete="off">
+        <div class="field"><label class="l" for="gName">Name</label><input id="gName" name="name" required></div>
+        <div class="field">
+        <div class="row">
+          <div class="field"><label class="l" for="gMin">Min players</label><input id="gMin" name="minP" type="number" min="1" inputmode="numeric"></div>
+          <div class="field"><label class="l" for="gMax">Max players</label><input id="gMax" name="maxP" type="number" min="1" inputmode="numeric"></div>
+          <div class="field"><label class="l" for="gTm">Average playtime (min)</label><input id="gTm" name="time" type="number" min="1" inputmode="numeric"></div>
+          <div class="field"><label class="l" for="gYr">Year of release</label><input id="gYr" name="year" type="number" inputmode="numeric"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label class="l" for="gMode">Type</label><select id="gMode" name="mode"><option value="comp">Competitive</option><option value="coop">Co-op</option></select></div>
+          <div class="field"><label class="l" for="gGen">Genre</label><input id="gGen" name="genre" list="genreNames" placeholder="e.g. Strategy"></div>
+        </div>
+        <div class="field"><div class="chips">
+          <label class="chip" style="--c:var(--gold)"><input type="checkbox" name="fav"><span>★ Favorite</span></label>
+          <label class="chip" style="--c:var(--ok)"><input type="checkbox" name="owned"><span>✓ Owned</span></label>
+          <label class="chip" style="--c:var(--accent)"><input type="checkbox" name="lowWins"><span>Lowest score wins</span></label>
+        </div></div>
+        <div class="field"><span class="l">More details</span><div id="gExtraRows"></div><button type="button" class="btn sm" id="addExtra">+ Add detail</button><p class="msg">For example starting cards, setup time or special rules.</p><datalist id="extraNames"></datalist></div>
+        <div class="field"><label class="l" for="gRules">Instructions / extended description (optional)</label><textarea id="gRules" name="rules" rows="7" placeholder="Handy for custom card games: the full rules, step by step."></textarea></div>
+        <div class="acts" style="justify-content:flex-end"><button type="button" class="btn" id="gCancel">Cancel</button><button class="btn main" type="submit">Save game</button></div>
+      </form>
+    </section>
+
+    <!-- NEW PLAY -->
+    <section class="view narrow" id="v-editplay" hidden>
+      <h2 id="playTitle"></h2>
+      <form id="pf" autocomplete="off">
+        <div class="field"><label class="l" for="pGame">Game</label><input id="pGame" list="gameNames" placeholder="Start typing a game…" required><p class="msg" id="pHint"></p></div>
+        <div class="field"><label class="l" for="pDate">Date</label><input id="pDate" type="date" required></div>
+        <div class="field"><div class="chips">
+          <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="pScores"><span>Track scores</span></label>
+          <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="pTeams"><span>Play in teams</span></label>
+          <label class="chip" style="--c:#8A8F96" id="drawChip"><input type="checkbox" id="pDraw"><span>Draw</span></label>
+        </div></div>
+        <div class="field"><span class="l" id="pCount">Players</span><div id="prows"></div>
+          <div class="acts"><button type="button" class="btn sm" id="addPlayer">+ Add player</button></div></div>
+        <div class="field" id="tscores" hidden></div>
+        <div class="field" id="coopRes" hidden><span class="l">Result</span><div class="chips"><label class="chip" style="--c:var(--ok)"><input type="radio" name="coopr" value="won"><span>We won</span></label><label class="chip" style="--c:var(--bad)"><input type="radio" name="coopr" value="lost"><span>We lost</span></label></div></div>
+        <div class="field"><label class="l" for="pNotes">Notes (optional)</label><textarea id="pNotes" rows="2"></textarea></div>
+        <div class="field" id="addLibBox" hidden><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="pAddLib" checked><span>Also add this game to my library</span></label></div>
+        <datalist id="playerNames"></datalist>
+        <div class="acts" style="justify-content:flex-end"><button type="button" class="btn" id="pCancel">Cancel</button><button class="btn main" type="submit">Save play</button></div>
+      </form>
+    </section>
+
+    <datalist id="gameNames"></datalist><datalist id="genreNames"></datalist>
+
+    <dialog id="loginDlg">
+      <form id="loginForm">
+        <h2>Sign in</h2>
+        <p class="hint">Anyone can look around. Only the owner can add or change things.</p>
+        <div class="field"><label class="l" for="loginEmail">Email</label><input type="email" id="loginEmail" autocomplete="username" required></div>
+        <div class="field"><label class="l" for="loginPw">Password</label><input type="password" id="loginPw" autocomplete="current-password" required></div>
+        <p id="loginErr" role="alert"></p>
+        <div class="acts" style="justify-content:flex-end"><button type="button" class="btn" id="loginCancel">Cancel</button><button class="btn main" type="submit">Sign in</button></div>
+      </form>
+    </dialog>
+    <dialog id="askDlg"><div id="askBody"></div></dialog>
+  </main>
+
+  <footer class="footer">
+    <div>© 2026 Ronny Bujok</div>
+    <div style="margin-top:8px;">
+      Licensed under
+      <a class="hyperlink" href="https://creativecommons.org/licenses/by/4.0/deed.en">CC BY 4.0</a>
+    </div>
+    <div class="authline" id="authLine" hidden><span id="who"></span><button type="button" id="authBtn">Sign in</button></div>
+  </footer>
+</div>
+<div id="toast" role="status" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ---------- Storage + accounts ----------
+   Cloud mode (Supabase) is on when SUPABASE_URL is set and the library loaded: everyone can read, only the signed-in
+   owner can write. Set SUPABASE_URL to '' to work purely in this browser (localStorage) instead. */
+const SUPABASE_URL='https://oqzceuesqnkmdbsgttcl.supabase.co',SUPABASE_KEY='sb_publishable_gQkpZldPR96EZ2JHwSan5Q_rmjX2WMN';
+/* Optional BoardGameGeek lookup: the browser cannot call BGG directly. Deploy the small proxy from bgg-proxy.ts
+   (see the setup notes) and put its address here, e.g. 'https://<project>.supabase.co/functions/v1/bgg-proxy'. */
+const BGG_PROXY='';
+const CLOUD=!!(SUPABASE_URL&&window.supabase);
+const db=CLOUD?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+let user=null;
+const can=()=>!CLOUD||!!user;
+const lsGet=k=>{try{return JSON.parse(localStorage.getItem(k)||'')}catch{return null}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch{toast('Browser storage is full.');return false}};
+const TABLE={games:'bg_games',plays:'bg_plays',calcs:'bg_calcs'};
+const shadow={games:new Map(),plays:new Map(),calcs:new Map()}; // what the database holds, so only changes are written
+async function fetchAll(table){
+  const rows=[];
+  for(let from=0;;from+=1000){
+    const {data,error}=await db.from(table).select('id,data').order('created_at').order('id').range(from,from+999);
+    if(error)throw error;rows.push(...data);if(data.length<1000)break;
+  }
+  return rows.map(r=>({...r.data,id:r.id}));
+}
+async function syncList(key,list){
+  const sh=shadow[key],seen=new Set();
+  for(const o of list){
+    seen.add(o.id);if(sh.get(o.id)===JSON.stringify(o))continue;
+    const {error}=await db.from(TABLE[key]).upsert({id:o.id,data:o,updated_at:new Date().toISOString()});
+    if(error)throw error;sh.set(o.id,JSON.stringify(o));
+  }
+  for(const [id] of [...sh]){
+    if(seen.has(id))continue;
+    const {error}=await db.from(TABLE[key]).delete().eq('id',id);if(error)throw error;sh.delete(id);
+  }
+}
+const Store={
+  async load(){
+    if(!CLOUD)return lsGet('boardgames')||{};
+    const [games,plays,calcs]=await Promise.all([fetchAll(TABLE.games),fetchAll(TABLE.plays),fetchAll(TABLE.calcs)]);
+    return{games,plays,calcs};
+  },
+  baseline(D){for(const k of Object.keys(TABLE))shadow[k]=new Map(D[k].map(o=>[o.id,JSON.stringify(o)]))},
+  async save(D){ // true when everything was stored
+    try{
+      if(!CLOUD)return lsSet('boardgames',D);
+      if(!user)return true;
+      for(const k of Object.keys(TABLE))await syncList(k,D[k]);
+      return true;
+    }catch(e){console.error(e);toast('Could not save to Supabase: '+(e.message||e));return false}
+  }
+};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s??'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const uid=()=>crypto.randomUUID();
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const fmtD=d=>d?new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';
+const num=v=>{if(v===''||v==null)return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
+const toks=s=>String(s??'').split(/\s*[,;/]\s*/).map(t=>t.trim()).filter(Boolean);
+let D={games:[],plays:[],calcs:[]},view='lib',lastLog='hist',cur=null,returnTo='lib';
+const gameById=id=>D.games.find(g=>g.id===id);
+const gameByName=n=>D.games.find(g=>norm(g.name)===norm(n));
+const playersTxt=g=>g.minP&&g.maxP?(g.minP===g.maxP?`${g.minP}`:`${g.minP}–${g.maxP}`):(g.maxP||g.minP||'');
+
+/* ---------- dialogs and messages ---------- */
+function ask(text,{title='Please confirm',yes='OK',no='Cancel',danger=false}={}){
+  return new Promise(res=>{
+    const d=$('#askDlg');
+    $('#askBody').innerHTML=`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="acts" style="justify-content:center">${no?'<button class="btn" id="askNo">'+esc(no)+'</button>':''}<button class="btn ${danger?'danger':'main'}" id="askYes">${esc(yes)}</button></div>`;
+    d.onclose=()=>{if(!d.open)res(false)};
+    $('#askYes').onclick=()=>{res(true);d.close()};if(no)$('#askNo').onclick=()=>d.close();
+    d.showModal();
+  });
+}
+const say=text=>ask(text,{title:'Notice',yes:'OK',no:null});
+function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,6000)}
+
+/* ---------- sign in / sign out ---------- */
+function setAuthUI(){
+  document.body.classList.toggle('viewonly',!can());
+  $('#authLine').hidden=!CLOUD;$('#authBtn').textContent=user?'Sign out':'Owner sign in';
+  $('#who').textContent=user?`Signed in as ${user.email} · `:'';
+}
+function openLogin(){$('#loginErr').textContent='';$('#loginDlg').showModal();$('#loginEmail').focus()}
+function needLogin(){if(can())return true;openLogin();return false}
+$('#authBtn').onclick=()=>user?db.auth.signOut():openLogin();
+$('#loginCancel').onclick=()=>$('#loginDlg').close();
+$('#loginForm').onsubmit=async e=>{
+  e.preventDefault();$('#loginErr').textContent='';const b=e.submitter;b.disabled=true;
+  const {error}=await db.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPw').value});
+  b.disabled=false;
+  if(error)return $('#loginErr').textContent=error.message;
+  $('#loginPw').value='';$('#loginDlg').close();
+};
+
+/* ---------- navigation: Library | Log (History, Stats, By game) | Calculator ---------- */
+const LOGV=['hist','stats','game'],CALCV=['calc','calcplay','calcedit'];
+const tabOf=v=>v==='lib'||v==='editgame'?'lib':LOGV.includes(v)||v==='editplay'?'log':CALCV.includes(v)?'calc':'';
+function show(v){
+  view=v;if(LOGV.includes(v))lastLog=v;
+  $$('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===tabOf(v)));
+  $('#logNav').hidden=!LOGV.includes(v);$$('[data-sub]').forEach(b=>b.classList.toggle('on',b.dataset.sub===v));
+  $('#logFilter').hidden=!(v==='hist'||v==='stats');
+  if(v==='lib')renderLib();if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='game')renderGameStats();if(v==='calc')renderCalcList();
+  fillLists();window.scrollTo({top:0});
+}
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v));
+$$('[data-sub]').forEach(b=>b.onclick=()=>show(b.dataset.sub));
+function fillLists(){ // suggestions for the autofill fields
+  const names=[...new Set([...D.games.map(g=>g.name),...D.plays.map(p=>p.game)])].sort();
+  $('#gameNames').innerHTML=names.map(n=>`<option value="${esc(n)}">`).join('');
+  $('#genreNames').innerHTML=[...new Set(D.games.flatMap(g=>toks(g.genre)))].sort().map(n=>`<option value="${esc(n)}">`).join('');
+  $('#playerNames').innerHTML=[...new Set(D.plays.flatMap(p=>p.players.map(x=>x.name)))].sort().map(n=>`<option value="${esc(n)}">`).join('');
+}
+
+/* =====================================================================
+   LIBRARY
+   ===================================================================== */
+const ICON_OWN='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+const favMark=on=>`<span class="fav${on?' on':''}" role="img" aria-label="${on?'Favorite':'Not a favorite'}" title="${on?'Favorite':'Not a favorite'}">★</span>`;
+const ownMark=on=>`<span class="own${on?' on':''}" role="img" aria-label="${on?'Owned':'Not owned'}" title="${on?'Owned':'Not owned'}">${on?ICON_OWN:''}</span>`;
+function libList(){
+  const qs=norm($('#gq').value).split(/\s+/).filter(Boolean),ow=$('#gOwn').value,ty=$('#gType').value,ge=$('#gGenre').value,fav=$('#gFav').checked;
+  const pl=num($('#gPl').value),mt=num($('#gTime').value),y1=num($('#gY1').value),y2=num($('#gY2').value);
+  return D.games.filter(g=>{
+    const hay=norm([g.name,g.genre,g.year,g.mode==='coop'?'co-op coop cooperative':'competitive',`${playersTxt(g)} players`,g.time?`${g.time} min minutes`:'',g.owned?'owned':'not owned',g.fav?'favorite':'',...(g.extra||[]).flatMap(e=>[e.k,e.v]),g.rules].join(' '));
+    return qs.every(t=>hay.includes(t))&&(!ow||(ow==='own'?g.owned:!g.owned))&&(!fav||g.fav)&&(!ty||(g.mode||'comp')===ty)
+      &&(!ge||toks(g.genre).some(t=>norm(t)===norm(ge)))&&(pl==null||((g.minP||1)<=pl&&pl<=(g.maxP||99)))&&(mt==null||(g.time||0)<=mt)
+      &&(y1==null||(g.year||0)>=y1)&&(y2==null||(g.year||9999)<=y2);
+  }).sort((a,b)=>a.name.localeCompare(b.name));
+}
+function playsOf(g){return D.plays.filter(p=>p.gameId===g.id||(!p.gameId&&norm(p.game)===norm(g.name)))}
+function gameRow(g){
+  const ps=playsOf(g),last=ps.map(p=>p.date).sort().pop();
+  const facts=[['Players',playersTxt(g)?playersTxt(g):'–'],['Playtime',g.time?`${g.time} min`:'–'],['Type',(g.mode||'comp')==='coop'?'Co-op':'Competitive'],['Genre',g.genre||'–'],['Year',g.year||'–']];
+  const extra=(g.extra||[]).filter(e=>e.k&&e.v).map(e=>`<dt>${esc(e.k)}</dt><dd>${esc(e.v)}</dd>`).join('');
+  return `<details class="card entry" id="g-${g.id}"><summary><span class="en">${esc(g.name)}</span>${favMark(g.fav)}${ownMark(g.owned)}</summary>
+  <div class="ebody"><dl class="facts">${facts.map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+  ${extra?`<dl class="feat">${extra}</dl>`:''}
+  ${g.rules?`<div class="box"><h5>Instructions</h5><div class="rules">${esc(g.rules)}</div></div>`:''}
+  <p class="meta">${ps.length?`Played ${ps.length}× · last on ${fmtD(last)}`:'Not played yet'}${g.lowWins?' · lowest score wins':''}</p>
+  <div class="acts"><button class="btn" onclick="gameStats('${g.id}')">📊 Play stats</button>
+    <button class="btn edit-only" onclick="newPlayFor('${g.id}')">+ Log a play</button>
+    <button class="btn edit-only" onclick="toggleGame('${g.id}','fav')">${g.fav?'★ Unfavorite':'☆ Favorite'}</button>
+    <button class="btn edit-only" onclick="toggleGame('${g.id}','owned')">${g.owned?'Mark not owned':'Mark owned'}</button>
+    <button class="btn edit-only" onclick="editGame('${g.id}')">Edit</button><button class="btn danger edit-only" onclick="delGame('${g.id}')">Delete</button></div></div></details>`;
+}
+function renderLib(){
+  const all=D.games; // the overview never changes with the search or filters
+  $('#overview').innerHTML=[['Games listed',all.length],['Owned',all.filter(g=>g.owned).length],['Favorites',all.filter(g=>g.fav).length]].map(([l,n])=>`<div class="card tile"><b>${n}</b><span>${l}</span></div>`).join('');
+  const sel=$('#gGenre'),v=sel.value,gs=[...new Set(all.flatMap(g=>toks(g.genre)))].sort((a,b)=>a.localeCompare(b));
+  sel.innerHTML='<option value="">All genres</option>'+gs.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');sel.value=gs.includes(v)?v:'';
+  const list=libList();
+  $('#gCount').textContent=list.length===all.length?'':`${list.length} of ${all.length} shown`;
+  const active=['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].some(s=>$(s).value)||$('#gFav').checked;
+  $('#gSum').textContent='Filters'+(active?' (active)':'');
+  $('#gameList').innerHTML=list.map(gameRow).join('')||`<div class="empty card">${all.length?'No games match your search or filters.':'Your library is empty.'}</div>`;
+}
+$('#v-lib').addEventListener('input',renderLib);
+$('#gReset').onclick=()=>{$('#gq').value='';['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].forEach(s=>$(s).value='');$('#gFav').checked=false;renderLib()};
+function gameStats(id){show('game');$('#bgName').value=gameById(id).name;renderGameStats()}
+async function toggleGame(id,k){
+  if(!needLogin())return;const g=gameById(id);g[k]=!g[k];await Store.save(D);
+  const open=$('#g-'+id)?.open;renderLib();if(open&&$('#g-'+id))$('#g-'+id).open=true;
+}
+async function delGame(id){
+  if(!needLogin())return;const g=gameById(id);
+  if(!await ask(`“${g.name}” is removed from the library. Plays you logged for it stay in the log.`,{title:'Delete this game?',yes:'Delete',danger:true}))return;
+  D.games=D.games.filter(x=>x.id!==id);await Store.save(D);renderLib();
+}
+
+/* ---------- add / edit a game ---------- */
+const blankGame=()=>({id:null,name:'',minP:null,maxP:null,time:null,mode:'comp',genre:'',year:null,fav:false,owned:true,lowWins:false,extra:[],rules:'',bgg:''});
+function openGame(g){if(!needLogin())return;cur=g;returnTo='lib';show('editgame');fillGame()}
+const editGame=id=>openGame(structuredClone(gameById(id)));
+$('#newGame').onclick=()=>openGame(blankGame());
+$('#gCancel').onclick=()=>show('lib');
+const GF=$('#gf');
+function fillGame(){
+  const E=GF.elements;$('#gameTitle').textContent=cur.id?'Edit game':'New game';
+  E.name.value=cur.name;E.minP.value=cur.minP??'';E.maxP.value=cur.maxP??'';E.time.value=cur.time??'';E.year.value=cur.year??'';
+  E.mode.value=cur.mode||'comp';E.genre.value=cur.genre||'';E.fav.checked=!!cur.fav;E.owned.checked=!!cur.owned;E.lowWins.checked=!!cur.lowWins;E.rules.value=cur.rules||'';
+  $('#bggRes').innerHTML='';$('#bggMsg').textContent=BGG_PROXY?'Search BoardGameGeek to fill in players, playtime, year, genre and type.':'BoardGameGeek lookup needs the small proxy from the setup notes. Until then fill the details in by hand, or import your BGG collection (CSV).';
+  drawExtras();
+}
+const readExtras=keep=>$$('#gExtraRows .xrow').map(r=>({k:r.children[0].value.trim(),v:r.children[1].value.trim()})).filter(x=>keep||(x.k&&x.v));
+function drawExtras(){
+  $('#extraNames').innerHTML=[...new Set(['Starting cards','Starting coins','Setup time','Special rules','Expansions','Language','Components',...D.games.flatMap(g=>(g.extra||[]).map(e=>e.k))])].map(n=>`<option value="${esc(n)}">`).join('');
+  $('#gExtraRows').innerHTML=(cur.extra||[]).map(e=>`<div class="xrow"><input list="extraNames" placeholder="Detail, e.g. Starting cards" value="${esc(e.k)}"><input placeholder="Value, e.g. 7" value="${esc(e.v)}"><button type="button" class="remove-x" aria-label="Remove detail">×</button></div>`).join('');
+  $$('#gExtraRows .remove-x').forEach((b,i)=>b.onclick=()=>{cur.extra=readExtras(true);cur.extra.splice(i,1);drawExtras()});
+}
+$('#addExtra').onclick=()=>{cur.extra=readExtras(true);cur.extra.push({k:'',v:''});drawExtras();$$('#gExtraRows .xrow').pop()?.children[0].focus()};
+GF.onsubmit=async e=>{
+  e.preventDefault();if(!needLogin())return;const E=GF.elements;
+  const g={...cur,name:E.name.value.trim(),minP:num(E.minP.value),maxP:num(E.maxP.value),time:num(E.time.value),year:num(E.year.value),mode:E.mode.value,genre:E.genre.value.trim(),
+    fav:E.fav.checked,owned:E.owned.checked,lowWins:E.lowWins.checked,rules:E.rules.value.trim(),extra:readExtras(false)};
+  if(!g.name)return say('Give the game a name.');
+  if(g.minP&&g.maxP&&g.minP>g.maxP)return say('Min players cannot be higher than max players.');
+  const dup=D.games.find(x=>x.id!==g.id&&norm(x.name)===norm(g.name));
+  if(dup&&!await ask(`“${dup.name}” is already in your library. Save anyway?`,{title:'Possible duplicate',yes:'Save anyway'}))return;
+  if(g.id)D.games[D.games.findIndex(x=>x.id===g.id)]=g;else{g.id=uid();D.games.push(g)}
+  const btn=GF.querySelector('[type=submit]');btn.disabled=true;const ok=await Store.save(D);btn.disabled=false;
+  if(ok){show('lib');renderLib();const el=$('#g-'+g.id);if(el){el.open=true;el.scrollIntoView({block:'center'})}}
+};
+
+/* ---------- BoardGameGeek lookup (needs the proxy) ---------- */
+// async function bggFetch(params){
+//   const r=await fetch(`${BGG_PROXY}?${new URLSearchParams(params)}`);if(!r.ok)throw new Error('BGG answered '+r.status);
+//   return new DOMParser().parseFromString(await r.text(),'text/xml');
+// }
+// $('#bggBtn').onclick=async()=>{
+//   const q=GF.elements.name.value.trim(),msg=$('#bggMsg'),res=$('#bggRes');res.innerHTML='';
+//   if(!BGG_PROXY)return msg.textContent='BoardGameGeek lookup needs the small proxy from the setup notes. For now fill the details in by hand, or import your BGG collection (CSV).';
+//   if(!q)return msg.textContent='Type the name of the game first.';
+//   msg.textContent='Searching BoardGameGeek…';
+//   try{
+//     const x=await bggFetch({path:'search',query:q,type:'boardgame'}),items=[...x.querySelectorAll('item')].slice(0,8);
+//     if(!items.length)return msg.textContent='Nothing found. Check the spelling or fill the details in by hand.';
+//     msg.textContent='Pick the right game:';
+//     res.innerHTML=items.map(i=>`<button type="button" class="chip-s" data-id="${i.getAttribute('id')}">${esc(i.querySelector('name')?.getAttribute('value')||'?')}${i.querySelector('yearpublished')?` (${i.querySelector('yearpublished').getAttribute('value')})`:''}</button>`).join('');
+//     $$('#bggRes button').forEach(b=>b.onclick=()=>bggPick(b.dataset.id));
+//   }catch(e){console.error(e);msg.textContent='Could not reach BoardGameGeek. Fill the details in by hand instead.'}
+// };
+// async function bggPick(id){
+//   const msg=$('#bggMsg');msg.textContent='Loading details…';
+//   try{
+//     const x=await bggFetch({path:'thing',id,stats:'1'}),it=x.querySelector('item'),val=s=>it.querySelector(s)?.getAttribute('value'),E=GF.elements;
+//     const links=t=>[...it.querySelectorAll(`link[type="${t}"]`)].map(l=>l.getAttribute('value'));
+//     const name=[...it.querySelectorAll('name')].find(n=>n.getAttribute('type')==='primary')?.getAttribute('value');
+//     if(name)E.name.value=name;E.minP.value=val('minplayers')||'';E.maxP.value=val('maxplayers')||'';
+//     E.time.value=val('playingtime')||'';E.year.value=val('yearpublished')||'';E.genre.value=links('boardgamecategory').slice(0,2).join(', ');
+//     E.mode.value=links('boardgamemechanic').some(m=>/cooperative/i.test(m))?'coop':'comp';cur.bgg=id;
+//     $('#bggRes').innerHTML='';msg.textContent='Filled in from BoardGameGeek. Check the details and save.';
+//   }catch(e){console.error(e);msg.textContent='Could not load that game. Fill the details in by hand.'}
+// }
+
+// /* ---------- import a BGG collection export (CSV) ---------- */
+// function parseCSV(t){
+//   const rows=[];let row=[],f='',q=false;
+//   for(let i=0;i<t.length;i++){const c=t[i];
+//     if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+//     else if(c==='"')q=true;else if(c===','){row.push(f);f=''}
+//     else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;row.push(f);f='';if(row.length>1||row[0])rows.push(row);row=[]}else f+=c}
+//   if(f||row.length){row.push(f);rows.push(row)}return rows;
+// }
+// $('#importBtn').onclick=()=>{if(needLogin())$('#csvFile').click()};
+// $('#csvFile').onchange=async e=>{
+//   const file=e.target.files[0];e.target.value='';if(!file)return;
+//   const rows=parseCSV((await file.text()).replace(/^\uFEFF/,''));if(rows.length<2)return say('That file looks empty.');
+//   const head=rows[0].map(h=>h.trim().toLowerCase()),ix=n=>head.indexOf(n);
+//   if(ix('objectname')<0)return say('This does not look like a BoardGameGeek collection export (no “objectname” column).');
+//   const get=(r,n)=>ix(n)<0?'':(r[ix(n)]||'').trim();
+//   const items=rows.slice(1).map(r=>{
+//     const mn=num(get(r,'minplaytime')),mx=num(get(r,'maxplaytime')),pt=num(get(r,'playingtime'));
+//     return{id:uid(),name:get(r,'objectname'),bgg:get(r,'objectid'),minP:num(get(r,'minplayers')),maxP:num(get(r,'maxplayers')),time:pt||(mn&&mx?Math.round((mn+mx)/2):mx||mn||null),
+//       year:num(get(r,'yearpublished')),owned:get(r,'own')==='1',fav:false,mode:'comp',genre:'',lowWins:false,extra:[],rules:''};
+//   }).filter(g=>g.name);
+//   const fresh=items.filter(g=>!D.games.some(x=>(g.bgg&&x.bgg===g.bgg)||norm(x.name)===norm(g.name)));
+//   if(!fresh.length)return say('All games in this file are already in your library.');
+//   if(!await ask(`${fresh.length} new games found (${fresh.filter(g=>g.owned).length} marked as owned in BGG, ${items.length-fresh.length} already in your library). Add them?`,{title:'Import from BoardGameGeek',yes:'Import'}))return;
+//   D.games.push(...fresh);if(await Store.save(D)){toast(`Imported ${fresh.length} games. Genre, type and favorites are not in the BGG export, add them where you like.`);renderLib()}
+// };
+
+/* =====================================================================
+   LOG: plays
+   ===================================================================== */
+const LF={q:'',from:'',to:''};
+const logPlays=()=>{
+  const qs=norm(LF.q).split(/\s+/).filter(Boolean);
+  return D.plays.filter(p=>{const hay=norm([p.game,p.date,fmtD(p.date),...p.players.map(x=>x.name)].join(' '));return qs.every(t=>hay.includes(t))&&(!LF.from||p.date>=LF.from)&&(!LF.to||p.date<=LF.to)})
+    .sort((a,b)=>b.date.localeCompare(a.date));
+};
+$('#logFilter').addEventListener('input',()=>{LF.q=$('#lq').value;LF.from=$('#lFrom').value;LF.to=$('#lTo').value;$('#lSum').textContent='Filter by date'+(LF.from||LF.to?' (active)':'');view==='stats'?renderStats():renderHist()});
+$('#lReset').onclick=()=>{$('#lq').value=$('#lFrom').value=$('#lTo').value='';LF.q=LF.from=LF.to='';$('#lSum').textContent='Filter by date';view==='stats'?renderStats():renderHist()};
+const meOf=p=>p.players.find(x=>x.me);
+// the result for you: won / lost / draw (null when you did not play or no winner was marked)
+function resultOf(p){
+  const me=meOf(p);if(!me)return null;
+  if(p.coop)return p.coopResult==='won'?'won':p.coopResult==='lost'?'lost':null;
+  if(p.draw)return 'draw';
+  return p.players.some(x=>x.win)?(me.win?'won':'lost'):null;
+}
+const teamName=k=>`Team ${k}`;
+function winnerText(p){
+  if(p.coop)return p.coopResult==='won'?'Co-op: won':p.coopResult==='lost'?'Co-op: lost':'Co-op';
+  if(p.draw)return 'Draw';
+  const w=p.players.filter(x=>x.win);if(!w.length)return '';
+  if(p.teams){const ts=[...new Set(w.map(x=>x.team))];return 'Won: '+ts.map(t=>`${teamName(t)} (${w.filter(x=>x.team===t).map(x=>x.name).join(', ')})`).join(' · ')}
+  return 'Won: '+w.map(x=>x.name).join(', ');
+}
+function playRow(p){
+  const g=p.gameId?gameById(p.gameId):gameByName(p.game),res=resultOf(p);
+  const rows=p.teams
+    ?[...new Set(p.players.map(x=>x.team))].map(t=>{const m=p.players.filter(x=>x.team===t);return `<tr class="${m.some(x=>x.win)?'wonrow':''}"><td>${m.some(x=>x.win)?'🏆 ':''}<b>${teamName(t)}</b>: ${m.map(x=>esc(x.name)+(x.me?' <i>(me)</i>':'')).join(', ')}</td><td class="sc">${p.teamScores?.[t]??''}</td></tr>`}).join('')
+    :p.players.map(x=>`<tr class="${x.win?'wonrow':''}"><td>${x.win?'🏆 ':''}${esc(x.name)}${x.me?' <i>(me)</i>':''}</td><td class="sc">${x.score??''}</td></tr>`).join('');
+  return `<details class="card entry" id="p-${p.id}"><summary><span class="en">${esc(p.game)}</span>${favMark(g?.fav)}<span class="dt">${fmtD(p.date)}</span><span class="wn">${esc(winnerText(p))}</span></summary>
+  <div class="ebody"><table class="ptable"><tbody>${rows}</tbody></table>
+  ${res?`<p class="meta">For you: <b>${res==='won'?'won':res==='lost'?'lost':'draw'}</b></p>`:''}
+  ${p.notes?`<p class="meta">${esc(p.notes)}</p>`:''}
+  <div class="acts">${g?`<button class="btn" onclick="openInLibrary('${g.id}')">📚 Game in library</button><button class="btn" onclick="gameStats('${g.id}')">📊 Game stats</button>`:''}<button class="btn edit-only" onclick="editPlay('${p.id}')">Edit</button><button class="btn danger edit-only" onclick="delPlay('${p.id}')">Delete</button></div></div></details>`;
+}
+function renderHist(){
+  const l=logPlays();$('#hCount').textContent=l.length===D.plays.length?`${l.length} plays`:`${l.length} of ${D.plays.length} plays`;
+  $('#histList').innerHTML=l.map(playRow).join('')||`<div class="empty card">${D.plays.length?'No plays match your search or dates.':'No plays logged yet. Use “New play” to log your first game.'}</div>`;
+}
+function openInLibrary(id){show('lib');$('#gq').value='';renderLib();const el=$('#g-'+id);if(el){el.open=true;el.scrollIntoView({block:'center'});el.classList.add('flash')}}
+async function delPlay(id){
+  if(!needLogin())return;
+  if(!await ask('This cannot be undone.',{title:'Delete this play?',yes:'Delete',danger:true}))return;
+  D.plays=D.plays.filter(p=>p.id!==id);await Store.save(D);view==='stats'?renderStats():renderHist();
+}
+
+/* ---------- stats ---------- */
+function groupGames(plays){ // plays per game
+  const m=new Map();plays.forEach(p=>{const k=p.gameId||'n:'+norm(p.game),e=m.get(k)||{name:p.game,n:0,gameId:p.gameId};e.n++;m.set(k,e)});return [...m.values()];
+}
+function dayCounts(plays){const m=new Map();plays.forEach(p=>m.set(p.date,(m.get(p.date)||0)+1));return m}
+function countWLD(plays){const c={won:0,lost:0,draw:0};plays.forEach(p=>{const r=resultOf(p);if(r)c[r]++});return c}
+function lineChart(plays){ // plays per day (or per month for long periods)
+  const dates=plays.map(p=>p.date).sort(),d0=dates[0],d1=dates[dates.length-1];
+  const span=(Date.parse(d1)-Date.parse(d0))/864e5,month=span>120,m=new Map();
+  plays.forEach(p=>{const k=month?p.date.slice(0,7):p.date;m.set(k,(m.get(k)||0)+1)});
+  const keys=[];
+  if(month){let [y,mo]=d0.slice(0,7).split('-').map(Number);const [y1,m1]=d1.slice(0,7).split('-').map(Number);while(y<y1||(y===y1&&mo<=m1)){keys.push(`${y}-${String(mo).padStart(2,'0')}`);if(++mo>12){mo=1;y++}}}
+  else for(let t=Date.parse(d0);t<=Date.parse(d1);t+=864e5)keys.push(new Date(t).toISOString().slice(0,10));
+  const vals=keys.map(k=>m.get(k)||0),mx=Math.max(...vals),W=300,H=120,L=22,n=keys.length;
+  const xy=keys.map((k,i)=>[L+(n===1?(W-L)/2:i/(n-1)*(W-L-8)),H-8-vals[i]/mx*(H-26)]);
+  const lab=k=>month?new Date(k+'-01T12:00').toLocaleDateString(undefined,{month:'short',year:'2-digit'}):fmtD(k);
+  return `<svg class="chart lines" viewBox="0 0 ${W} ${H+22}" role="img" aria-label="Plays over time"><path d="M${L} ${H-8}H${W}" stroke="currentColor" stroke-opacity=".25"/><text x="${L-4}" y="${H-5}" font-size="8" text-anchor="end" fill="currentColor">0</text><text x="${L-4}" y="${H-8-(H-26)+3}" font-size="8" text-anchor="end" fill="currentColor">${mx}</text>
+  <polyline points="${xy.map(p=>p.join(',')).join(' ')}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+  ${xy.map((p,i)=>vals[i]?`<g class="pt" tabindex="0" data-tip="${lab(keys[i])}: ${vals[i]} play${vals[i]>1?'s':''}"><title>${lab(keys[i])}: ${vals[i]}</title><circle cx="${p[0]}" cy="${p[1]}" r="9" fill="transparent"/><circle class="dot" cx="${p[0]}" cy="${p[1]}" r="3.2" fill="var(--accent)"/></g>`:'').join('')}
+  <text x="${L}" y="${H+14}" font-size="8" fill="currentColor">${lab(keys[0])}</text><text x="${W}" y="${H+14}" font-size="8" text-anchor="end" fill="currentColor">${lab(keys[n-1])}</text></svg><p class="meta chartcap">${month?'Plays per month. ':'Plays per day. '}Tap or hover a point for the number.</p>`;
+}
+function renderStats(){
+  const ps=logPlays(),box=$('#statsBox');
+  if(!ps.length){box.innerHTML=`<div class="empty card">${D.plays.length?'No plays match your search or dates.':'Stats appear after you log your first play.'}</div>`;return}
+  const c=countWLD(ps),gs=groupGames(ps).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name)),most=gs[0],least=[...gs].sort((a,b)=>a.n-b.n||a.name.localeCompare(b.name))[0];
+  const tiedMost=gs.filter(g=>g.n===most.n).length-1,tiedLeast=gs.filter(g=>g.n===least.n).length-1;
+  const days=[...dayCounts(ps)].sort((a,b)=>b[1]-a[1]||b[0].localeCompare(a[0])),bd=days[0];
+  const gamesThatDay=[...new Set(ps.filter(p=>p.date===bd[0]).map(p=>p.game))];
+  box.innerHTML=`<div class="tiles4"><div class="card tile big"><b>${ps.length}</b><span>Games played</span></div><div class="card tile"><b>${c.won}</b><span>Won</span></div><div class="card tile"><b>${c.lost}</b><span>Lost</span></div><div class="card tile"><b>${c.draw}</b><span>Draw</span></div></div>
+  <p class="meta" style="margin:.4rem 0 .8rem">Won, lost and draw count plays where you are marked as “me”.</p>
+  <div class="card"><h3 class="ct">Plays over time</h3>${lineChart(ps)}</div>
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card"><h3 class="ct">Most played game</h3><p class="big2">${esc(most.name)}</p><p class="meta">${most.n} play${most.n>1?'s':''}${tiedMost?` · ${tiedMost} more tied`:''}</p></div>
+    <div class="card"><h3 class="ct">Least played game</h3><p class="big2">${esc(least.name)}</p><p class="meta">${least.n} play${least.n>1?'s':''}${tiedLeast?` · ${tiedLeast} more tied`:''}</p></div>
+    <div class="card"><h3 class="ct">Most plays in one day</h3><p class="big2">${bd[1]}</p><p class="meta">${fmtD(bd[0])} · ${esc(gamesThatDay.join(', '))}</p></div>
+  </div>`;
+  $$('.chart.lines').forEach(svg=>{const cap=svg.nextElementSibling;svg.querySelectorAll('.pt').forEach(g=>{
+    const f=()=>{svg.querySelectorAll('.dot').forEach(d=>d.setAttribute('r','3.2'));g.querySelector('.dot').setAttribute('r','5');cap.innerHTML=`<b>${g.dataset.tip}</b>`};g.onclick=g.onmouseenter=g.onfocus=f})});
+}
+
+/* ---------- stats of one game ---------- */
+function renderGameStats(){
+  const box=$('#gameStatsBox'),name=$('#bgName').value.trim();
+  if(!name){box.innerHTML='<div class="empty card">Pick a game to see how often you played it, how you did and the best scores.</div>';return}
+  const g=gameByName(name),ps=D.plays.filter(p=>g?(p.gameId===g.id||norm(p.game)===norm(g.name)):norm(p.game)===norm(name)).sort((a,b)=>b.date.localeCompare(a.date));
+  const shown=g?.name||name;
+  if(!ps.length){box.innerHTML=`<div class="card"><h3 class="ct">${esc(shown)}</h3><p class="meta">No plays logged for this game yet.</p>${g?`<div class="acts"><button class="btn" onclick="openInLibrary('${g.id}')">📚 Game in library</button><button class="btn edit-only" onclick="newPlayFor('${g.id}')">+ Log a play</button></div>`:''}</div>`;return}
+  const c=countWLD(ps),low=!!g?.lowWins;
+  const scores=ps.flatMap(p=>p.teams?Object.entries(p.teamScores||{}).filter(([k,v])=>v!=null&&v!=='').map(([k,v])=>({name:p.players.filter(x=>x.team===k).map(x=>x.name).join(' & '),score:num(v),date:p.date})):p.players.filter(x=>x.score!=null&&x.score!=='').map(x=>({name:x.name,score:num(x.score),date:p.date}))).filter(s=>s.score!=null);
+  scores.sort((a,b)=>low?a.score-b.score:b.score-a.score);
+  const days=[...dayCounts(ps)].sort((a,b)=>b[1]-a[1]||b[0].localeCompare(a[0]))[0];
+  box.innerHTML=`<div class="card"><div class="bar" style="margin:0 0 .4rem"><h3 class="ct" style="margin:0">${esc(shown)}</h3>${favMark(g?.fav)}</div>
+  <div class="tiles4"><div class="card tile big"><b>${ps.length}</b><span>Plays logged</span></div><div class="card tile"><b>${c.won}</b><span>Won</span></div><div class="card tile"><b>${c.lost}</b><span>Lost</span></div><div class="card tile"><b>${c.draw}</b><span>Draw</span></div></div>
+  <dl class="facts" style="margin-top:.8rem"><div><dt>Last played</dt><dd>${fmtD(ps[0].date)}</dd></div><div><dt>Most plays in one day</dt><dd>${days[1]} · ${fmtD(days[0])}</dd></div></dl>
+  <h4 class="ct" style="margin-top:.8rem">Top 5 ${low?'lowest':'highest'} scores</h4>
+  ${scores.length?`<ol class="top5">${scores.slice(0,5).map(s=>`<li><b>${esc(s.name)}</b> <span>${s.score}</span><small>${fmtD(s.date)}</small></li>`).join('')}</ol>`:'<p class="meta">No scores logged for this game.</p>'}
+  <div class="acts">${g?`<button class="btn" onclick="openInLibrary('${g.id}')">📚 Game in library</button>`:''}<button class="btn" onclick="seeInHistory('${esc(shown).replace(/'/g,'&#39;')}')">See the plays</button></div></div>`;
+}
+$('#bgName').addEventListener('input',renderGameStats);
+function seeInHistory(name){$('#lq').value=name;LF.q=name;show('hist')}
+
+/* =====================================================================
+   NEW PLAY
+   ===================================================================== */
+const blankPlay=()=>({id:null,gameId:'',game:'',date:today(),players:[{name:localStorage.getItem('bg_me')||'',score:'',team:'1',win:false,me:true},{name:'',score:'',team:'2',win:false,me:false}],scores:false,teams:false,teamScores:{},draw:false,coop:false,coopResult:'',notes:'',manual:false,addLib:true});
+function openPlay(p){if(!needLogin())return;cur=p;returnTo=LOGV.includes(lastLog)?lastLog:'hist';show('editplay');fillPlay()}
+$('#newPlay').onclick=()=>openPlay(blankPlay());
+function newPlayFor(id){const g=gameById(id);openPlay({...blankPlay(),game:g.name,gameId:g.id,coop:g.mode==='coop',addLib:false})}
+function editPlay(id){const p=structuredClone(D.plays.find(x=>x.id===id));p.scores=p.players.some(x=>x.score!=null&&x.score!=='')||Object.keys(p.teamScores||{}).length>0;p.teamScores=p.teamScores||{};p.addLib=false;p.manual=true;openPlay(p)}
+$('#pCancel').onclick=()=>show(returnTo);
+const teamKeys=()=>[...new Set(cur.players.filter(p=>p.name.trim()).map(p=>p.team||'1'))].sort();
+function matchGame(){
+  const g=gameByName(cur.game);cur.gameId=g?.id||'';if(g)cur.coop=g.mode==='coop';
+  $('#pHint').textContent=g?`${g.mode==='coop'?'Co-op':'Competitive'}${playersTxt(g)?' · '+playersTxt(g)+' players':''}${g.lowWins?' · lowest score wins':''}`:(cur.game?'Not in your library yet.':'');
+  $('#addLibBox').hidden=!(cur.game.trim()&&!g&&!cur.id);
+  $('#coopRes').hidden=!cur.coop;$('#drawChip').hidden=cur.coop;
+  drawPlayers();
+}
+function fillPlay(){
+  $('#playTitle').textContent=cur.id?'Edit play':'New play';
+  $('#pGame').value=cur.game;$('#pDate').value=cur.date;$('#pNotes').value=cur.notes||'';
+  $('#pScores').checked=cur.scores;$('#pTeams').checked=cur.teams;$('#pDraw').checked=cur.draw;$('#pAddLib').checked=cur.addLib;
+  $$('input[name=coopr]').forEach(i=>i.checked=i.value===cur.coopResult);
+  matchGame();
+}
+function drawPlayers(){
+  $('#pCount').textContent=`Players (${cur.players.filter(p=>p.name.trim()).length||cur.players.length})`;
+  $('#prows').innerHTML=cur.players.map((p,i)=>`<div class="prow" data-i="${i}"><input class="pn" list="playerNames" placeholder="Player ${i+1}" value="${esc(p.name)}" aria-label="Player ${i+1} name">
+    ${cur.scores&&!cur.teams?`<input class="ps" type="number" step="any" inputmode="decimal" placeholder="Score" value="${esc(p.score??'')}" aria-label="Score of player ${i+1}">`:''}
+    ${cur.teams?`<select class="pt" aria-label="Team of player ${i+1}">${[1,2,3,4,5,6].map(t=>`<option value="${t}" ${String(p.team)===String(t)?'selected':''}>Team ${t}</option>`).join('')}</select>`:''}
+    <button type="button" class="tg me${p.me?' on':''}" title="This is me" aria-pressed="${!!p.me}">Me</button>
+    ${cur.coop?'':`<button type="button" class="tg win${p.win?' on':''}" title="Winner" aria-pressed="${!!p.win}" ${cur.draw?'disabled':''}>🏆</button>`}
+    <button type="button" class="remove-x rm" aria-label="Remove player" ${cur.players.length<2?'disabled':''}>×</button></div>`).join('');
+  const ts=cur.teams&&cur.scores?teamKeys():[];
+  $('#tscores').hidden=!ts.length;
+  $('#tscores').innerHTML=ts.length?`<span class="l">Team scores</span><div class="tsrow">${ts.map(t=>`<label>Team ${t}<input class="tsi" data-t="${t}" type="number" step="any" inputmode="decimal" value="${esc(cur.teamScores[t]??'')}"></label>`).join('')}</div>`:'';
+}
+function syncWin(){$$('#prows .prow').forEach((r,i)=>{const b=r.querySelector('.win');if(b){b.classList.toggle('on',!!cur.players[i].win);b.setAttribute('aria-pressed',!!cur.players[i].win)}})}
+function autoWin(){ // the highest score (or lowest, for games where that wins) is marked as the winner until you choose yourself
+  if(cur.manual||cur.coop||cur.draw||!cur.scores)return;
+  const low=!!gameById(cur.gameId)?.lowWins;let en;
+  if(cur.teams)en=teamKeys().map(k=>({idx:cur.players.map((p,i)=>(p.team||'1')===k?i:-1).filter(i=>i>=0),s:num(cur.teamScores[k])})).filter(e=>e.s!=null);
+  else en=cur.players.map((p,i)=>({idx:[i],s:num(p.score)})).filter(e=>e.s!=null&&cur.players[e.idx[0]].name.trim());
+  cur.players.forEach(p=>p.win=false);
+  if(en.length>=2){const best=(low?Math.min:Math.max)(...en.map(e=>e.s));en.filter(e=>e.s===best).forEach(e=>e.idx.forEach(i=>cur.players[i].win=true))}
+  syncWin();
+}
+$('#pGame').addEventListener('input',e=>{cur.game=e.target.value;matchGame()});
+$('#pDate').addEventListener('input',e=>cur.date=e.target.value);
+$('#pNotes').addEventListener('input',e=>cur.notes=e.target.value);
+$('#pScores').onchange=e=>{cur.scores=e.target.checked;drawPlayers();autoWin()};
+$('#pTeams').onchange=e=>{cur.teams=e.target.checked;cur.manual=false;drawPlayers();autoWin()};
+$('#pDraw').onchange=e=>{cur.draw=e.target.checked;drawPlayers()};
+$('#pAddLib').onchange=e=>cur.addLib=e.target.checked;
+$$('input[name=coopr]').forEach(i=>i.onchange=()=>cur.coopResult=i.value);
+$('#addPlayer').onclick=()=>{cur.players.push({name:'',score:'',team:String(Math.min(6,cur.players.length+1)),win:false,me:false});drawPlayers();$$('#prows .pn').pop()?.focus()};
+$('#prows').addEventListener('input',e=>{
+  const i=+e.target.closest('.prow')?.dataset.i,t=e.target;
+  if(t.classList.contains('pn')){cur.players[i].name=t.value;$('#pCount').textContent=`Players (${cur.players.filter(p=>p.name.trim()).length||cur.players.length})`}
+  if(t.classList.contains('ps')){cur.players[i].score=t.value;autoWin()}
+});
+$('#prows').addEventListener('change',e=>{const r=e.target.closest('.prow');if(r&&e.target.classList.contains('pt')){cur.players[+r.dataset.i].team=e.target.value;drawPlayers();autoWin()}});
+$('#prows').addEventListener('click',e=>{
+  const b=e.target.closest('button'),r=e.target.closest('.prow');if(!b||!r)return;const i=+r.dataset.i,p=cur.players[i];
+  if(b.classList.contains('rm')){cur.players.splice(i,1);drawPlayers();autoWin()}
+  else if(b.classList.contains('me')){const on=!p.me;cur.players.forEach(x=>x.me=false);p.me=on;drawPlayers()}
+  else if(b.classList.contains('win')){cur.manual=true;const on=!p.win;if(cur.teams)cur.players.forEach(x=>{if((x.team||'1')===(p.team||'1'))x.win=on});else p.win=on;syncWin()}
+});
+$('#tscores').addEventListener('input',e=>{if(e.target.classList.contains('tsi')){cur.teamScores[e.target.dataset.t]=e.target.value;autoWin()}});
+$('#pf').onsubmit=async e=>{
+  e.preventDefault();if(!needLogin())return;
+  const name=cur.game.trim();if(!name)return say('Which game did you play?');
+  if(!cur.date)return say('Pick the date of the play.');
+  const pl=cur.players.filter(p=>p.name.trim()).map(p=>({name:p.name.trim(),score:cur.scores&&!cur.teams&&p.score!==''?num(p.score):null,team:cur.teams?String(p.team||'1'):'',win:!cur.coop&&!cur.draw&&!!p.win,me:!!p.me}));
+  if(!pl.length)return say('Add at least one player name.');
+  if(cur.coop&&!cur.coopResult)return say('Did you win or lose this co-op game?');
+  const g=gameByName(name);let gameId=g?.id||'';
+  if(!gameId&&cur.addLib&&!cur.id){const ng={...blankGame(),id:uid(),name,mode:cur.coop?'coop':'comp',owned:false,minP:pl.length,maxP:pl.length};D.games.push(ng);gameId=ng.id}
+  const me=pl.find(x=>x.me);if(me)localStorage.setItem('bg_me',me.name);
+  const teamScores=cur.teams&&cur.scores?Object.fromEntries(Object.entries(cur.teamScores).filter(([k,v])=>v!==''&&num(v)!=null&&pl.some(x=>x.team===k)).map(([k,v])=>[k,num(v)])):{};
+  const play={id:cur.id||uid(),gameId,game:g?.name||name,date:cur.date,players:pl,teams:cur.teams,teamScores,draw:cur.draw&&!cur.coop,coop:cur.coop,coopResult:cur.coop?cur.coopResult:'',notes:cur.notes.trim()};
+  if(cur.id)D.plays[D.plays.findIndex(x=>x.id===cur.id)]=play;else D.plays.push(play);
+  const btn=$('#pf [type=submit]');btn.disabled=true;const ok=await Store.save(D);btn.disabled=false;
+  if(ok){show('hist');const el=$('#p-'+play.id);if(el){el.open=true;el.scrollIntoView({block:'center'})}}
+};
+
+/* =====================================================================
+   CALCULATOR
+   ===================================================================== */
+// rows are worked through in order: numbers, switches and counters add or subtract, a multiplier multiplies everything so far
+const mval=(r,v)=>v==null?(r.start??2):v;
+function calcTotal(t,vals){
+  let sum=0;
+  for(const r of t.rows){const v=vals[r.id],s=r.op==='sub'?-1:1;
+    if(r.type==='input')sum+=s*(num(v)||0);
+    else if(r.type==='toggle'){if(v)sum+=s*(r.points||0)}
+    else if(r.type==='count')sum+=s*(v||0)*(r.points||0);
+    else if(r.type==='mult')sum*=mval(r,v)}
+  return sum;
+}
+// the winner highlight starts as soon as something was entered (a multiplier alone does not count)
+const hasData=(t,vals)=>t.rows.some(r=>r.type==='input'?String(vals[r.id]??'')!=='':r.type==='toggle'?!!vals[r.id]:r.type==='count'?(vals[r.id]||0)>0:false);
+function renderCalcList(){
+  $('#calcList').innerHTML=D.calcs.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<div class="card calcitem"><button class="calcopen" onclick="openCalc('${t.id}')"><b>${esc(t.name)}</b>${t.lowWins?'<small>lowest total wins</small>':''}</button><button class="btn sm edit-only" onclick="editCalc('${t.id}')">Edit</button></div>`).join('')
+    ||`<div class="empty card">No calculators yet. ${can()?'Create one with “New calculator”.':'The owner can add them.'}</div>`;
+}
+/* the calculator itself */
+let cs=null;
+function openCalc(id){
+  const prev=lsGet('bg_calc_names');
+  cs={tid:id,players:(prev&&prev.length?prev:['Player 1','Player 2']).slice(0,6).map(n=>({name:n,vals:{}}))};show('calcplay');drawCalc();
+}
+const rowNote=r=>r.type==='mult'?'multiplier':r.type==='toggle'?`${r.op==='sub'?'−':'+'}${r.points||0}`:r.type==='count'?`${r.op==='sub'?'−':'+'}${r.points||0} each`:r.op==='sub'?'subtract':'add';
+function drawCalc(){
+  const t=D.calcs.find(x=>x.id===cs.tid);
+  const stepper=(i,r,txt)=>`<div class="stepper" data-i="${i}" data-r="${r.id}"><button type="button" class="stp" data-d="-1" aria-label="Less">−</button><span class="sv">${txt}</span><button type="button" class="stp" data-d="1" aria-label="More">+</button></div>`;
+  const cell=(r,p,i)=>r.type==='input'?`<input class="cin" data-i="${i}" data-r="${r.id}" type="number" step="any" inputmode="decimal" value="${esc(p.vals[r.id]??'')}" aria-label="${esc(r.label)} for ${esc(p.name)}">`
+    :r.type==='toggle'?`<label class="sw"><input type="checkbox" class="cin" data-i="${i}" data-r="${r.id}" ${p.vals[r.id]?'checked':''} aria-label="${esc(r.label)} for ${esc(p.name)}"><span></span></label>`
+    :r.type==='count'?stepper(i,r,p.vals[r.id]||0)
+    :stepper(i,r,'×'+mval(r,p.vals[r.id]));
+  $('#calcPlayBox').innerHTML=`<div class="subhead"><button class="backarrow" id="calcBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${esc(t.name)}</h3></div>
+  ${t.lowWins?'<p class="meta" style="margin:-.3rem 0 .6rem">Lowest total wins</p>':''}
+  ${t.info?`<details class="box cheat"><summary>ℹ️ Cheat sheet</summary><div class="rules" style="margin-top:.6rem">${esc(t.info)}</div></details>`:''}
+  <div class="ctablewrap"><table class="ctable"><thead><tr><th></th>${cs.players.map((p,i)=>`<th class="cp" data-c="${i}"><input class="cname" data-i="${i}" value="${esc(p.name)}" aria-label="Player name"><span class="crown" hidden>🏆</span></th>`).join('')}</tr></thead>
+  <tbody>${t.rows.map(r=>`<tr><th scope="row">${esc(r.label)}<small>${rowNote(r)}</small></th>${cs.players.map((p,i)=>`<td data-c="${i}">${cell(r,p,i)}</td>`).join('')}</tr>`).join('')}</tbody>
+  <tfoot><tr><th scope="row">Total</th>${cs.players.map((p,i)=>`<td class="ctot" data-c="${i}">0</td>`).join('')}</tr></tfoot></table></div>
+  <div class="acts" style="margin-top:.8rem"><button class="btn sm" id="calcAdd" ${cs.players.length>=6?'disabled':''}>+ Add player</button><button class="btn sm" id="calcRemove" ${cs.players.length<2?'disabled':''}>− Remove last</button><button class="btn sm" id="calcReset">Reset points</button><span class="grow"></span><button class="btn main sm edit-only" id="calcLog">Log as play</button></div>`;
+  $('#calcBack').onclick=()=>show('calc');
+  $('#calcAdd').onclick=()=>{cs.players.push({name:'Player '+(cs.players.length+1),vals:{}});drawCalc()};
+  $('#calcRemove').onclick=()=>{cs.players.pop();drawCalc()};
+  $('#calcReset').onclick=()=>{cs.players.forEach(p=>p.vals={});drawCalc()};
+  $('#calcLog').onclick=calcToPlay;
+  $$('.cname').forEach(i=>i.oninput=()=>{cs.players[+i.dataset.i].name=i.value;lsSet('bg_calc_names',cs.players.map(p=>p.name))});
+  $$('.cin').forEach(i=>{const f=()=>{const p=cs.players[+i.dataset.i];p.vals[i.dataset.r]=i.type==='checkbox'?i.checked:i.value;updateCalc()};i.oninput=f;i.onchange=f});
+  $$('.stepper').forEach(el=>el.onclick=e=>{ // + and − for counters and multipliers
+    const b=e.target.closest('.stp');if(!b)return;
+    const p=cs.players[+el.dataset.i],r=t.rows.find(x=>x.id===el.dataset.r),d=+b.dataset.d;let v;
+    if(r.type==='count')v=Math.max(0,(p.vals[r.id]||0)+d);
+    else v=Math.max(0,Math.round((mval(r,p.vals[r.id])+d*(r.step||1))*100)/100);
+    p.vals[r.id]=v;el.querySelector('.sv').textContent=r.type==='mult'?'×'+v:v;updateCalc();
+  });
+  updateCalc();
+}
+function updateCalc(){ // totals and the winner highlight update immediately
+  const t=D.calcs.find(x=>x.id===cs.tid),tot=cs.players.map(p=>calcTotal(t,p.vals)),filled=cs.players.map(p=>hasData(t,p.vals));
+  const cand=tot.filter((v,i)=>filled[i]),best=cand.length?(t.lowWins?Math.min:Math.max)(...cand):null;
+  $$('.ctot').forEach((c,i)=>{c.textContent=Number.isInteger(tot[i])?tot[i]:Math.round(tot[i]*100)/100});
+  const win=cs.players.map((p,i)=>filled[i]&&tot[i]===best&&cs.players.length>1);
+  $$('[data-c]').forEach(el=>el.classList.toggle('win',!!win[+el.dataset.c]));$$('.crown').forEach((c,i)=>c.hidden=!win[i]);
+}
+function calcToPlay(){
+  const t=D.calcs.find(x=>x.id===cs.tid),tot=cs.players.map(p=>calcTotal(t,p.vals)),filled=cs.players.map(p=>hasData(t,p.vals));
+  const cand=tot.filter((v,i)=>filled[i]),best=cand.length?(t.lowWins?Math.min:Math.max)(...cand):null,g=gameByName(t.name);
+  openPlay({...blankPlay(),game:t.name,gameId:g?.id||'',coop:g?.mode==='coop',scores:true,manual:true,addLib:!g,
+    players:cs.players.map((p,i)=>({name:p.name,score:String(tot[i]),team:String(i+1),win:filled[i]&&tot[i]===best,me:i===0&&p.name===localStorage.getItem('bg_me')}))});
+}
+/* the calculator editor (owner only) */
+const newRow=()=>({id:uid(),label:'',type:'input',op:'add',points:10,start:2,step:1});
+function editCalc(id){openCalcEdit(structuredClone(D.calcs.find(x=>x.id===id)))}
+$('#newCalc').onclick=()=>openCalcEdit({id:null,name:'',lowWins:false,info:'',rows:[newRow()]});
+function openCalcEdit(t){if(!needLogin())return;cur=t;show('calcedit');drawCalcEdit()}
+function readCalcEdit(){
+  cur.name=$('#ceName').value.trim();cur.lowWins=$('#ceLow').checked;cur.info=$('#ceInfo').value.trim();
+  $$('#ceRows .crow').forEach((el,i)=>{const r=cur.rows[i],q=s=>el.querySelector(s);r.label=q('.rl').value.trim();r.type=q('.rt').value;if(q('.ro'))r.op=q('.ro').value;
+    if(q('.rp'))r.points=num(q('.rp').value)||0;if(q('.rs'))r.start=num(q('.rs').value)??2;if(q('.rst'))r.step=num(q('.rst').value)||1});
+}
+function drawCalcEdit(){
+  const TYPES=[['input','Number entered by players'],['toggle','Switch (yes / no) with a fixed amount'],['count','Counter (+ / −) with a fixed amount each'],['mult','Multiplier (+ / −)']];
+  $('#calcEditBox').innerHTML=`<div class="subhead"><button class="backarrow" id="ceBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${cur.id?'Edit calculator':'New calculator'}</h3></div>
+  <div class="field"><label class="l" for="ceName">Game</label><input id="ceName" value="${esc(cur.name)}" list="gameNames" placeholder="e.g. Burraco"></div>
+  <div class="field"><label class="l" for="ceInfo">Cheat sheet (optional)</label><textarea id="ceInfo" rows="4" placeholder="Important things to remember when counting points">${esc(cur.info||'')}</textarea></div>
+  <div class="field"><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="ceLow" ${cur.lowWins?'checked':''}><span>Lowest total wins</span></label></div>
+  <span class="l">Rows (worked through from top to bottom)</span>
+  <div id="ceRows">${cur.rows.map((r,i)=>`<div class="card crow" data-i="${i}"><div class="crow1"><input class="rl" placeholder="Row name, e.g. Burraco" value="${esc(r.label)}" aria-label="Row name">
+    <select class="rt" aria-label="Row type">${TYPES.map(([v,l])=>`<option value="${v}" ${r.type===v?'selected':''}>${l}</option>`).join('')}</select></div>
+    <div class="crow2">${r.type!=='mult'?`<select class="ro" aria-label="Add or subtract"><option value="add" ${r.op!=='sub'?'selected':''}>Add (+)</option><option value="sub" ${r.op==='sub'?'selected':''}>Subtract (−)</option></select>`:''}
+      ${r.type==='toggle'||r.type==='count'?`<label class="inl">${r.type==='count'?'Points each':'Points'} <input class="rp" type="number" step="any" inputmode="decimal" value="${r.points??''}"></label>`:''}
+      ${r.type==='mult'?`<label class="inl">Start at <input class="rs" type="number" step="any" inputmode="decimal" value="${r.start??2}"></label><label class="inl">Step <input class="rst" type="number" step="any" inputmode="decimal" value="${r.step??1}"></label>`:''}
+      <span class="grow"></span><button type="button" class="remove-x up" ${i?'':'disabled'} aria-label="Move up">↑</button><button type="button" class="remove-x dn" ${i<cur.rows.length-1?'':'disabled'} aria-label="Move down">↓</button><button type="button" class="remove-x del" aria-label="Delete row">×</button></div></div>`).join('')}</div>
+  <div class="acts"><button type="button" class="btn sm" id="ceAdd">+ Add row</button></div>
+  <div class="acts" style="justify-content:flex-end;margin-top:1.2rem">${cur.id?'<button type="button" class="btn danger" id="ceDel">Delete calculator</button><span class="grow"></span>':''}<button type="button" class="btn" id="ceCancel">Cancel</button><button type="button" class="btn main" id="ceSave">Save calculator</button></div>`;
+  $('#ceBack').onclick=$('#ceCancel').onclick=()=>show('calc');
+  $$('#ceRows .crow').forEach((el,i)=>{
+    el.querySelector('.rt').onchange=()=>{readCalcEdit();drawCalcEdit()};
+    el.querySelector('.del').onclick=()=>{readCalcEdit();cur.rows.splice(i,1);drawCalcEdit()};
+    el.querySelector('.up').onclick=()=>{readCalcEdit();[cur.rows[i-1],cur.rows[i]]=[cur.rows[i],cur.rows[i-1]];drawCalcEdit()};
+    el.querySelector('.dn').onclick=()=>{readCalcEdit();[cur.rows[i+1],cur.rows[i]]=[cur.rows[i],cur.rows[i+1]];drawCalcEdit()};
+  });
+  $('#ceAdd').onclick=()=>{readCalcEdit();cur.rows.push(newRow());drawCalcEdit();$$('#ceRows .rl').pop()?.focus()};
+  $('#ceSave').onclick=async()=>{
+    readCalcEdit();if(!needLogin())return;
+    if(!cur.name)return say('Give the calculator a game name.');
+    if(!cur.rows.length||cur.rows.some(r=>!r.label))return say('Every row needs a name.');
+    if(cur.id)D.calcs[D.calcs.findIndex(x=>x.id===cur.id)]=cur;else{cur.id=uid();D.calcs.push(cur)}
+    if(await Store.save(D)){toast('Calculator saved.');show('calc')}
+  };
+  if($('#ceDel'))$('#ceDel').onclick=async()=>{if(!await ask('This cannot be undone.',{title:'Delete this calculator?',yes:'Delete',danger:true}))return;D.calcs=D.calcs.filter(x=>x.id!==cur.id);await Store.save(D);show('calc')};
+}
+
+/* ---------- start ---------- */
+async function loadAll(){
+  let d={};try{d=await Store.load()}catch(e){console.error(e);toast('Could not load data from Supabase: '+(e.message||e))}
+  D={games:(d.games||[]).map(g=>({extra:[],mode:'comp',...g})),plays:(d.plays||[]).map(p=>({players:[],teamScores:{},...p})),calcs:(d.calcs||[]).map(t=>({info:'',...t,rows:(t.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r}))}))};
+  Store.baseline(D);
+}
+async function authChanged(){setAuthUI();await loadAll();show(view==='editgame'||view==='editplay'||view==='calcedit'||view==='calcplay'?'lib':view)}
+(async()=>{
+  if(CLOUD){const {data:{session}}=await db.auth.getSession();user=session?.user||null}
+  else if(SUPABASE_URL)toast('Could not load Supabase, so everything is only saved in this browser.');
+  await loadAll();setAuthUI();show('lib');
+  if(CLOUD)db.auth.onAuthStateChange((_e,s)=>{const u=s?.user||null;if((u?.id||'')===(user?.id||''))return;user=u;setTimeout(authChanged,0)});
+})();
+</script>
+</body>
+</html>

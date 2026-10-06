@@ -23,6 +23,9 @@
     --sub-text: hsl(155, 43%, 18%,0.5);
     --nav-text: #F8F5F0;
     --accent: #3A86FF;
+    --serif: "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --border: color-mix(in srgb, var(--header-text) 14%, transparent);
+    --page: min(94%, 1000px); /* same content width as the applications */
 }
 
 html {
@@ -276,36 +279,28 @@ body.menu-open .content {
 /* headers */
 
 .h1-parent{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+    width: var(--page);
+    margin: 0 auto;
 }
 
 h1 {
-    font-size: clamp(20px,8vw,70px);
-    text-align: center;
+    font-family: var(--serif);
+    font-size: clamp(1.9rem, 6.5vw, 2.7rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-align: left;
     color: var(--header-text);
-    display: block;
-    background-color: var(--primary);
-    padding: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: min(4vw,2rem);
-    position: relative;
-    max-width: fit-content;
+    margin: clamp(1.5rem, 5vw, 2.5rem) 0 1rem;
 }
 
-h1::after{
+h1::before{
     content: "";
+    display: block;
+    width: 3rem;
+    height: 3px;
+    border-radius: 3px;
     background: var(--third);
-    height: 5px;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    box-shadow: 0px 3px 5px rgba(0,0,0,0.05);
-    border-radius: 1rem;
-
+    margin-bottom: 1rem;
 }
 
 
@@ -321,17 +316,24 @@ h1::after{
 
 /* _________________________site specific style_____________________ */
 h2 {
-    font-size: clamp(20px,5vw,50px);
-    font-weight: 700 ;
-    text-align: center;
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: left;
     color: var(--header-text);
-    display: flex;
-    align-content: center;
-    justify-self: center;
-    padding-top: 5vw;
-    max-width: fit-content;
-    position: relative;
-    margin-top: 2rem;
+    margin: 2.5rem 0 1rem;
+}
+
+h2::before{
+    content: "";
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    margin-right: .55rem;
+    border-radius: 50%;
+    background: var(--third);
+    vertical-align: .12em;
 }
 
 h3{
@@ -344,53 +346,55 @@ h3{
 }
 
 
+.description{
+    width: var(--page);
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--body-text);
+}
+
 .gallery{
-    display: block;
-    columns: 5 220px;
-    column-gap: min(20px,10vw);  
-    margin: 5vw;
-    text-align: center;
+    width: var(--page);
+    margin: 0 auto;
+    columns: 4 200px;
+    column-gap: 14px;
 }
 
 .gallery img{
     display: block;
     width: 100%;
-    border-radius: 20px;
-    margin-bottom: min(20px,10vw);
-
+    border-radius: 14px;
+    margin-bottom: 14px;
 }
 
-
 .image{
-    transition: 1s; 
     position: relative;
-    border-radius: 20px;
+    border-radius: 14px;
+    break-inside: avoid;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.image:hover{
+    z-index: 10;
+    transform: scale(1.03);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.25);
 }
 
 .pop-up-text{
     position: absolute;
-    top: 0;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.575);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: 0;
-    opacity: 0;
-    transition: 200ms;
-    border-radius: 20px;
-    line-height: 1.7;
+    inset: 0 0 0px 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-}
-
-
-.image:hover {
-    z-index: 10;
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    position: relative;
+    justify-content: center;
+    gap: .4rem;
+    padding: 1rem;
+    text-align: center;
+    color: #fff;
+    background-color: color-mix(in srgb, var(--second) 86%, transparent);
+    border-radius: 14px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
 }
 
 .image:hover .pop-up-text{
@@ -398,34 +402,15 @@ h3{
 }
 
 .title{
-    font-size: 30px;
-    font-weight: bold;
-    padding-top: min(2%,20px);;
-    padding-right: min(2%,20px);;
-    padding-left: min(2%,20px);;
-    margin-bottom: 0;
-
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-weight: 700;
 }
 
 .summary{
-    padding-right: min(2%,20px);
-    padding-left: min(2%,20px);
-    font-size: 14px;
+    font-size: .82rem;
+    line-height: 1.45;
 }
-
-.description{
-    max-width: 800px;
-    min-width: min(90vw,800px);
-    font-size: clamp(1rem,4vw,1.3rem);
-    padding: 3vw;
-    line-height: 1.6;
-    margin-bottom: -30px;
-    display: flex;
-    flex-direction: column;
-    justify-self: center;
-
-}
-
 
 
 
@@ -437,32 +422,32 @@ h3{
 
 .project-cards{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: min(20px, 4vw);
-    width: min(900px, 90vw);
-    margin: 1rem auto 0;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    width: var(--page);
+    margin: 0 auto;
 }
 
 .project-card{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    padding: 1.75rem 1.25rem;
+    gap: .8rem;
+    padding: 1.4rem 1rem;
     text-align: center;
     text-decoration: none;
     color: var(--header-text);
     background-color: var(--container-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .project-card:hover,
 .project-card:focus-visible{
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     box-shadow: var(--card-shadow);
-    border-color: var(--accent);
+    border-color: color-mix(in srgb, var(--c) 60%, transparent);
 }
 
 .project-card:focus-visible{
@@ -473,22 +458,23 @@ h3{
 .project-card.cookbook{ --c: #E76F51; }
 .project-card.ferment{ --c: #9C3D54; }
 .project-card.mushrooms{ --c: #DDA15E; }
+.project-card.boardgames{ --c: #2A9D8F; }
 
 .pictogram{
     display: grid;
     place-items: center;
     flex: none;
-    width: 84px;
-    height: 84px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     color: var(--header-text);
-    background-color: color-mix(in srgb, var(--c) 22%, var(--container-bg));
+    background-color: color-mix(in srgb, var(--c) 20%, var(--container-bg));
     transition: transform 0.25s ease;
 }
 
 .pictogram svg{
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
 }
 
 .pg-a{
@@ -497,24 +483,32 @@ h3{
 
 .project-card:hover .pictogram,
 .project-card:focus-visible .pictogram{
-    transform: scale(1.08) rotate(-4deg);
+    transform: scale(1.06) rotate(-4deg);
 }
 
 .card-body{
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: .25rem;
 }
 
 .card-title{
-    font-size: 1.15rem;
+    font-family: var(--serif);
+    font-size: 1.05rem;
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .card-text{
-    font-size: 0.9rem;
+    font-size: .85rem;
     line-height: 1.4;
     color: var(--body-text);
+}
+
+@media(max-width: 899px){
+    .project-cards{
+        grid-template-columns: repeat(2, 1fr); /* 2 x 2 on tablets */
+    }
 }
 
 @media(max-width: 700px){
@@ -524,15 +518,16 @@ h3{
     .project-card{
         flex-direction: row;
         text-align: left;
-        padding: 1rem 1.1rem;
+        padding: .9rem 1rem;
+        gap: 1rem;
     }
     .pictogram{
-        width: 64px;
-        height: 64px;
+        width: 56px;
+        height: 56px;
     }
     .pictogram svg{
-        width: 42px;
-        height: 42px;
+        width: 36px;
+        height: 36px;
     }
 }
 
