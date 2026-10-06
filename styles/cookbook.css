@@ -662,3 +662,18 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 html{scroll-snap-type:y mandatory}
 .recipe{scroll-snap-align:start}
 .footer{scroll-snap-align:end} /* keeps the footer reachable below the last recipe */
+
+/* ---------- phone fit: nothing may stretch the page sideways ---------- */
+/* the pale method circle is clipped by the page column instead of widening the page */
+.layout{overflow-x:clip}
+@supports not (overflow:clip){.layout{overflow-x:hidden}}
+
+/* ---------- filter popup: "most used" tags ---------- */
+.tag-heading{margin:1rem 0 .1rem;font:700 .72rem system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--sub-text)}
+.tag-heading:first-child{margin-top:.4rem}
+#popular-block+.tag-heading{margin-top:1.4rem}
+
+/* ---------- phone / tablet popups start below the nav bar ---------- */
+@media(max-width:899px){
+  .overlay{top:50px}
+}

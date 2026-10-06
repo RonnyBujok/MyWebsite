@@ -40,29 +40,33 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
 
   <main class="wrap">
     <div class="bar" role="tablist">
-      <button class="tab" data-v="map">Map</button>
-      <button class="tab" data-v="hist">History</button>
+      <button class="tab" data-v="log">Logbook</button>
       <button class="tab" data-v="lex">Lexicon</button>
+      <button class="tab" data-v="quiz">Quiz</button>
       <span class="grow"></span>
       <button class="btn main edit-only" id="newFind">+ New find</button>
     </div>
+
+    <div class="bar logNav" id="logNav" hidden><button class="stab" data-sub="map">Map</button><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button></div>
 
     <!-- MAP -->
     <section class="view" id="v-map">
       <div class="pickbar" id="pickbar" hidden>Click the map to set the location of this find.</div>
       <div class="card panel" id="filterPanel">
         <div class="field"><label class="l" for="fSp">Mushroom</label><select id="fSp"></select></div>
-        <div class="field"><span class="l">Edibility</span><div class="chips even" id="fEdi"></div></div>
+        <details id="ediF"><summary id="ediSum">Filter by edibility</summary>
+          <div class="chips even" id="fEdi" style="margin:.9rem 0 .75rem"></div>
+        </details>
         <details id="timeF"><summary id="timeSum">Filter by time</summary>
           <div class="field dates" style="margin-top:.9rem"><div><label class="l" for="fFrom">From</label><input type="date" id="fFrom"></div><div><label class="l" for="fTo">To</label><input type="date" id="fTo"></div></div>
           <div class="field"><span class="l">Months</span><div class="chips even mon" id="fMon"></div></div>
         </details>
+        <div class="resetRow2"><button class="btn sm" id="fReset" type="button">Reset filters</button></div>
       </div>
       <div class="bar tools" id="mapTools">
         <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="fHeat" checked><span>Heatmap</span></label>
         <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="fPins" checked><span>Pins</span></label>
-        <span class="grow"></span>
-        <button class="btn" id="fReset" type="button">Reset filters</button>
+        <button class="btn" id="locBtn" type="button">📍 My location</button>
       </div>
       <div id="map"></div>
       <div class="legend" id="legend"></div>
@@ -70,30 +74,34 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
 
     <!-- HISTORY -->
     <section class="view" id="v-hist" hidden>
-      <div class="bar"><h2 style="margin:0">History</h2><span class="grow"></span><button class="btn" id="export">Export JSON</button></div>
-      <div class="bar" style="margin-top:0"><button class="seg" data-h="list">Finds</button><button class="seg" data-h="stats">Stats</button></div>
-      <div class="grid" id="histList"></div>
-      <div id="histStats" hidden></div>
+      <div class="bar"><h2 style="margin:0">History</h2><span class="grow"></span><span class="layoutSw"></span><button class="btn" id="export">Export JSON</button></div>
+      <div class="list" id="histList"></div>
     </section>
+
+    <!-- STATS -->
+    <section class="view" id="v-stats" hidden><div id="histStats"></div></section>
 
     <!-- LEXICON -->
     <section class="view" id="v-lex" hidden>
-      <div class="bar"><h2 style="margin:0">Lexicon</h2><span class="grow"></span><button class="btn" id="quizBtn">Quiz</button><button class="btn main edit-only" id="newLex">+ New lexicon entry</button></div>
+      <div class="bar"><h2 style="margin:0">Lexicon</h2><span class="grow"></span><span class="layoutSw"></span><button class="btn main edit-only" id="newLex">+ New lexicon entry</button></div>
       <div class="card panel" id="lexTools">
         <div class="field"><label class="l" for="lexQ">Search by name</label><input type="search" id="lexQ" placeholder="Any language"></div>
         <details><summary>Filter by labels and features</summary>
           <div class="field" style="margin-top:.75rem"><span class="l">Labels</span><div class="chips even" id="lexTags"></div></div>
-          <div class="field"><label class="l" for="lexFound">Found by me</label><select id="lexFound"><option value="">All</option><option value="yes">Found by me</option><option value="no">Not found yet</option></select></div>
+          <div class="field"><label class="l" for="lexFound">Identified by me</label><select id="lexFound"><option value="">All</option><option value="yes">Identified</option><option value="unsure">Unsure</option><option value="none">Not found yet</option></select></div>
+          <div class="field"><label class="l" for="lexLook">Look-alikes</label><select id="lexLook"><option value="">All</option><option value="todo">Still to add</option><option value="unset">Not checked yet</option><option value="none">None</option></select></div>
+          <div class="field"><label class="l" for="lexRank">Type</label><select id="lexRank"><option value="">All</option><option value="species">Single species</option><option value="group">Groups</option></select></div>
+          <div class="field"><label class="l" for="lexBruise">Colour change / bruising</label><select id="lexBruise"><option value="">All</option><option value="yes">Yes</option><option value="part">Partially</option><option value="no">No</option><option value="none">Not noted yet</option></select></div>
           <div class="row" id="lexFeat"></div>
           <div class="field"><button class="btn" type="button" id="lexClear">Clear filters</button></div>
         </details>
       </div>
-      <div class="grid" id="lexList"></div>
+      <div class="list" id="lexList"></div>
     </section>
 
     <!-- QUIZ -->
     <section class="view narrow" id="v-quiz" hidden>
-      <div class="bar"><h2 style="margin:0">Quiz</h2><span class="grow"></span><button class="btn" id="quizBack">Back to lexicon</button></div>
+      <div class="bar"><h2 style="margin:0">Quiz</h2><span class="grow"></span><span id="quizIcons"><button class="iconbtn" id="achBtn" title="Achievements" aria-label="Achievements">🏆</button><button class="iconbtn" id="gsBtn" title="Game stats" aria-label="Game stats">📊</button></span></div>
       <div class="card" id="quizBox"></div>
     </section>
 
@@ -103,15 +111,14 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
       <form id="f" autocomplete="off">
         <div class="review" id="review" hidden></div>
         <div class="field"><span class="l">Quick fill from earlier entries</span><div class="chips sug" id="sug"></div><p class="msg" id="sugMsg">Start typing a name below.</p></div>
-        <div class="field"><label class="l" for="la">Latin name</label>
-          <div style="display:flex;gap:.5rem"><input id="la" name="la" placeholder="e.g. Amanita muscaria"><button class="btn" type="button" id="look">Look up</button></div>
-          <p class="msg" id="lookMsg"></p></div>
+        <div class="field"><label class="l" for="la">Latin name</label><input id="la" name="la" placeholder="e.g. Amanita muscaria"></div>
         <div class="row">
           <div class="field"><label class="l" for="en">English</label><input id="en" name="en"></div>
           <div class="field"><label class="l" for="pl">Polish</label><input id="pl" name="pl"></div>
           <div class="field"><label class="l" for="de">German</label><input id="de" name="de"></div>
           <div class="field"><label class="l" for="nl">Dutch</label><input id="nl" name="nl"></div>
         </div>
+        <div class="field"><button class="btn" type="button" id="look">Fill in from Wikipedia</button><p class="msg" id="lookMsg"></p></div>
         <div class="field"><span class="l">Labels</span><div class="chips even" id="ediPick"></div><p class="msg">Pick every label that applies. The pin shows each colour.</p></div>
         <div class="field cond" id="cond" hidden><label class="l" for="ediNote">Under which conditions is it edible?</label><div class="chips" id="quick"></div><textarea id="ediNote" name="ediNote" rows="2" placeholder="e.g. Only when cooked for 15 minutes. No alcohol for 3 days."></textarea></div>
 
@@ -120,6 +127,9 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
             <div class="field"><label class="l" for="date">Date</label><input type="date" id="date" name="date"></div>
             <div class="field"><label class="l" for="qty">Quantity</label><input type="number" id="qty" name="qty" min="1" value="1"></div>
           </div>
+          <div class="field"><span class="l">Identification</span><div class="chips even"><label class="chip" style="--c:var(--c-edible)"><input type="radio" name="fident" value="yes" checked><span>✓ Identified</span></label><label class="chip" style="--c:var(--c-inedible)"><input type="radio" name="fident" value="unsure"><span>? Unsure</span></label><label class="chip" style="--c:#8A8F96"><input type="radio" name="fident" value="unknown"><span>Unidentified</span></label></div>
+            <p class="msg" id="unkMsg" hidden>A mushroom you cannot name yet. No name or label needed: add photos and notes so you can identify it later.</p></div>
+          <div class="field"><label class="l" for="frank">Classified down to</label><select name="frank" id="frank"><option value="species">A single species</option><option value="group">Only the group (e.g. Russula)</option></select></div>
           <div class="field"><span class="l">Location</span>
             <div class="row"><input name="lat" placeholder="Latitude" inputmode="decimal"><input name="lng" placeholder="Longitude" inputmode="decimal"></div>
             <div class="chips" style="margin-top:.5rem"><button class="btn" type="button" id="gps">Use my position</button><button class="btn" type="button" id="pick">Pick on map</button></div></div>
@@ -127,10 +137,17 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
         </div>
 
         <div data-only="lex">
-          <div class="field"><label class="chip" style="--c:var(--c-edible)"><input type="checkbox" name="found"><span>I have found this mushroom myself</span></label></div>
+          <div class="field"><span class="l">Identified by me</span><div class="chips even"><label class="chip" style="--c:#8A8F96"><input type="radio" name="lident" value=""><span>Not found yet</span></label><label class="chip" style="--c:var(--c-inedible)"><input type="radio" name="lident" value="unsure"><span>? Unsure</span></label><label class="chip" style="--c:var(--c-edible)"><input type="radio" name="lident" value="yes"><span>✓ Identified</span></label></div></div>
+          <div class="field"><span class="l">Type</span><div class="row"><select name="rank" id="rank"><option value="species">Single species</option><option value="group">Group (genus, family, complex)</option></select><select name="parent" id="parent"></select></div><p class="msg" id="rankMsg">A group is a larger family such as Russula. Add its species by choosing the group in their own "Type" field.</p></div>
+          <details class="alts"><summary>Alternative names (only used for searching)</summary><div class="row" style="margin-top:.9rem"><div class="field"><label class="l" for="alt_la">Other Latin names</label><input id="alt_la" name="alt_la" placeholder="comma separated"></div><div class="field"><label class="l" for="alt_en">Other English names</label><input id="alt_en" name="alt_en" placeholder="comma separated"></div><div class="field"><label class="l" for="alt_pl">Other Polish names</label><input id="alt_pl" name="alt_pl" placeholder="comma separated"></div><div class="field"><label class="l" for="alt_de">Other German names</label><input id="alt_de" name="alt_de" placeholder="comma separated"></div><div class="field"><label class="l" for="alt_nl">Other Dutch names</label><input id="alt_nl" name="alt_nl" placeholder="comma separated"></div></div></details>
           <div id="featFields"></div>
+          <div class="field"><label class="l" for="bruise">Colour change / bruising</label><select id="bruise" name="bruise"><option value="">Not noted yet</option><option value="no">No</option><option value="yes">Yes</option><option value="part">Partially</option></select>
+            <input id="bruiseNote" name="bruiseNote" placeholder="Explain: what changes, to which colour, how fast" style="margin-top:.5rem" hidden></div>
+          <div class="field"><span class="l">More defining features</span><div id="extraRows"></div><button type="button" class="btn" id="addExtra">+ Add feature</button><datalist id="extraNames"></datalist></div>
           <div class="field"><label class="l" for="warn">Warnings</label><textarea id="warn" name="warn" rows="2" placeholder="What to watch out for"></textarea></div>
-          <div class="field"><span class="l">Look-alikes to watch out for</span><div class="chips" id="simList"></div><select id="simSel" style="margin-top:.5rem"></select></div>
+          <div class="field"><span class="l">Look-alikes to watch out for</span><div class="chips" id="simList"></div><select id="simSel" style="margin-top:.5rem"></select>
+            <select name="lookalike" id="lookalike" style="margin-top:.5rem"><option value="">Look-alikes not checked yet</option><option value="none">No look-alikes</option><option value="todo">Has look-alikes that are not in my lexicon yet</option></select>
+            <input name="simNote" id="simNote" placeholder="Names of look-alikes still to add (optional)" style="margin-top:.5rem" hidden></div>
         </div>
 
         <div class="field"><label class="l" for="notes">Notes</label><textarea id="notes" name="notes" rows="3"></textarea></div>
@@ -139,6 +156,10 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
         <div class="acts" style="justify-content:flex-end"><button type="button" class="btn" id="cancel">Cancel</button><button class="btn main" type="submit">Save</button></div>
       </form>
     </section>
+
+    <dialog id="lvlDlg"><div id="lvlBody"></div></dialog>
+    <dialog id="buyDlg"><div id="buyBody"></div></dialog>
+    <dialog id="askDlg"><div id="askBody"></div></dialog>
 
     <dialog id="loginDlg">
       <form id="loginForm">
@@ -189,16 +210,16 @@ async function fetchAll(table){
   }
   return rows.map(r=>({...r.data,id:r.id}));
 }
-async function uploadPhotos(arr){ // data URLs become files in Storage, URLs stay as they are
-  const out=[];
-  for(const p of arr){
-    if(!p.startsWith('data:')){out.push(p);continue}
+async function uploadPhotos(o){ // data URLs become files in Storage, URLs stay as they are; "unsure" flags follow the new URLs
+  const map=new Map();
+  for(const p of o.photos||[]){
+    if(!p.startsWith('data:')||map.has(p))continue;
     const blob=await (await fetch(p)).blob(),path=`${user.id}/${crypto.randomUUID()}.jpg`;
     const {error}=await db.storage.from(BUCKET).upload(path,blob,{contentType:'image/jpeg',cacheControl:'31536000'});
     if(error)throw error;
-    out.push(db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl);
+    map.set(p,db.storage.from(BUCKET).getPublicUrl(path).data.publicUrl);
   }
-  return out;
+  o.photos=(o.photos||[]).map(p=>map.get(p)||p);o.uphotos=(o.uphotos||[]).map(p=>map.get(p)||p);
 }
 const storagePath=u=>{const i=u.indexOf('/'+BUCKET+'/');return i<0?null:decodeURIComponent(u.slice(i+BUCKET.length+2).split('?')[0])};
 async function dropPhotos(urls){ // only delete files that no find or lexicon entry still uses
@@ -211,7 +232,7 @@ async function syncList(key,list){ // upsert new/changed entries, delete removed
   for(const o of list){
     seen.add(o.id);if(sh.get(o.id)===JSON.stringify(o))continue;
     const old=sh.has(o.id)?JSON.parse(sh.get(o.id)).photos||[]:[];
-    o.photos=await uploadPhotos(o.photos||[]);
+    await uploadPhotos(o);
     const {error}=await db.from(TABLE[key]).upsert({id:o.id,data:o,updated_at:new Date().toISOString()});
     if(error)throw error;
     sh.set(o.id,JSON.stringify(o));await dropPhotos(old.filter(p=>!o.photos.includes(p)));
@@ -243,18 +264,19 @@ const Store={
   }
 };
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const toks=s=>(s||'').split(/\s*(?:,|;|\/|\band\b)\s*/i).map(t=>t.trim()).filter(Boolean); // "ring and volva" -> ring, volva
 const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l');
-const E={edible:{c:'var(--c-edible)',l:'Edible'},conditional:{c:'var(--c-conditional)',l:'Edible with conditions',t:'#3a2e00'},inedible:{c:'var(--c-inedible)',l:'Not edible'},poisonous:{c:'var(--c-poisonous)',l:'Poisonous'},deadly:{c:'var(--c-deadly)',l:'☠ Deadly'},hallucinogenic:{c:'var(--hal)',l:'✺ Hallucinogenic'}};
-const ED=['edible','conditional','inedible','poisonous','deadly'];
+const E={edible:{c:'var(--c-edible)',l:'Edible'},conditional:{c:'var(--c-conditional)',l:'Edible with conditions',t:'#3a2e00'},inedible:{c:'var(--c-inedible)',l:'Not edible'},poisonous:{c:'var(--c-poisonous)',l:'Poisonous'},deadly:{c:'var(--c-deadly)',l:'☠ Deadly'},varies:{c:'var(--c-varies)',l:'Varies by species'},hallucinogenic:{c:'var(--hal)',l:'✺ Hallucinogenic'},unknown:{c:'#8A8F96',l:'Unidentified'}};
+const ED=['edible','conditional','inedible','poisonous','deadly','varies'];
 const hex=k=>getComputedStyle(document.documentElement).getPropertyValue('--c-'+k).trim()||'#999';
 const HEX=new Proxy({},{get:(_,k)=>hex(k)}); // pin colours are read from the CSS variables
 const LANGS=['la','en','pl','de','nl'],LN={la:'Latin',en:'English',pl:'Polish',de:'German',nl:'Dutch'};
-const FEAT=[['cap','Cap'],['hym','Hymenium'],['att','Hymenium attachment'],['stipe','Stipe'],['eco','Ecology'],['spore','Spore print'],['other','Other defining features']];
+const FEAT=[['cap','Cap'],['capc','Cap colour'],['hym','Hymenium'],['hymc','Hymenium colour'],['att','Hymenium attachment'],['stipe','Stipe'],['eco','Ecology'],['spore','Spore print']];
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const QUICK=['Only when cooked','No alcohol','Only young specimens','Remove skin or cap cuticle','Needs special preparation'];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
-const nm=o=>o.n.en||o.n.la||o.n.de||o.n.nl||o.n.pl||'Unnamed';
+const nm=o=>o.n.en||o.n.la||o.n.de||o.n.nl||o.n.pl||(o.ident==='unknown'?'Unidentified mushroom':'Unnamed');
 const key=o=>(o.wid||o.n.la||nm(o)).toLowerCase();
 const expand=a=>{const s=new Set(a);if(s.has('edible'))s.add('conditional');if(s.has('poisonous'))s.add('deadly');return[...s]};
 const badges=o=>[...ED,'hallucinogenic'].filter(t=>o.tags.includes(t)).map(t=>`<span class="b" style="--c:${E[t].c};--t:${E[t].t||'#fff'}">${E[t].l}</span>`).join('');
@@ -263,27 +285,47 @@ const fmt=d=>d?new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',
 const F=$('#f');let D={finds:[],lex:[],quiz:{xp:0,best:0,mastery:{}}},cur=null,map,heat,pins,picking=false,returnTo='hist';
 
 /* ---------- Views ---------- */
+// main sections: Quiz, Logbook (Map / History / Stats) and Lexicon
+const LOG=['map','hist','stats'],tabOf=v=>LOG.includes(v)?'log':v;
+let lastLog='map',layout='list';
+try{layout=localStorage.getItem('mushroomlayout')||'list'}catch{}
 function show(v){
-  view=v;$$('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
-  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===v||(v==='quiz'&&t.dataset.v==='lex')));
+  view=v;if(LOG.includes(v))lastLog=v;
+  $$('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
+  $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===tabOf(v)));
+  $('#logNav').hidden=!LOG.includes(v);$$('[data-sub]').forEach(b=>b.classList.toggle('on',b.dataset.sub===v));
+  $$('[data-layout]').forEach(b=>b.classList.toggle('on',b.dataset.layout===layout));
   $('#pickbar').hidden=!picking;$('#filterPanel').hidden=picking;$('#mapTools').hidden=picking;
   if(v==='map'){initMap();setTimeout(()=>{map.invalidateSize();drawMap()},30)}
-  if(v==='hist')renderHist();if(v==='lex')renderLex();if(v==='quiz')quizHome();
+  if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='lex')renderLex();if(v==='quiz')quizHome();
   window.scrollTo({top:0});
 }
-$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v));
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v));
+$$('[data-sub]').forEach(b=>b.onclick=()=>show(b.dataset.sub));
+// list (collapsible rows) or tiles, remembered in this browser
+$$('.layoutSw').forEach(s=>s.innerHTML='<button class="lay" data-layout="list" title="List" aria-label="List view"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><rect x="1" y="2.5" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="11.5" width="14" height="2" rx="1"/></svg></button><button class="lay" data-layout="tiles" title="Tiles" aria-label="Tile view"><svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg></button>');
+$$('[data-layout]').forEach(b=>b.onclick=()=>{layout=b.dataset.layout;try{localStorage.setItem('mushroomlayout',layout)}catch{}$$('[data-layout]').forEach(x=>x.classList.toggle('on',x.dataset.layout===layout));renderHist();renderLex()});
 
 /* ---------- Chips ---------- */
 const chipHTML=(type,name,k,checked,cls='')=>`<label class="chip ${cls}" style="--c:${E[k].c};--t:${E[k].t||'#fff'}"><input type="${type}" name="${name}" value="${k}" ${checked?'checked':''}><span>${E[k].l}</span></label>`;
 $('#ediPick').innerHTML=[...ED,'hallucinogenic'].map(k=>chipHTML('checkbox','tag',k,k==='edible')).join('');
-$('#fEdi').innerHTML=[...ED,'hallucinogenic'].map(k=>chipHTML('checkbox','fe',k,true)).join('');
+$('#fEdi').innerHTML=[...ED,'hallucinogenic','unknown'].map(k=>chipHTML('checkbox','fe',k,true)).join('');
 $('#lexTags').innerHTML=[...ED,'hallucinogenic'].map(k=>chipHTML('checkbox','lt',k,false)).join('');
 $('#fMon').innerHTML=MON.map((m,i)=>`<label class="chip sm" style="--c:var(--accent)"><input type="checkbox" name="fm" value="${i+1}"><span>${m}</span></label>`).join('');
 $('#quick').innerHTML=QUICK.map(t=>`<button type="button" class="chip-s">${t}</button>`).join('');
 $$('#quick button').forEach(b=>b.onclick=()=>{const a=$('#ediNote');a.value+=(a.value.trim()?'. ':'')+b.textContent});
 $('#ediPick').onchange=()=>$('#cond').hidden=!$('#ediPick input[value=conditional]').checked;
 $('#featFields').innerHTML=FEAT.map(([k,l])=>`<div class="field"><label class="l" for="ft_${k}">${l}</label>${k==='other'?`<textarea id="ft_${k}" name="ft_${k}" rows="3" placeholder="Smell, colour change when cut, habitat details, what makes this one special…"></textarea>`:`<input id="ft_${k}" name="ft_${k}">`}</div>`).join('');
-$('#lexFeat').innerHTML=FEAT.map(([k,l])=>`<div class="field"><label class="l" for="lf_${k}">${l}</label><input id="lf_${k}"></div>`).join('');
+$('#lexFeat').innerHTML=FEAT.map(([k,l])=>`<div class="field"><label class="l" for="lf_${k}">${l}</label><select id="lf_${k}"></select></div>`).join('')+'<div class="field"><label class="l" for="lf_other">More features</label><input id="lf_other" placeholder="Search a feature or value"></div>';
+function fillFeatOptions(){ // every value used in your lexicon, per feature
+  FEAT.forEach(([k])=>{
+    if(k==='other')return;
+    const sel=$('#lf_'+k),v=sel.value,m=new Map();
+    D.lex.forEach(o=>toks(o.feat[k]).forEach(t=>{const n=norm(t);if(!m.has(n))m.set(n,t[0].toUpperCase()+t.slice(1))}));
+    sel.innerHTML='<option value="">Any</option>'+[...m].sort((a,b)=>a[1].localeCompare(b[1])).map(([n,t])=>`<option value="${esc(n)}">${esc(t)}</option>`).join('');
+    sel.value=m.has(v)?v:'';sel.disabled=!m.size;
+  });
+}
 
 /* ---------- Map ---------- */
 function initMap(){
@@ -291,6 +333,7 @@ function initMap(){
   map=L.map('map').setView([52.1,5.3],7);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
   pins=L.layerGroup().addTo(map);
+  map.on('zoomend',()=>{if(heat)heat.setOptions(heatSize())});
   map.on('click',e=>{
     if(!picking){ // normal click: offer to log a find at this spot (a popup avoids accidental entries)
       const {lat,lng}=e.latlng;
@@ -306,31 +349,52 @@ function initMap(){
 const filtered=()=>{
   // every pill is an "any of these labels" filter; all pills ticked shows everything
   const sp=$('#fSp').value,from=$('#fFrom').value,to=$('#fTo').value;
-  const ed=expand($$('#fEdi input:checked').map(i=>i.value)),mo=$$('#fMon input:checked').map(i=>+i.value);
-  return D.finds.filter(o=>(!sp||key(o)===sp)&&o.tags.some(t=>ed.includes(t))&&(!from||o.date>=from)&&(!to||o.date<=to)&&(!mo.length||mo.includes(+o.date.slice(5,7))));
+  const sel=$$('#fEdi input:checked').map(i=>i.value),ed=expand(sel),mo=$$('#fMon input:checked').map(i=>+i.value);
+  return D.finds.filter(o=>(!sp||key(o)===sp)&&(o.ident==='unknown'?sel.includes('unknown'):o.tags.some(t=>ed.includes(t)))&&(!from||o.date>=from)&&(!to||o.date<=to)&&(!mo.length||mo.includes(+o.date.slice(5,7))));
 };
-const timeBadge=()=>{const n=($('#fFrom').value?1:0)+($('#fTo').value?1:0)+$$('#fMon input:checked').length;$('#timeSum').textContent='Filter by time'+(n?' (active)':'')};
+const timeBadge=()=>{
+  const n=($('#fFrom').value?1:0)+($('#fTo').value?1:0)+$$('#fMon input:checked').length;
+  $('#timeSum').textContent='Filter by time'+(n?' (active)':'');
+  $('#ediSum').textContent='Filter by edibility'+($$('#fEdi input:not(:checked)').length?' (active)':'');
+};
 function fillSpecies(){
   const sel=$('#fSp'),v=sel.value,m=new Map();
-  D.finds.forEach(o=>m.set(key(o),nm(o)+(o.n.la&&o.n.en?` (${o.n.la})`:'')));
+  D.finds.filter(o=>o.ident!=='unknown').forEach(o=>m.set(key(o),nm(o)+(o.n.la&&o.n.en?` (${o.n.la})`:'')));
   sel.innerHTML='<option value="">All mushrooms</option>'+[...m].sort((a,b)=>a[1].localeCompare(b[1])).map(([k,l])=>`<option value="${esc(k)}">${esc(l)}</option>`).join('');
   sel.value=m.has(v)?v:'';
 }
+// the blobs shrink when zoomed out, so far-apart finds do not pile up into one red patch
+const heatSize=()=>{const z=map.getZoom(),r=Math.round(Math.min(48,Math.max(10,z*3.2)));return{radius:r,blur:Math.round(r*.7),max:1+Math.max(0,12-z)*.12}}; // zoomed out: smaller blobs and a higher red threshold
+/* your current position on the map (tap again to hide it) */
+let me=null,watchId=null;
+function locate(){
+  const btn=$('#locBtn');
+  if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null;if(me){map.removeLayer(me);me=null}btn.textContent='📍 My location';return}
+  if(!navigator.geolocation)return toast('Location is not available in this browser.');
+  btn.textContent='📍 Locating…';let first=true;
+  watchId=navigator.geolocation.watchPosition(p=>{
+    const ll=[p.coords.latitude,p.coords.longitude];
+    if(me)map.removeLayer(me);
+    me=L.layerGroup([L.circle(ll,{radius:Math.min(p.coords.accuracy,500),color:'#3A86FF',weight:1,fillOpacity:.1,interactive:false}),L.circleMarker(ll,{radius:8,color:'#fff',weight:3,fillColor:'#3A86FF',fillOpacity:1,interactive:false})]).addTo(map);
+    if(first){first=false;map.setView(ll,Math.max(map.getZoom(),15));btn.textContent='📍 Hide my location'}
+  },()=>{if(watchId!==null)navigator.geolocation.clearWatch(watchId);watchId=null;btn.textContent='📍 My location';toast('Could not get your location. Check the location permission.')},{enableHighAccuracy:true,maximumAge:5000});
+}
+$('#locBtn').onclick=()=>{initMap();locate()};
 function drawMap(){
   if(!map)return;timeBadge();
   pins.clearLayers();if(heat){map.removeLayer(heat);heat=null}
   const list=filtered();
   if($('#fHeat').checked&&list.length){
-    // weight grows with quantity (log scale): 1 mushroom = 0.45 (clearly visible), 10 or more = 1
+    // weight grows with quantity (log scale): 1 mushroom = soft yellow, 10+ = orange; red only where several finds overlap
     // maxZoom:1 keeps the intensity the same at every zoom level (leaflet.heat fades points when zoomed out otherwise)
-    const mx=Math.max(10,...list.map(o=>+o.qty||1)),w=q=>.45+.55*Math.log(Math.max(1,q))/Math.log(mx);
-    heat=L.heatLayer(list.map(o=>[+o.lat,+o.lng,w(+o.qty)]),{radius:55,blur:40,maxZoom:1,minOpacity:.5,max:1,gradient:{.2:'#7CCB9B',.45:'#F4D35E',.7:'#F08A4B',1:'#E5484D'}}).addTo(map);
+    const mx=Math.max(10,...list.map(o=>+o.qty||1)),w=q=>.38+.27*Math.log(Math.max(1,q))/Math.log(mx);
+    heat=L.heatLayer(list.map(o=>[+o.lat,+o.lng,w(+o.qty)]),{...heatSize(),maxZoom:1,minOpacity:.05,gradient:{.2:'#8FD3A9',.4:'#F4D35E',.65:'#F0A04B',.9:'#E5484D'}}).addTo(map);
   }
   if($('#fPins').checked)list.forEach(o=>{
     const cols=[...new Set(ED.filter(t=>o.tags.includes(t)).map(t=>HEX[t]))],n=cols.length||1,dead=o.tags.includes('deadly');
     const bg=n>1?`conic-gradient(${cols.map((c,i)=>`${c} ${i*100/n}% ${(i+1)*100/n}%`).join(',')})`:(cols[0]||'#999');
-    const ic=L.divIcon({className:'pin '+(dead?'deadly':''),html:`<span style="background:${bg}">${dead?'☠':''}</span>${o.tags.includes('hallucinogenic')?'<i>✺</i>':''}`,iconSize:[24,24],iconAnchor:[12,12]});
-    L.marker([+o.lat,+o.lng],{icon:ic}).addTo(pins).bindPopup(`<strong>${esc(nm(o))}</strong><br><em>${esc(o.n.la)}</em><br>${fmt(o.date)} · ${o.qty}×<br>${o.tags.includes('conditional')&&o.ediNote?'<b>Edible only: </b>'+esc(o.ediNote)+'<br>':''}${esc(o.notes)}${o.photos[0]?`<img class="z" src="${o.photos[0]}" alt="">`:''}<br><a href="#" class="edit-only" onclick="editFind('${o.id}');return false">Edit</a>`);
+    const ic=L.divIcon({className:'pin '+(dead?'deadly':''),html:`<span style="background:${bg}">${dead?'☠':''}</span>${o.tags.includes('hallucinogenic')?'<i>✺</i>':''}${o.ident==='unsure'||o.ident==='unknown'?'<b>?</b>':''}`,iconSize:[24,24],iconAnchor:[12,12]});
+    L.marker([+o.lat,+o.lng],{icon:ic}).addTo(pins).bindPopup(`<strong>${esc(nm(o))}</strong><br><em>${esc(o.n.la)}</em><br>${fmt(o.date)} · ${o.qty}×<br>${o.ident==='unsure'?'<em>Unsure identification</em><br>':o.ident==='unknown'?'<em>Not identified yet</em><br>':''}${o.tags.includes('conditional')&&o.ediNote?'<b>Edible only: </b>'+esc(o.ediNote)+'<br>':''}${esc(o.notes)}${o.photos[0]?`<img class="z" src="${o.photos[0]}" alt="">`:''}<br><a href="#" class="edit-only" onclick="editFind('${o.id}');return false">Edit</a>`);
   });
   if(list.length&&!picking)map.fitBounds(L.latLngBounds(list.map(o=>[+o.lat,+o.lng])).pad(.3),{maxZoom:15});
   $('#legend').innerHTML=`<span><b>${list.length}</b> of ${D.finds.length} finds shown</span>`+ED.map(k=>`<span><i class="dot" style="background:${HEX[k]}"></i>${E[k].l}</span>`).join('')+'<span><i class="dot" style="background:var(--hal)"></i>✺ Hallucinogenic</span><span>Several labels split the pin into colours. Heat strength follows quantity. Click the map to add a find there.</span>';
@@ -339,22 +403,35 @@ $$('#v-map input,#v-map select').forEach(i=>i.onchange=drawMap);
 $('#fReset').onclick=()=>{$('#fSp').value='';$('#fFrom').value=$('#fTo').value='';$$('#fEdi input').forEach(i=>i.checked=true);$$('#fMon input').forEach(i=>i.checked=false);drawMap()};
 
 /* ---------- History & lexicon ---------- */
-const thumbs=o=>o.photos?.length?`<div class="thumbs">${o.photos.map(p=>`<img class="z" src="${p}" alt="Photo of ${esc(nm(o))}">`).join('')}</div>`:'';
-const names=o=>`<h3>${esc(nm(o))}</h3><div class="la">${esc(o.n.la)}</div><p class="meta">${['pl','de','nl'].filter(k=>o.n[k]).map(k=>k.toUpperCase()+': '+esc(o.n[k])).join(' · ')}</p>`;
-let histMode='list',metric='qty';
-$$('[data-h]').forEach(b=>b.onclick=()=>{histMode=b.dataset.h;renderHist()});
+const mark=id=>id==='yes'?'<span class="found" title="Identified" role="img" aria-label="Identified"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>':id==='unsure'?'<span class="found unsure" title="Unsure identification" role="img" aria-label="Unsure identification">?</span>':id==='unknown'?'<span class="found unknown" title="Not identified yet" role="img" aria-label="Not identified yet">?</span>':'';
+const thumbs=o=>o.photos?.length?`<div class="thumbs">${o.photos.map(p=>{const u=(o.uphotos||[]).includes(p);return `<span class="ph${u?' unsure':''}"><img class="z" src="${p}" alt="${u?'Unsure photo':'Photo'} of ${esc(nm(o))}"></span>`}).join('')}</div>`:'';
+const trans=o=>`<p class="meta">${['pl','de','nl'].filter(k=>o.n[k]).map(k=>k.toUpperCase()+': '+esc(o.n[k])).join(' · ')}</p>`;
+const names=o=>`<h3>${esc(nm(o))}</h3><div class="la">${esc(o.n.la)}</div>${trans(o)}`;
+const grp=o=>o.rank==='group'?'<span class="b grp">Group</span>':'';
+// the edibility as a small round dot (like the pins on the map): one colour per label, skull for deadly, ✺ for hallucinogenic
+const edot=o=>{
+  const ts=ED.filter(t=>o.tags.includes(t));
+  if(!ts.length)return '<span class="edot none" title="No edibility label"></span>';
+  const n=ts.length,bg=n>1?`conic-gradient(${ts.map((t,i)=>`var(--c-${t}) ${i*100/n}% ${(i+1)*100/n}%`).join(',')})`:`var(--c-${ts[0]})`,dead=ts.includes('deadly');
+  return `<span class="edot${dead?' dead':''}" style="background:${bg}" title="${ts.map(t=>E[t].l).join(', ')}">${dead?'☠':''}${o.tags.includes('hallucinogenic')?'<i>✺</i>':''}</span>`;
+};
+// one entry: a compact collapsible row (list) or a full card (tiles)
+const row=(o,{id='',date='',rest,body})=>layout==='tiles'
+  ?`<article class="card item${o.ident?' mine':''}"${id}>${mark(o.ident)}${names(o)}<div>${badges(o)}${grp(o)}</div>${body}</article>`
+  :`<details class="card entry"${id}><summary><span class="mk">${mark(o.ident)}</span><span class="en">${esc(nm(o))}${grp(o)}</span><span class="ed">${edot(o)}</span><span class="la">${o.n.la&&nm(o)!==o.n.la?esc(o.n.la):''}</span><span class="dt">${date}</span></summary><div class="ebody"><div class="pills">${badges(o)}</div>${rest}${body}</div></details>`;
+let metric='qty';
 function renderHist(){
-  $$('[data-h]').forEach(b=>b.classList.toggle('on',b.dataset.h===histMode));
-  $('#histList').hidden=histMode!=='list';$('#histStats').hidden=histMode!=='stats';
-  if(histMode==='stats')return renderStats();
+  const el=$('#histList');el.className=layout==='tiles'?'grid':'list';
   const l=[...D.finds].sort((a,b)=>b.date.localeCompare(a.date));
-  $('#histList').innerHTML=l.map(o=>`<article class="card item">${names(o)}<div>${badges(o)}</div>${cond(o)}<p class="meta">${fmt(o.date)} · quantity ${o.qty} · ${(+o.lat).toFixed(3)}, ${(+o.lng).toFixed(3)}</p>${o.notes?`<p>${esc(o.notes)}</p>`:''}${thumbs(o)}<div class="acts"><button class="btn edit-only" onclick="editFind('${o.id}')">Edit</button><button class="btn danger edit-only" onclick="del('finds','${o.id}')">Delete</button></div></article>`).join('')||'<div class="empty card" style="grid-column:1/-1">No finds yet. Use “New find” to log your first mushroom.</div>';
+  el.innerHTML=l.map(o=>row(o,{date:fmt(o.date),rest:trans(o),
+    body:`${cond(o)}<p class="meta">${fmt(o.date)} · quantity ${o.qty} · ${(+o.lat).toFixed(3)}, ${(+o.lng).toFixed(3)}</p>${o.notes?`<p>${esc(o.notes)}</p>`:''}${thumbs(o)}<div class="acts"><button class="btn edit-only" onclick="editFind('${o.id}')">Edit</button><button class="btn danger edit-only" onclick="del('finds','${o.id}')">Delete</button></div>`})).join('')||'<div class="empty card" style="grid-column:1/-1">No finds yet. Use “New find” to log your first mushroom.</div>';
 }
 
 /* ---------- Stats (plain SVG/CSS, no chart library) ---------- */
-function barChart(labels,vals){
-  const mx=Math.max(1,...vals),h=120;
-  return `<svg class="chart" viewBox="0 0 ${labels.length*30} ${h+22}" role="img" aria-label="Bar chart">`+labels.map((l,i)=>{const bh=vals[i]/mx*h;return `<rect x="${i*30+5}" y="${h-bh}" width="20" height="${bh}" rx="4" fill="var(--third)"/><text x="${i*30+15}" y="${h+14}" text-anchor="middle" font-size="9" fill="currentColor">${l}</text>${vals[i]?`<text x="${i*30+15}" y="${h-bh-3}" text-anchor="middle" font-size="9" fill="currentColor">${vals[i]}</text>`:''}`}).join('')+'</svg>';
+function barChart(labels,vals,unit){
+  const mx=Math.max(1,...vals),h=120,t=18; // t = headroom so the numbers on tall bars stay visible
+  return `<svg class="chart bars" viewBox="0 0 ${labels.length*30} ${h+t+22}" role="img" aria-label="Bar chart">`+labels.map((l,i)=>{const bh=vals[i]/mx*h,x=i*30,tip=`${l}: ${vals[i]} ${unit}`;
+    return `<g class="bar" tabindex="0" data-tip="${tip}"><title>${tip}</title><rect x="${x}" y="${t}" width="30" height="${h+20}" fill="transparent"/><rect class="bb" x="${x+5}" y="${t+h-bh}" width="20" height="${bh}" rx="4" fill="var(--third)"/><text x="${x+15}" y="${h+t+14}" text-anchor="middle" font-size="9" fill="currentColor">${l}</text>${vals[i]?`<text x="${x+15}" y="${t+h-bh-4}" text-anchor="middle" font-size="9" fill="currentColor">${vals[i]}</text>`:''}</g>`}).join('')+'</svg><p class="meta chartcap">Tap or hover a bar to see its value.</p>';
 }
 function lineChart(dates){ // dates sorted ascending: cumulative count of species
   const t=dates.map(Date.parse),t0=t[0],t1=t[t.length-1],n=dates.length;
@@ -365,61 +442,86 @@ const hBars=rows=>{const mx=Math.max(1,...rows.map(r=>r[1]));return rows.map(([n
 function renderStats(){
   const box=$('#histStats'),A=D.finds;
   if(!A.length){box.innerHTML='<div class="empty card">Stats appear after you log your first find.</div>';return}
-  const v=o=>metric==='qty'?(+o.qty||1):1,sum=(a,f=v)=>a.reduce((s,o)=>s+f(o),0);
-  const sp=new Map();A.forEach(o=>{const k=key(o),s=sp.get(k)||{name:nm(o),n:0,first:o.date};s.n+=v(o);if(o.date<s.first)s.first=o.date;sp.set(k,s)});
+  const v=o=>metric==='qty'?(+o.qty||1):1,sum=(a,f=v)=>a.reduce((s,o)=>s+f(o),0),unit=metric==='qty'?'mushrooms':'finds';
+  const A2=A.filter(o=>o.ident!=='unknown'); // species statistics ignore mushrooms you could not name
+  const sp=new Map();A2.forEach(o=>{const k=key(o),s=sp.get(k)||{name:nm(o),n:0,first:o.date};s.n+=v(o);if(o.date<s.first)s.first=o.date;sp.set(k,s)});
   const byMonth=Array(12).fill(0);A.forEach(o=>byMonth[+o.date.slice(5,7)-1]+=v(o));
   const years=[...new Set(A.map(o=>o.date.slice(0,4)))].sort(),cell=(y,m)=>sum(A.filter(o=>o.date.startsWith(y)&&+o.date.slice(5,7)===m+1));
   const grid=years.map(y=>MON.map((_,m)=>cell(y,m))),gmax=Math.max(1,...grid.flat());
   const dates=[...sp.values()].map(s=>s.first).sort(),top=[...sp.values()].sort((a,b)=>b.n-a.n).slice(0,8);
-  const lab={};A.forEach(o=>o.tags.forEach(t=>lab[t]=(lab[t]||0)+v(o)));
+  const lab={};A2.forEach(o=>o.tags.forEach(t=>lab[t]=(lab[t]||0)+v(o)));
   const spots=new Set(A.map(o=>(+o.lat).toFixed(2)+','+(+o.lng).toFixed(2))).size,days=new Set(A.map(o=>o.date)).size;
-  const mine=D.lex.filter(o=>o.found).length,todo=D.lex.filter(o=>!o.found).slice(0,8),ds=A.map(o=>o.date).sort();
-  const tiles=[['Finds logged',A.length],['Mushrooms found',sum(A,o=>+o.qty||1)],['Different species',sp.size],['Days out foraging',days],['Spots',spots],['Busiest month',MON[byMonth.indexOf(Math.max(...byMonth))]]];
-  box.innerHTML=`<div class="bar"><span class="meta">Charts count</span><button class="seg ${metric==='qty'?'on':''}" data-met="qty">Mushrooms</button><button class="seg ${metric==='finds'?'on':''}" data-met="finds">Finds</button></div>
-  <div class="tiles">${tiles.map(([l,n])=>`<div class="card tile"><b>${n}</b><span>${l}</span></div>`).join('')}</div>
-  <p class="meta" style="margin:.75rem 0">First find ${fmt(ds[0])}, latest find ${fmt(ds[ds.length-1])}.</p>
-  <div class="grid2">
-    <div class="card"><h3 class="ct">When in the year</h3>${barChart(MON,byMonth)}</div>
+  const dayQ={};A.forEach(o=>dayQ[o.date]=(dayQ[o.date]||0)+v(o));const bd=Object.entries(dayQ).sort((a,b)=>b[1]-a[1])[0];
+  const mine=D.lex.filter(o=>o.ident==='yes').length,unsureN=D.lex.filter(o=>o.ident==='unsure').length,todo=D.lex.filter(o=>o.ident!=='yes').slice(0,8),ds=A.map(o=>o.date).sort();
+  const idn={yes:0,unsure:0,unknown:0};A.forEach(o=>idn[o.ident==='unsure'?'unsure':o.ident==='unknown'?'unknown':'yes']+=v(o));
+  const sureK=new Set(A2.filter(o=>o.ident!=='unsure').map(key)),onlyU=new Set(A2.filter(o=>o.ident==='unsure'&&!sureK.has(key(o))).map(key)).size;
+  const unk=A.filter(o=>o.ident==='unknown');
+  const nQty=sum(A,o=>+o.qty||1),big1=metric==='qty'?['Mushrooms found',nQty]:['Finds logged',A.length];
+  const glance=[[metric==='qty'?'Finds logged':'Mushrooms found',metric==='qty'?A.length:nQty],['Different species',sp.size],['Most found',top[0]?`${top[0].name} (${top[0].n})`:'–'],[`Biggest day (${unit})`,bd?`${bd[1]} · ${fmt(bd[0])}`:'–'],['Days out foraging',days],['Busiest month',MON[byMonth.indexOf(Math.max(...byMonth))]],['Spots',spots],['Unsure IDs',A.filter(o=>o.ident==='unsure').length],['Unidentified',unk.length]];
+  box.innerHTML=`<div class="bar statsbar"><label class="meta" for="metricSel">Count</label><select id="metricSel" class="mini"><option value="qty">Mushrooms</option><option value="finds">Finds</option></select><span class="grow"></span><span class="meta">${fmt(ds[0])} to ${fmt(ds[ds.length-1])}</span></div>
+  <div class="tiles2"><div class="card tile big"><b>${big1[1]}</b><span>${big1[0]}</span></div><div class="card tile big"><b>${sureK.size}</b><span>Species identified</span><small>${sp.size} species in total</small></div></div>
+  <div class="card glance"><dl class="gl">${glance.map(([l,n])=>`<div><dt>${l}</dt><dd>${esc(n)}</dd></div>`).join('')}</dl></div>
+    <div class="grid2">
+    <div class="card"><h3 class="ct">When in the year</h3>${barChart(MON,byMonth,unit)}</div>
     <div class="card"><h3 class="ct">Month by year</h3><div class="mgrid" style="grid-template-columns:2.8rem repeat(12,1fr)"><span></span>${MON.map(m=>`<span class="mh" title="${m}">${m[0]}</span>`).join('')}${years.map((y,i)=>`<span class="yl">${y}</span>`+grid[i].map((n,m)=>`<i title="${MON[m]} ${y}: ${n}" style="background:${n?`color-mix(in srgb,var(--third) ${20+80*n/gmax}%,var(--container-bg))`:'color-mix(in srgb,var(--header-text) 7%,transparent)'}"></i>`).join('')).join('')}</div></div>
-    <div class="card"><h3 class="ct">Species discovered over time</h3>${lineChart(dates)}</div>
+    <div class="card"><h3 class="ct">Species discovered over time</h3>${dates.length?lineChart(dates):'<p class="meta">No named species yet.</p>'}</div>
     <div class="card"><h3 class="ct">Most found</h3>${hBars(top.map(s=>[s.name,s.n]))}</div>
     <div class="card"><h3 class="ct">By label</h3>${hBars([...ED,'hallucinogenic'].filter(t=>lab[t]).map(t=>[E[t].l,lab[t],E[t].c]))}</div>
-    <div class="card"><h3 class="ct">Lexicon progress</h3>${D.lex.length?`<p><b>${mine}</b> of ${D.lex.length} lexicon mushrooms found by you</p><div class="xp"><i style="width:${mine/D.lex.length*100}%"></i></div>${todo.length?`<p class="meta">Still to find:</p><div class="chips">${todo.map(o=>`<button class="chip-s" onclick="goLex('${o.id}')">${esc(nm(o))}</button>`).join('')}</div>`:'<p class="good"><b>You found them all!</b></p>'}`:'<p class="meta">Add mushrooms to your lexicon to track what you still want to find.</p>'}</div>
+    <div class="card"><h3 class="ct">Identification</h3>${hBars([['Identified',idn.yes,'var(--c-edible)'],['Unsure',idn.unsure,'var(--c-inedible)'],['Unidentified',idn.unknown,'#8A8F96']])}<p class="meta">${onlyU?`${onlyU} species only ever found as unsure.`:'No species that are only found as unsure.'}</p></div>
+    <div class="card"><h3 class="ct">Lexicon progress</h3>${D.lex.length?`<p><b>${mine}</b> of ${D.lex.length} lexicon mushrooms identified by you${unsureN?` (${unsureN} unsure)`:''}</p><div class="xp"><i style="width:${mine/D.lex.length*100}%"></i></div>${todo.length?`<p class="meta">Still to identify:</p><div class="chips">${todo.map(o=>`<button class="chip-s" onclick="goLex('${o.id}')">${esc(nm(o))}</button>`).join('')}</div>`:'<p class="good"><b>You identified them all!</b></p>'}`:'<p class="meta">Add mushrooms to your lexicon to track what you still want to find.</p>'}</div>
   </div>`;
-  $$('[data-met]').forEach(b=>b.onclick=()=>{metric=b.dataset.met;renderStats()});
+  $('#metricSel').value=metric;$('#metricSel').onchange=e=>{metric=e.target.value;renderStats()};
+  $$('.chart.bars').forEach(svg=>{const cap=svg.nextElementSibling;svg.querySelectorAll('.bar').forEach(g=>{
+    const f=()=>{svg.querySelectorAll('.bb').forEach(x=>x.setAttribute('fill','var(--third)'));g.querySelector('.bb').setAttribute('fill','var(--accent)');cap.innerHTML=`<b>${g.dataset.tip}</b>`};
+    g.onclick=g.onmouseenter=g.onfocus=f})});
 }
 
 function lexList(){
-  const q=norm($('#lexQ').value),fd=$('#lexFound').value,tg=expand($$('#lexTags input:checked').map(i=>i.value));
+  const q=norm($('#lexQ').value),fd=$('#lexFound').value,lk=$('#lexLook').value,rk=$('#lexRank').value,bz=$('#lexBruise').value,ox=norm($('#lf_other').value),tg=expand($$('#lexTags input:checked').map(i=>i.value));
   const fv=FEAT.map(([k])=>[k,norm($('#lf_'+k).value)]).filter(x=>x[1]);
-  return D.lex.filter(o=>(!q||Object.values(o.n).some(v=>norm(v).includes(q)))&&(!tg.length||o.tags.some(t=>tg.includes(t)))&&(!fd||(fd==='yes')===!!o.found)&&fv.every(([k,v])=>norm(o.feat[k]).includes(v)))
+  return D.lex.filter(o=>(!q||[...Object.values(o.n),...Object.values(o.alt||{}).flat()].some(v=>norm(v).includes(q)))&&(!tg.length||o.tags.some(t=>tg.includes(t)))&&(!fd||(fd==='none'?!o.ident:o.ident===fd))&&(!lk||(lk==='unset'?!o.lookalike&&!o.similar.length:o.lookalike===lk))&&(!rk||(o.rank||'species')===rk)&&(!bz||(bz==='none'?!o.bruise:o.bruise===bz))&&(!ox||(o.extra||[]).some(e=>norm(e.k+' '+e.v).includes(ox)))&&fv.every(([k,v])=>toks(o.feat[k]).some(t=>norm(t)===v)))
     .sort((a,b)=>nm(a).localeCompare(nm(b)));
 }
+// every defining feature of an entry as [key, label, value]: the fixed ones, colour change, and your own extra features
+const featList=o=>[...FEAT.filter(([k])=>o.feat[k]).map(([k,l])=>[k,l,o.feat[k]]),...(o.bruise&&o.feat.bruise?[['bruise','Colour change',o.feat.bruise]]:[]),...(o.extra||[]).filter(e=>e.k&&e.v).map(e=>['x:'+norm(e.k),e.k,e.v])];
+const featVal=(o,k)=>featList(o).find(f=>f[0]===k)?.[2];
+const altLine=o=>{const a=LANGS.filter(k=>(o.alt?.[k]||[]).length).map(k=>`${k.toUpperCase()}: ${o.alt[k].map(esc).join(', ')}`);return a.length?`<p class="meta">Also known as · ${a.join(' · ')}</p>`:''};
+function groupInfo(o){ // groups list their species in a box, species point back to their group in a box
+  const kids=D.lex.filter(x=>x.parent===o.id),par=D.lex.find(x=>x.id===o.parent);let s='';
+  if(par)s+=`<div class="box grpbox"><h5>Part of the group</h5><div class="chips"><button class="chip-s" onclick="goLex('${par.id}')">${esc(nm(par))}</button></div></div>`;
+  if(o.rank==='group'){
+    const cnt={};kids.forEach(c=>c.tags.forEach(t=>cnt[t]=(cnt[t]||0)+1));
+    s+=`<div class="box grpbox"><h5>Species in this group${kids.length?` (${kids.length})`:''}</h5>${kids.length?`<div class="chips">${kids.map(c=>`<button class="chip-s" onclick="goLex('${c.id}')">${esc(nm(c))} · ${E[sev(c)].l}</button>`).join('')}</div><p class="meta">Within the group: ${[...ED,'hallucinogenic'].filter(t=>cnt[t]).map(t=>`${E[t].l} ×${cnt[t]}`).join(', ')||'no labels yet'}</p>`:'<p class="meta">No species in this group yet. Choose this group in a species\' "Type" field to add it.</p>'}</div>`;
+  }
+  return s;
+}
 function renderLex(){
-  $('#lexList').innerHTML=lexList().map(o=>{
-    const f=FEAT.filter(([k])=>o.feat[k]).map(([k,l])=>`<dt>${l}</dt><dd>${esc(o.feat[k])}</dd>`).join('');
+  fillFeatOptions();
+  const el=$('#lexList');el.className=layout==='tiles'?'grid':'list';
+  el.innerHTML=lexList().map(o=>{
+    const f=featList(o).map(([k,l,v])=>`<dt>${esc(l)}</dt><dd>${esc(v)}</dd>`).join('');
     const sim=o.similar.map(id=>D.lex.find(x=>x.id===id)).filter(Boolean).map(s=>`<button class="chip-s" onclick="goLex('${s.id}')">${esc(nm(s))}</button>`).join('');
-    return `<article class="card item${o.found?' mine':''}" id="lex-${o.id}">${o.found?'<span class="found" title="Found by me" role="img" aria-label="Found by me"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>':''}${names(o)}<div>${badges(o)}</div>${cond(o)}${f?`<dl class="feat">${f}</dl>`:''}${o.warn?`<p class="warn"><b>Warning:</b> ${esc(o.warn)}</p>`:''}${sim?`<p class="meta">Look-alikes:</p><div class="chips">${sim}</div>`:''}${o.notes?`<p class="meta">${esc(o.notes)}</p>`:''}${thumbs(o)}<p class="meta">Quiz mastery ${D.quiz.mastery[o.id]||0}/5</p><div class="acts"><button class="btn main edit-only" onclick="logFrom('${o.id}')">Log a find</button><button class="btn edit-only" onclick="editLex('${o.id}')">Edit</button><button class="btn danger edit-only" onclick="del('lex','${o.id}')">Delete</button></div></article>`;
+    const body=`${altLine(o)}${cond(o)}${groupInfo(o)}${f?`<dl class="feat">${f}</dl>`:''}${o.warn?`<p class="warn"><b>Warning:</b> ${esc(o.warn)}</p>`:''}${sim||o.lookalike==='todo'?`<div class="box lookbox"><h5>⚠ Look-alikes</h5>${sim?`<div class="chips">${sim}</div>`:''}${o.lookalike==='todo'?`<p class="todo"><b>Still to add</b>${o.simNote?': '+esc(o.simNote):''}</p>`:''}</div>`:o.lookalike==='none'?'<p class="meta">No look-alikes known.</p>':''}${o.notes?`<p class="meta">${esc(o.notes)}</p>`:''}${thumbs(o)}<div class="acts"><button class="btn main edit-only" onclick="logFrom('${o.id}')">Log a find</button><button class="btn edit-only" onclick="editLex('${o.id}')">Edit</button><button class="btn danger edit-only" onclick="del('lex','${o.id}')">Delete</button></div>`;
+    return row(o,{id:` id="lex-${o.id}"`,rest:trans(o),body});
   }).join('')||`<div class="empty card" style="grid-column:1/-1">${D.lex.length?'No lexicon entries match your search or filters.':'Your lexicon is empty. Add mushrooms you want to recognise, even before you find them.'}</div>`;
 }
 $('#lexTools').addEventListener('input',renderLex);
-$('#lexClear').onclick=()=>{$('#lexQ').value='';$$('#lexTools input[type=checkbox]').forEach(i=>i.checked=false);$$('#lexFeat input').forEach(i=>i.value='');$('#lexFound').value='';renderLex()};
+$('#lexClear').onclick=()=>{$('#lexQ').value='';$$('#lexTools input[type=checkbox]').forEach(i=>i.checked=false);$$('#lexFeat input,#lexFeat select').forEach(i=>i.value='');$('#lexFound').value=$('#lexLook').value=$('#lexRank').value=$('#lexBruise').value='';renderLex()};
 function goLex(id){
   $('#lexClear').click();show('lex');
-  setTimeout(()=>{const el=$('#lex-'+id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('flash')}},30);
+  setTimeout(()=>{const el=$('#lex-'+id);if(el){if(el.tagName==='DETAILS')el.open=true;el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('flash')}},30);
 }
 async function del(list,id){
   if(!needLogin())return;
-  if(!confirm('Delete this entry? This cannot be undone.'))return;
+  if(!await ask('This cannot be undone.',{title:'Delete this entry?',yes:'Delete',danger:true}))return;
   D[list]=D[list].filter(o=>o.id!==id);
-  if(list==='lex'){D.lex.forEach(o=>o.similar=o.similar.filter(x=>x!==id));delete D.quiz.mastery[id]}
+  if(list==='lex'){D.lex.forEach(o=>{o.similar=o.similar.filter(x=>x!==id);if(o.parent===id)o.parent=''});delete D.quiz.mastery[id];delete D.quiz.hist?.[id];Object.keys(D.quiz.miss||{}).filter(k=>k.startsWith(id+'|')).forEach(k=>delete D.quiz.miss[k])}
   await Store.save(D);list==='finds'?renderHist():renderLex();fillSpecies();
 }
 $('#export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,1)],{type:'application/json'}));a.download='mushroom-log.json';a.click()};
-$('#quizBtn').onclick=()=>show('quiz');$('#quizBack').onclick=()=>show('lex');
 
 /* ---------- Editor ---------- */
-const blank=k=>({kind:k,id:null,n:{la:'',en:'',pl:'',de:'',nl:''},tags:['edible'],found:false,ediNote:'',notes:'',feat:{},warn:'',similar:[],photos:[],date:today(),qty:1,lat:'',lng:'',wid:''});
+const blank=k=>({kind:k,id:null,n:{la:'',en:'',pl:'',de:'',nl:''},tags:[],ident:k==='find'?'yes':'',rank:'species',parent:'',extra:[],alt:{},bruise:'',bruiseNote:'',ediNote:'',notes:'',feat:{},warn:'',similar:[],lookalike:'',simNote:'',photos:[],uphotos:[],date:today(),qty:1,lat:'',lng:'',wid:''});
 function openEdit(o,back){if(!needLogin())return;cur=o;returnTo=back;show('edit');fill()}
 const editFind=id=>{map?.closePopup();openEdit(structuredClone(D.finds.find(o=>o.id===id)),'hist')};
 const editLex=id=>openEdit(structuredClone(D.lex.find(o=>o.id===id)),'lex');
@@ -428,6 +530,17 @@ $('#newFind').onclick=()=>openEdit(blank('find'),'hist');
 function newFindAt(lat,lng){map?.closePopup();openEdit({...blank('find'),lat:String(lat),lng:String(lng)},'map')}
 $('#newLex').onclick=()=>openEdit(blank('lex'),'lex');
 $('#cancel').onclick=()=>show(returnTo);
+/* our own dialogs (the browser's alert/confirm look out of place) */
+function ask(text,{title='Please confirm',yes='OK',no='Cancel',danger=false}={}){
+  return new Promise(res=>{
+    const d=$('#askDlg');
+    $('#askBody').innerHTML=`<h2>${esc(title)}</h2><p>${esc(text)}</p><div class="acts" style="justify-content:center">${no?'<button class="btn" id="askNo">'+esc(no)+'</button>':''}<button class="btn ${danger?'danger':'main'}" id="askYes">${esc(yes)}</button></div>`;
+    d.onclose=()=>{if(!d.open)res(false)}; // Esc or backdrop close; ignores the late close event of a previous dialog
+    $('#askYes').onclick=()=>{res(true);d.close()};if(no)$('#askNo').onclick=()=>d.close();
+    d.showModal();
+  });
+}
+const say=text=>ask(text,{title:'Notice',yes:'OK',no:null});
 function toast(t){const el=$('#toast');el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,7000)}
 function fill(){
   const E_=F.elements;
@@ -436,14 +549,16 @@ function fill(){
   LANGS.forEach(k=>E_[k].value=cur.n[k]||'');
   $$('#ediPick input').forEach(i=>i.checked=cur.tags.includes(i.value));
   $('#cond').hidden=!cur.tags.includes('conditional');
-  E_.found.checked=!!cur.found;E_.ediNote.value=cur.ediNote||'';E_.notes.value=cur.notes||'';E_.warn.value=cur.warn||'';
+  $$('input[name=fident]').forEach(i=>i.checked=i.value===(cur.ident||'yes'));$$('input[name=lident]').forEach(i=>i.checked=i.value===(cur.ident||''));E_.lookalike.value=cur.lookalike||'';E_.simNote.value=cur.simNote||'';$('#simNote').hidden=cur.lookalike!=='todo';E_.ediNote.value=cur.ediNote||'';E_.notes.value=cur.notes||'';E_.warn.value=cur.warn||'';
   FEAT.forEach(([k])=>E_['ft_'+k].value=cur.feat[k]||'');
+  LANGS.forEach(k=>E_['alt_'+k].value=(cur.alt?.[k]||[]).join(', '));
+  $('#rank').value=$('#frank').value=cur.rank||'species';E_.bruise.value=cur.bruise||'';E_.bruiseNote.value=cur.bruiseNote||'';$('#bruiseNote').hidden=!['yes','part'].includes(cur.bruise);$('#unkMsg').hidden=cur.ident!=='unknown';
   E_.date.value=cur.date||today();E_.qty.value=cur.qty||1;E_.lat.value=cur.lat;E_.lng.value=cur.lng;
-  $('#toLexBox').hidden=cur.kind!=='find';$('#toLex').disabled=false;$('#toLex').checked=cur.toLex??!cur.id;
-  $('#lookMsg').textContent=cur.kind==='lex'?'Fetches names, features and a photo from Wikipedia. You can edit everything after.':'Fetches English, Polish, German and Dutch names from Wikipedia. You can edit them after.';
-  drawThumbs();drawSim();suggest();
+  $('#toLexBox').hidden=cur.kind!=='find'||cur.ident==='unknown';$('#toLex').disabled=false;$('#toLex').checked=cur.toLex??!cur.id;
+  $('#lookMsg').textContent=cur.kind==='lex'?'Type a name in any language: Wikipedia fills in the other names, features and a photo. You can edit everything.':'Type a name in any language: Wikipedia fills in the other names and the edibility. You can edit everything.';
+  drawThumbs();drawSim();drawParent();drawExtras();suggest();
   // review step when a find is being added to the lexicon: highlight what is still empty
-  const els=[...LANGS.map(k=>[E_[k].closest('.field'),LN[k]+' name',!!cur.n[k]]),...FEAT.map(([k,l])=>[E_['ft_'+k].closest('.field'),l,!!cur.feat[k]]),[E_.warn.closest('.field'),'Warnings',!!cur.warn],[$('#simList').closest('.field'),'Look-alikes',cur.similar.length>0],[$('#thumbs').closest('.field'),'Photos',cur.photos.length>0]];
+  const els=[...LANGS.map(k=>[E_[k].closest('.field'),LN[k]+' name',!!cur.n[k]]),...FEAT.map(([k,l])=>[E_['ft_'+k].closest('.field'),l,!!cur.feat[k]]),[E_.warn.closest('.field'),'Warnings',!!cur.warn],[$('#simList').closest('.field'),'Look-alikes',cur.similar.length>0||!!cur.lookalike],[$('#bruise').closest('.field'),'Colour change',!!cur.bruise],[$('#extraRows').closest('.field'),'More features',(cur.extra||[]).length>0],[$('#thumbs').closest('.field'),'Photos',cur.photos.length>0]];
   els.forEach(([el,,ok])=>el.classList.toggle('missing',!!cur.review&&!ok));
   $('#review').hidden=!cur.review;
   if(cur.review){const miss=els.filter(e=>!e[2]).map(e=>e[1]);$('#review').innerHTML=`<b>Review before adding to your lexicon.</b> Filled in from your find and Wikipedia as far as possible.${miss.length?` <b>Not filled yet:</b> ${miss.join(', ')}.`:' Everything is filled in.'} Fields marked “not filled yet” are optional.`}
@@ -453,30 +568,43 @@ function snap(){
   const E_=F.elements,g=k=>E_[k].value.trim();
   LANGS.forEach(k=>cur.n[k]=g(k));cur.tags=$$('#ediPick input:checked').map(i=>i.value);
   cur.ediNote=cur.tags.includes('conditional')?g('ediNote'):'';cur.notes=g('notes');cur.warn=g('warn');
-  FEAT.forEach(([k])=>cur.feat[k]=g('ft_'+k));cur.date=g('date');cur.qty=+g('qty')||1;cur.lat=g('lat');cur.lng=g('lng');cur.toLex=$('#toLex').checked;cur.found=F.elements.found.checked;
+  FEAT.forEach(([k])=>cur.feat[k]=g('ft_'+k));cur.date=g('date');cur.qty=+g('qty')||1;cur.lat=g('lat');cur.lng=g('lng');cur.toLex=$('#toLex').checked;cur.ident=cur.kind==='find'?($('input[name=fident]:checked')?.value||'yes'):($('input[name=lident]:checked')?.value||'');cur.lookalike=E_.lookalike.value;cur.simNote=cur.lookalike==='todo'?g('simNote'):'';
+  cur.rank=cur.kind==='find'?E_.frank.value:E_.rank.value;if(cur.kind==='lex')cur.parent=E_.parent.value;
+  cur.bruise=E_.bruise.value;cur.bruiseNote=['yes','part'].includes(cur.bruise)?g('bruiseNote'):'';
+  cur.feat.bruise=cur.bruise?({no:'No',yes:'Yes',part:'Partially'}[cur.bruise]+(cur.bruiseNote?': '+cur.bruiseNote:'')):'';
+  if(cur.kind==='lex')cur.extra=readExtras(false);
+  if(cur.kind==='lex')cur.alt=Object.fromEntries(LANGS.map(k=>[k,g('alt_'+k).split(/[,;]/).map(s=>s.trim()).filter(Boolean)]));
 }
 F.onsubmit=async e=>{
   e.preventDefault();if(!needLogin())return;snap();
-  if(!LANGS.some(k=>cur.n[k]))return alert('Add at least one name.');
-  if(!cur.tags.some(t=>ED.includes(t)))return alert('Pick at least one of edible, edible with conditions, not edible, poisonous or deadly.');
-  if(cur.tags.includes('conditional')&&!cur.ediNote)return alert('Describe the conditions under which it is edible.');
+  const unk=cur.kind==='find'&&cur.ident==='unknown'; // an unidentified mushroom needs no name or label
+  if(!unk&&!LANGS.some(k=>cur.n[k]))return say('Add at least one name.');
+  if(!unk&&!cur.tags.some(t=>ED.includes(t)))return say('Pick at least one edibility label (edible, edible with conditions, not edible, poisonous, deadly or varies by species).');
+  if(cur.tags.includes('conditional')&&!cur.ediNote)return say('Describe the conditions under which it is edible.');
   if(cur.kind==='find'){
-    if(!cur.date)return alert('Add a date.');
-    if(isNaN(parseFloat(cur.lat))||isNaN(parseFloat(cur.lng)))return alert('Add a location: use your position or pick it on the map.');
+    if(!cur.date)return say('Add a date.');
+    if(isNaN(parseFloat(cur.lat))||isNaN(parseFloat(cur.lng)))return say('Add a location: use your position or pick it on the map.');
   }
-  if(cur.kind==='find'){const lm=lexByNames(cur.n);if(lm)lm.found=true} // logging a find marks a matching lexicon entry as found
+  let lexHit=null;
+  if(cur.kind==='find'&&!unk){const lm=lexByNames(cur.n);if(lm){markIdent(lm,cur.ident);lexHit=lm}} // logging a find updates a matching lexicon entry
   const btn=F.querySelector('[type=submit]'),label=btn.textContent;let draft=null,note='';
-  if(cur.kind==='find'&&cur.toLex&&!$('#toLex').disabled){
+  if(cur.kind==='find'&&!unk&&cur.toLex&&!$('#toLex').disabled){
     btn.disabled=true;btn.textContent='Checking lexicon…';
     const r=await findInLex(cur.n,cur.wid);if(r.wid)cur.wid=r.wid;
-    if(r.hit)r.hit.found=true;
+    if(r.hit){markIdent(r.hit,cur.ident);lexHit=r.hit}
     if(r.hit)note=`Already in your lexicon as “${nm(r.hit)}”, so it was not added again.`;
     else{
-      draft={...blank('lex'),found:true,n:{...cur.n},tags:[...cur.tags],ediNote:cur.ediNote,photos:[...cur.photos],wid:cur.wid||'',review:true};
+      const unsure=cur.ident==='unsure'; // photos of an unsure find are flagged, and a Wikipedia photo is always added
+      draft={...blank('lex'),ident:cur.ident,rank:cur.rank||'species',n:{...cur.n},tags:[...cur.tags],ediNote:cur.ediNote,photos:[...cur.photos],uphotos:unsure?[...cur.photos]:[],wid:cur.wid||'',review:true};
       btn.textContent='Fetching Wikipedia…';
-      try{const w=await wikiData(draft.wid||draft.n.la||draft.n.en||draft.n.de||draft.n.pl||draft.n.nl);if(w){applyWiki(draft,w);await addWikiImg(draft,w,'ifEmpty');cur.wid=cur.wid||draft.wid}}catch{note='Could not reach Wikipedia, so the lexicon entry has only your own data.'}
+      try{const w=draft.wid?await wikiData(draft.wid):await wikiLookup(draft.n);if(w){applyWiki(draft,w);await addWikiImg(draft,w,unsure?'add':'ifEmpty');cur.wid=cur.wid||draft.wid}}catch{note='Could not reach Wikipedia, so the lexicon entry has only your own data.'}
     }
     btn.disabled=false;btn.textContent=label;
+  }
+  if(lexHit&&!cur.id&&cur.photos.length){ // new photos of a mushroom that is already in the lexicon grow its photo collection
+    const u=cur.ident==='unsure';let n=0;
+    for(const p of cur.photos)if(!lexHit.photos.includes(p)){lexHit.photos.push(p);if(u)lexHit.uphotos=[...(lexHit.uphotos||[]),p];n++}
+    if(n)note=(note?note+' ':'')+`${n} photo${n>1?'s':''} added to the lexicon entry.`;
   }
   delete cur.toLex;delete cur.review;
   const list=cur.kind==='find'?D.finds:D.lex;
@@ -484,11 +612,11 @@ F.onsubmit=async e=>{
   btn.disabled=true;btn.textContent='Saving…';
   const saved=await Store.save(D);btn.disabled=false;btn.textContent=label;
   if(!saved)return; // stay on the form so you can press Save again
-  if(draft)cur.photos.forEach((p,i)=>{if(draft.photos[i]?.startsWith('data:')&&!p.startsWith('data:'))draft.photos[i]=p}); // reuse the uploaded photo URLs
+  if(draft)cur.photos.forEach((p,i)=>{const old=draft.photos[i];if(old?.startsWith('data:')&&!p.startsWith('data:')){draft.photos[i]=p;draft.uphotos=draft.uphotos.map(u=>u===old?p:u)}}); // reuse the uploaded photo URLs
   fillSpecies();
   if(draft)openEdit(draft,'hist');else{show(cur.kind==='find'?'hist':'lex');if(note)toast(note)}
 };
-$('#gps').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{F.elements.lat.value=p.coords.latitude.toFixed(5);F.elements.lng.value=p.coords.longitude.toFixed(5)},()=>alert('Could not get your position. Check location permission or pick it on the map.')):alert('Geolocation is not available.');
+$('#gps').onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{F.elements.lat.value=p.coords.latitude.toFixed(5);F.elements.lng.value=p.coords.longitude.toFixed(5)},()=>say('Could not get your position. Check location permission or pick it on the map.')):say('Geolocation is not available.');
 $('#pick').onclick=()=>{snap();picking=true;show('map');$('#map').classList.add('picking')};
 
 /* look-alikes (lexicon) */
@@ -498,18 +626,36 @@ function drawSim(){
   $('#simSel').innerHTML='<option value="">Add a look-alike from your lexicon…</option>'+D.lex.filter(o=>o.id!==cur.id&&!cur.similar.includes(o.id)).map(o=>`<option value="${o.id}">${esc(nm(o))}${o.n.la&&o.n.en?' ('+esc(o.n.la)+')':''}</option>`).join('');
 }
 $('#simSel').onchange=e=>{if(e.target.value){cur.similar.push(e.target.value);drawSim()}};
+$('#lookalike').onchange=()=>{$('#simNote').hidden=$('#lookalike').value!=='todo'};
+$$('input[name=fident]').forEach(i=>i.onchange=()=>{const u=$('input[name=fident]:checked').value==='unknown';$('#toLexBox').hidden=u;$('#unkMsg').hidden=!u});
+$('#bruise').onchange=()=>{$('#bruiseNote').hidden=!['yes','part'].includes($('#bruise').value)};
+/* groups: a lexicon entry can be a larger group (Russula) and species can belong to it */
+const descendants=id=>{const s=new Set(),walk=i=>D.lex.filter(x=>x.parent===i).forEach(x=>{if(!s.has(x.id)){s.add(x.id);walk(x.id)}});walk(id);return s};
+function drawParent(){
+  const ex=cur.id?new Set([cur.id,...descendants(cur.id)]):new Set();
+  $('#parent').innerHTML='<option value="">Not part of a group</option>'+D.lex.filter(o=>o.rank==='group'&&!ex.has(o.id)).map(o=>`<option value="${o.id}">Part of: ${esc(nm(o))}</option>`).join('');
+  $('#parent').value=cur.parent||'';
+}
+/* more defining features: separate name + value pairs (used by the quiz) */
+const readExtras=keep=>$$('#extraRows .xrow').map(r=>({k:r.children[0].value.trim(),v:r.children[1].value.trim()})).filter(x=>keep||(x.k&&x.v));
+function drawExtras(){
+  $('#extraNames').innerHTML=[...new Set(['Smell','Taste','Flesh','Habitat','Season','Spore shape','Cap margin','Cap surface',...D.lex.flatMap(o=>(o.extra||[]).map(e=>e.k))])].map(n=>`<option value="${esc(n)}">`).join('');
+  $('#extraRows').innerHTML=(cur.extra||[]).map(e=>`<div class="xrow"><input list="extraNames" placeholder="Feature, e.g. Smell" value="${esc(e.k)}"><input placeholder="Value, e.g. Fruity" value="${esc(e.v)}"><button type="button" class="remove-x" aria-label="Remove feature">×</button></div>`).join('');
+  $$('#extraRows .remove-x').forEach((b,i)=>b.onclick=()=>{cur.extra=readExtras(true);cur.extra.splice(i,1);drawExtras()});
+}
+$('#addExtra').onclick=()=>{cur.extra=readExtras(true);cur.extra.push({k:'',v:''});drawExtras();$$('#extraRows .xrow').pop()?.children[0].focus()};
 
 /* ---------- Duplicate detection: names in any language, then Wikipedia identity ---------- */
 const WL={la:'en',en:'en',de:'de',pl:'pl',nl:'nl'};
+function markIdent(lex,ident){if(ident==='yes')lex.ident='yes';else if(!lex.ident)lex.ident='unsure'}
 const lexByNames=n=>{const v=Object.values(n).map(norm).filter(Boolean);return D.lex.find(o=>o.id!==cur?.id&&Object.values(o.n).some(x=>x&&v.includes(norm(x))))};
 // canonical English Wikipedia title for a set of names ("Death cap" and "Amanita phalloides" both give "Amanita phalloides")
 async function resolveWid(n){
-  for(const k of ['la','en','de','pl','nl']){
-    const q=n[k];if(!q)continue;
+  for(const k of ['la','en','pl','de','nl']){
+    if(!n[k])continue;
     try{
-      const r=await fetch(`https://${WL[k]}.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&prop=langlinks&lllang=en&titles=${encodeURIComponent(q)}`);
-      const p=Object.values((await r.json()).query.pages)[0];if(p.missing!==undefined)continue;
-      const t=WL[k]==='en'?p.title:(p.langlinks?.[0]?.['*']||'');if(t)return t;
+      const p=await wikiTitle(WL[k],n[k]);if(!p)continue;
+      const t=WL[k]==='en'?p.title:(p.langlinks||[]).find(l=>l.lang==='en')?.['*'];if(t)return t;
     }catch{}
   }
   return '';
@@ -556,7 +702,7 @@ async function wikiData(q){
   const w=p.revisions?.[0]?.slots?.main?.['*']||'';
   const g=k=>{const x=w.match(new RegExp('\\|\\s*'+k+'\\s*=\\s*([^\\n|}]*)','i'));const v=x?x[1].replace(/\[\[(?:[^\]|]*\|)?([^\]]*)\]\]/g,'$1').replace(/<[^>]*>|\{\{|\}\}/g,'').trim():'';return v&&v[0].toUpperCase()+v.slice(1)};
   const feat={};Object.entries({cap:'capShape',hym:'hymeniumType',att:'whichGills',stipe:'stipeCharacter',eco:'ecologicalType',spore:'sporePrintColor'}).forEach(([f,k])=>feat[f]=g(k));
-  return{title:p.title,en:m?m[1].trim():(BINOM.test(p.title)?'':p.title),pl:clean(L.pl),de:clean(L.de),nl:clean(L.nl),feat,img:p.thumbnail?.source||''};
+  return{title:p.title,en:m?m[1].trim():(BINOM.test(p.title)?'':p.title),pl:clean(L.pl),de:clean(L.de),nl:clean(L.nl),feat,img:p.thumbnail?.source||'',edi:(g('howEdible')||'').toLowerCase()};
 }
 // fills names (and for lexicon entries features) from Wikipedia; features are only filled where still empty
 function applyWiki(o,w,{overwrite=false}={}){
@@ -570,19 +716,74 @@ async function addWikiImg(o,w,mode){
   try{o.photos.push(await shrink(await (await fetch(w.img)).blob()))}catch{o.photos.push(w.img)}
   o.wikiImg=w.img;
 }
-$('#look').onclick=async()=>{
-  snap();const q=cur.n.la||cur.n.en,msg=$('#lookMsg');
-  if(!q)return msg.textContent='Enter a Latin or English name first.';
-  msg.textContent='Searching Wikipedia…';
+/* ---------- Wikipedia: search by a name in ANY language, fill in the rest ---------- */
+const wapi=async(lang,params)=>(await fetch(`https://${lang}.wikipedia.org/w/api.php?format=json&origin=*&redirects=1&`+new URLSearchParams(params))).json();
+const okPage=p=>p&&p.missing===undefined&&p.pageprops?.disambiguation===undefined;
+const firstPage=j=>Object.values(j.query.pages)[0];
+// the article for a name in one language's Wikipedia: exact title first (redirects followed), then the best search hit
+async function wikiTitle(lang,q){
+  const base={action:'query',prop:'langlinks|pageprops',lllimit:'500',ppprop:'disambiguation'};
+  let p=firstPage(await wapi(lang,{...base,titles:q}));
+  if(okPage(p))return p;
+  const hits=(await wapi(lang,{action:'query',list:'search',srsearch:q,srlimit:'5',srnamespace:'0'})).query.search||[];
+  const s=hits.find(x=>{const a=norm(x.title),b=norm(q);return a.includes(b)||b.includes(a)});
+  if(!s)return null;
+  p=firstPage(await wapi(lang,{...base,titles:s.title}));
+  return okPage(p)?p:null;
+}
+async function wikiLookup(n,first){
+  const order=[first,'la','en','pl','de','nl'].filter((k,i,a)=>k&&n[k]&&a.indexOf(k)===i);
+  let err=null;
+  for(const k of order){
+    try{
+      const p=await wikiTitle(WL[k],n[k]);if(!p)continue;
+      const L=Object.fromEntries((p.langlinks||[]).map(l=>[l.lang,l['*']])),en=WL[k]==='en'?p.title:L.en;
+      if(en){const w=await wikiData(en);if(w)return w}
+      // no English article: use what this language's article links to
+      const c=s=>(s||'').replace(/\s*\(.*?\)\s*$/,'');
+      return{title:'',en:'',pl:c(WL[k]==='pl'?p.title:L.pl),de:c(WL[k]==='de'?p.title:L.de),nl:c(WL[k]==='nl'?p.title:L.nl),feat:{},img:'',edi:''};
+    }catch(e){err=e}
+  }
+  if(err)throw err;return null;
+}
+// Wikipedia's "howEdible" -> our labels. Anything unclear returns null so you choose yourself.
+function ediFromWiki(w){
+  const t={edible:['edible'],choice:['edible'],caution:['conditional'],inedible:['inedible'],poisonous:['poisonous'],deadly:['deadly'],psychoactive:['hallucinogenic']}[w.edi];
+  return t?{tags:t,note:w.edi==='caution'?'Edible with caution according to Wikipedia. Add the exact conditions.':''}:null;
+}
+let lastName=null,lookBusy=false;
+LANGS.forEach(k=>{
+  F.elements[k].addEventListener('input',()=>lastName=k);
+  F.elements[k].addEventListener('change',()=>{if(cur&&!cur.id&&view==='edit'&&F.elements[k].value.trim())runLookup(k,true)}); // new entries look themselves up
+});
+$('#look').onclick=()=>runLookup(lastName,false);
+async function runLookup(first,auto){
+  if(lookBusy){if(auto)return;while(lookBusy)await new Promise(r=>setTimeout(r,60))} // pressing the button waits for a lookup that is already running
+  snap();
+  const me=cur,msg=$('#lookMsg');
+  if(!LANGS.some(k=>cur.n[k]))return msg.textContent='Enter a name in any language first.';
+  lookBusy=true;msg.textContent='Searching Wikipedia…';
   try{
-    const w=await wikiData(q);
+    const w=await wikiLookup(cur.n,first);
+    if(cur!==me||view!=='edit')return;
     if(!w)return msg.textContent='No Wikipedia article found for that name. Check the spelling or fill the fields in by hand.';
+    snap(); // keep anything typed while waiting
     const empty=()=>FEAT.filter(([k])=>!cur.feat[k]).length,b=empty(),np=cur.photos.length;
-    applyWiki(cur,w,{overwrite:true});await addWikiImg(cur,w,'add');
-    const nf=b-empty(),extra=cur.kind==='lex'?(nf?` ${nf} empty feature field${nf>1?'s':''} filled in.`:' No infobox features found, fill them in by hand.')+(cur.photos.length>np?' Wikipedia photo added (remove it if you like).':''):'';
-    fill();$('#lookMsg').textContent='Filled in from Wikipedia.'+extra+' Please check everything, some names are Latin when no common name exists.';
-  }catch{msg.textContent='Could not reach Wikipedia. Check your connection and try again.'}
-};
+    applyWiki(cur,w,{overwrite:!auto});await addWikiImg(cur,w,'add');
+    let extra='';
+    if(cur.kind==='lex'){const nf=b-empty();extra=(nf?` ${nf} empty feature field${nf>1?'s':''} filled in.`:' No infobox features found, fill them in by hand.')+(cur.photos.length>np?' Wikipedia photo added (remove it if you like).':'')}
+    const e=ediFromWiki(w),hasEd=cur.tags.some(t=>ED.includes(t)),newEd=e?e.tags.filter(t=>ED.includes(t)):[];
+    if(newEd.length&&(!auto||!hasEd)){ // pressing "Fill in" replaces an earlier edibility choice; automatic lookups only fill an empty one
+      const was=cur.tags.filter(t=>ED.includes(t));
+      cur.tags=[...cur.tags.filter(t=>!ED.includes(t)),...newEd];
+      if(newEd.includes('conditional')&&e.note&&!cur.ediNote)cur.ediNote=e.note;
+      extra+=` Edibility set to “${E[newEd[0]].l}” from Wikipedia${was.length&&was.join()!==newEd.join()?` (it was ${was.map(t=>E[t].l).join(', ')})`:''}.`;
+    }else if(e&&!newEd.length){cur.tags=[...new Set([...cur.tags,...e.tags])];extra+=hasEd?' Marked hallucinogenic.':' Marked hallucinogenic. Please choose the edibility label yourself.'}
+    else if(!hasEd)extra+=' Wikipedia does not say whether it is edible, so please choose the edibility label yourself.';
+    fill();$('#lookMsg').textContent='Filled in from Wikipedia.'+extra+' Please check everything.';
+  }catch(e){console.error(e);msg.textContent='Could not reach Wikipedia. Check your connection and try again.'}
+  finally{lookBusy=false}
+}
 
 /* ---------- Photos (resized to max 900px, JPEG 72%) ---------- */
 async function shrink(f){
@@ -592,8 +793,10 @@ async function shrink(f){
 }
 $('#photo').onchange=async e=>{for(const f of e.target.files)if(f.type.startsWith('image/'))cur.photos.push(await shrink(f));e.target.value='';drawThumbs()};
 function drawThumbs(){
-  $('#thumbs').innerHTML=cur.photos.map((p,i)=>`<div><img class="z" src="${p}" alt="Photo ${i+1}"><button type="button" aria-label="Remove photo" data-i="${i}">×</button></div>`).join('');
-  $$('#thumbs button').forEach(b=>b.onclick=()=>{snap();cur.photos.splice(+b.dataset.i,1);drawThumbs()});
+  cur.uphotos??=[];
+  $('#thumbs').innerHTML=cur.photos.map((p,i)=>`<div class="ph${cur.uphotos.includes(p)?' unsure':''}"><img class="z" src="${p}" alt="Photo ${i+1}"><button type="button" aria-label="Remove photo" data-i="${i}">×</button>${cur.kind==='lex'?`<button type="button" class="tq" aria-label="Mark photo as unsure or sure" title="Unsure about this photo? Click to toggle" data-q="${i}">?</button>`:''}</div>`).join('');
+  $$('#thumbs button[data-i]').forEach(b=>b.onclick=()=>{snap();cur.photos.splice(+b.dataset.i,1);cur.uphotos=cur.uphotos.filter(u=>cur.photos.includes(u));drawThumbs()});
+  $$('#thumbs button[data-q]').forEach(b=>b.onclick=()=>{const p=cur.photos[+b.dataset.q];cur.uphotos=cur.uphotos.includes(p)?cur.uphotos.filter(u=>u!==p):[...cur.uphotos,p];drawThumbs()});
 }
 /* click any photo to enlarge */
 document.addEventListener('click',e=>{const i=e.target.closest('img.z');if(i){$('#lbImg').src=i.src;$('#lb').showModal()}},true);
@@ -601,130 +804,388 @@ $('#lb').onclick=()=>$('#lb').close();
 
 /* ---------- Quiz ---------- */
 const TITLES=['Spore','Mycelium','Pinhead','Button','Forager','Gourmet','Mycologist','Truffle hunter','Fungi master'];
-const ITEMS={2:'boots',3:'forager hat',4:'basket',5:'scarf',6:'walking staff',7:'lantern',8:'crown',9:'golden aura'};
-const COLORS=['#E76F51','#DDA15E','#8E5BD9','#3A86FF'];
 const lvl=xp=>Math.floor(Math.sqrt(xp/40))+1,title=l=>TITLES[Math.min(l-1,TITLES.length-1)];
-const BADGES=[
-  ['first','First steps','Finish a round',s=>s.rounds>=1],
-  ['perfect','Sharp eye','Get a perfect round',s=>s.perfect>=1],
-  ['streak8','On fire','Reach a streak of 8',s=>s.bestStreak>=8],
-  ['master5','Apprentice','Master 5 mushrooms',(s,z,g)=>g>=5],
-  ['safety10','Safety first','10 safety questions right',s=>s.safety>=10],
-  ['alike5','Look twice','Spot 5 look-alikes',s=>s.alike>=5],
-  ['surv12','Survivor','12 right in one Survival run',s=>s.survBest>=12],
-  ['day3','Regular','Play 3 days in a row',(s,z)=>z.dayStreak>=3]
+/* Shop: categories > slots > items. Item = [id, label, base price in spores, colour]. Price 0 = you start with it.
+   Prices rise from cheap basics to expensive extras, and every purchase makes the next ones 1% dearer. */
+const SHOP=[
+  {cat:'cap',label:'Cap',icon:'🍄',slots:[
+    {k:'cap',label:'Shape',items:[['small','Small convex cap',0],['big','Bigger convex cap',35],['flat','Flat cap',55],['conical','Tall convex cap',70],['concave','Concave cap',90]]},
+    {k:'capc',label:'Colour',items:[['brown','Brown',0,'#8B5A2B'],['grey','Grey',0,'#9AA0A6'],['white','White',0,'#F3EFE6'],['lightbrown','Light brown',12,'#C9A27A'],['greenish','Light greenish',18,'#B9CDA0'],['yellow','Yellow',25,'#E8C547'],['orange','Orange',35,'#E8913A'],['red','Red',50,'#D64545'],['purple','Purple',65,'#8E5BD9'],['brightgreen','Bright green',85,'#3DBE5A'],['blue','Blue',105,'#3A86FF']]},
+    {k:'capf',label:'Pattern',items:[['plain','Plain',0],['dots','Dots',50],['scales','Waves / scales',80]]},
+    {k:'capfc',label:'Pattern colour',items:[['white','White',0,'#FFFDF8'],['brown','Brown',18,'#6B4423'],['grey','Grey',18,'#8C9096']]},
+    {k:'hym',label:'Underside',only:'concave',items:[['none','None',0],['gillw','White gills',60,'#F5F0E6'],['gilly','Yellow gills',75,'#E8C547'],['spongew','White pores',95,'#F5F0E6'],['spongey','Yellow pores',115,'#E8C547'],['spongered','Red pores',140,'#D64545']]}]},
+  {cat:'stipe',label:'Stipe',icon:'🥖',slots:[
+    {k:'stipec',label:'Colour',items:[['white','White',0,'#FFFDF8'],['lightbrown','Light brown',25,'#D9BC96'],['yellow','Yellow',40,'#F2D55C'],['red','Red',65,'#D9534F']]},
+    {k:'stipes',label:'Shape',items:[['short','Short',0],['long','Long',35],['club','Bulbous',60]]},
+    {k:'stipef',label:'Texture',items:[['plain','Plain',0],['net','Net texture',55],['ring','Ring',70],['volva','Volva',90]]}]},
+  {cat:'env',label:'Environment',icon:'🌦️',slots:[
+    {k:'bg',label:'Background',items:[['cream','Cream',0,'#F1EBDD'],['sky','Sky blue',0,'#CFE3F1'],['mint','Mint',0,'#D3E9DA'],['blush','Blush',0,'#F5D7CF']]},
+    {k:'weather',label:'Weather',items:[['none','None',0],['snow','Snow',60],['rain','Rain',80],['sun','Sun',105],['moon','Moon',130]]},
+    {k:'ground',label:'Surface',items:[['none','None',0],['grass','Grass',30],['moss','Moss',55],['concrete','Cracked concrete',85]]}]},
+  {cat:'pers',label:'Personality',icon:'😊',slots:[
+    {k:'face',label:'Face',items:[['smile','Smile',0],['neutral','Neutral',15],['sad','Sad',15],['happy','Very happy',40],['angry','Angry',40]]},
+    {k:'extra',label:'Accessory',items:[['none','None',0],['leaf','Leaf on the cap',30],['worm','Worm in the cap',35],['glasses','Glasses',50],['hat','Forager hat',70],['crown','Crown',180]]},
+    {k:'extra2',label:'Gear',items:[['none','None',0],['basket','Little basket',60],['knife','Mushroom knife',70],['book','Foraging book',85],['bigbasket','Big basket',105]]}]}
 ];
+const SLOTS=SHOP.flatMap(c=>c.slots.map(s=>({...s,cat:c.cat})));
+const slotOf=k=>SLOTS.find(s=>s.k===k),itemOf=(k,id)=>slotOf(k)?.items.find(i=>i[0]===id)||[];
+const DEF={cap:'small',capc:'brown',capf:'plain',capfc:'white',hym:'none',stipec:'white',stipes:'short',stipef:'plain',bg:'cream',weather:'none',ground:'none',face:'smile',extra:'none',extra2:'none'};
+const FREE=()=>SLOTS.flatMap(s=>s.items.filter(i=>i[2]===0).map(i=>s.k+':'+i[0]));
+const ALLITEMS=()=>SLOTS.flatMap(s=>s.items.map(i=>s.k+':'+i[0]));
+const owns=(k,id)=>itemOf(k,id)[2]===0||D.quiz.owned.includes(k+':'+id)||(k==='extra'&&D.quiz.owned.includes('pet:'+id)); // 'pet' items were merged into Accessory
+const paidCount=()=>D.quiz.owned.filter(x=>{const [k,id]=x.split(':');return (itemOf(k,id)[2]||0)>0}).length;
+const priceOf=(k,id)=>{const b=itemOf(k,id)[2]||0;return b?Math.max(1,Math.round(b*(1+.01*paidCount()))):0};
+const SET0={lang:'auto',timer:12,rounds:10};
+const cfg=()=>({...SET0,...D.quiz.settings});
+/* 20 achievements, each with bronze, silver and gold. [id, emoji, name, what counts, [bronze, silver, gold], current value] */
+const MEDAL=['','🥉','🥈','🥇'];
+const ACH=[
+  ['rounds','🌱','Dedicated','rounds played',[5,25,100],s=>s.rounds],
+  ['answered','❓','Curious','questions answered',[50,250,1000],s=>s.answered||0],
+  ['correct','✅','Know-it-all','correct answers',[40,200,800],s=>s.correct||0],
+  ['perfect','🎯','Sharp eye','perfect rounds',[1,5,20],s=>s.perfect],
+  ['streak','🔥','On fire','right answers in a row',[5,10,20],s=>s.bestStreak],
+  ['surv','💪','Survivor','right in one Survival run',[8,15,30],s=>s.survBest],
+  ['safety','🛡️','Safety first','safety questions right',[10,50,150],s=>s.safety],
+  ['tf','⚖️','Fact checker','true or false statements judged right',[10,50,200],s=>s.kinds?.tf?.[0]||0],
+  ['names','🗣️','Polyglot','names recalled',[10,50,200],s=>s.kinds?.names?.[0]||0],
+  ['photo','📷','Photographic memory','mushrooms recognised by photo',[10,50,200],s=>s.kinds?.photo?.[0]||0],
+  ['traits','🔍','Detective','traits answered right',[10,50,200],s=>s.kinds?.traits?.[0]||0],
+  ['mastered','🎓','Scholar','mushrooms mastered',[3,10,30],()=>mastered()],
+  ['days','📅','Regular','days played in a row',[3,7,30],(s,z)=>Math.max(s.bestDay||0,z.dayStreak||0)],
+  ['level','⭐','Climber','level reached',[3,6,9],(s,z)=>lvl(z.xp)],
+  ['shop','🛍️','Dressed up','shop items bought',[3,10,25],()=>paidCount()],
+  ['spores','🍄','Spore collector','spores earned',[100,500,2000],s=>s.sporesEarned||0],
+  ['cleared','🩹','Learner','mistakes corrected',[5,25,100],s=>s.cleared||0],
+  ['quick','⚡','Lightning','quick answers',[10,50,200],s=>s.quick||0],
+  ['score','🏆','High scorer','points in one round',[100,200,350],(s,z)=>z.best],
+  ['allround','🎲','All-rounder','game types answered right',[3,4,5],s=>KINDS.filter(k=>(s.kinds?.[k[0]]?.[0]||0)>0).length]
+];
+const tierOf=(a,s,z)=>{const v=a[5](s,z);return a[4].filter(t=>v>=t).length}; // 0 none, 1 bronze, 2 silver, 3 gold
+const KINDS=[['names','🗣️','Name recall'],['photo','📷','Photo ID'],['traits','🔍','Traits'],['safety','☠️','Safety'],['tf','⚖️','True or false']]; // question types (safety only appears in mixed, survival and training)
+const MODES=[['mix','🎲','Mixed round'],['surv','🛡️','Survival (3 lives)'],['train','🩹','Train mistakes'],['names','🗣️','Name recall'],['photo','📷','Photo ID'],['traits','🔍','Traits'],['tf','⚖️','True or false']];
+const LF=l=>`<i class="lang">${l==='la'?'Latin':l.toUpperCase()}</i>`; // PL, DE, EN, NL in italics, or Latin
 const ydate=t=>new Date(new Date(t+'T12:00').getTime()-864e5).toISOString().slice(0,10);
-/* Your character: a little mushroom forager who gains gear as you level up */
-function avatar(l,mood='idle',size=120){
-  const c=D.quiz.char.color,st='stroke="#1B4332" stroke-opacity=".25"';
-  const mouth={idle:'<path d="M53 83q7 6 14 0" fill="none" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round"/>',happy:'<path d="M52 81q8 12 16 0z" fill="#1B4332"/>',sad:'<path d="M53 88q7-6 14 0" fill="none" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round"/>'}[mood];
-  const eyes=mood==='happy'?'<path d="M46 74q5-6 10 0M64 74q5-6 10 0" fill="none" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round"/>':'<circle cx="51" cy="73" r="3.2" fill="#1B4332"/><circle cx="69" cy="73" r="3.2" fill="#1B4332"/>';
-  const arms=mood==='happy'?'M41 78q-15-4-15-22M79 78q15-4 15-22':'M41 80q-12 8-8 22M79 80q12 8 8 22';
-  return `<svg class="avatar ${mood}" viewBox="0 0 120 140" width="${size}" height="${Math.round(size*7/6)}" role="img" aria-label="Your mushroom character, level ${l}">
-  ${l>=9?'<circle cx="60" cy="74" r="60" fill="#F4E3A1" opacity=".55"/>':''}
-  ${l>=6?'<rect x="14" y="54" width="4" height="76" rx="2" fill="#8a5a2b"/>':''}
-  ${l>=7?'<circle cx="16" cy="48" r="10" fill="#F4E3A1" opacity=".7"/><rect x="11" y="42" width="10" height="12" rx="3" fill="#E8913A"/>':''}
-  <rect x="47" y="108" width="9" height="16" rx="4" fill="#FFFDF8" ${st}/><rect x="64" y="108" width="9" height="16" rx="4" fill="#FFFDF8" ${st}/>
-  ${l>=2?'<rect x="44" y="118" width="14" height="10" rx="4" fill="#6b3f2a"/><rect x="62" y="118" width="14" height="10" rx="4" fill="#6b3f2a"/>':''}
-  <rect x="40" y="58" width="40" height="56" rx="18" fill="#FFFDF8" ${st}/>
-  <path d="${arms}" fill="none" stroke="#EDE6D6" stroke-width="7" stroke-linecap="round"/>
-  ${l>=5?'<rect x="40" y="62" width="40" height="8" rx="4" fill="#1B4332"/><rect x="70" y="66" width="8" height="18" rx="3" fill="#1B4332"/>':''}
-  ${eyes}${mouth}<circle cx="44" cy="82" r="4" fill="#F6B8A5" opacity=".7"/><circle cx="76" cy="82" r="4" fill="#F6B8A5" opacity=".7"/>
-  <path d="M12 64C12 28 34 10 60 10s48 18 48 54c0 4-4 6-8 6H20c-4 0-8-2-8-6z" fill="${c}"/>
-  <circle cx="36" cy="36" r="7" fill="#fff" opacity=".85"/><circle cx="64" cy="26" r="5" fill="#fff" opacity=".85"/><circle cx="84" cy="44" r="6" fill="#fff" opacity=".85"/><circle cx="52" cy="52" r="4" fill="#fff" opacity=".85"/>
-  ${l>=8?'<path d="M38 24l6-18 8 11 8-16 8 16 8-11 6 18z" fill="#E8B923" stroke="#B88A00" stroke-width="1.5"/>':l>=3?'<path d="M34 22C38 2 82 2 86 22z" fill="#8a5a2b"/><rect x="26" y="20" width="68" height="6" rx="3" fill="#6b3f2a"/>':''}
-  ${l>=4?'<rect x="82" y="96" width="24" height="20" rx="4" fill="#B07A3E"/><path d="M85 96q9-16 18 0" fill="none" stroke="#8a5a2b" stroke-width="3"/><path d="M84 104h20M84 110h20" stroke="#8a5a2b" stroke-width="1.5"/>':''}
-  </svg>`;
+
+/* Faces react to your answers: [face when right, face when wrong] */
+const REACT={ok:{neutral:'happy',smile:'happy',sad:'smile',happy:'dead',angry:'neutral'},bad:{neutral:'sad',smile:'sad',happy:'neutral',angry:'dead',sad:'sad'}};
+const reactFace=(base,ok)=>REACT[ok?'ok':'bad'][base]||base;
+
+/* ---------- your character ---------- */
+let avN=0;
+function avatar(face=null,size=120,look=D.quiz.look){
+  const g=k=>look[k]||DEF[k],col=k=>itemOf(k,g(k))[3];
+  const u='a'+(++avN),ink='#1B4332',line='rgba(0,0,0,.22)',GROUND=122;
+  const capc=col('capc')||'#8B5A2B',pc=col('capfc')||'#FFFDF8',sc=col('stipec')||'#FFFDF8',bg=col('bg')||'#F1EBDD';
+  const shape=g('cap'),sf=g('stipef'),hy=g('hym'),hc=hy==='none'?null:col('hym'),capf=g('capf'),f=face||g('face');
+  const ST={
+    short:{bot:112,d:'M45 58H75V102Q75 112 65 112H55Q45 112 45 102Z',ring:19,vw:26},
+    long:{bot:136,d:'M46 58H74V126Q74 136 64 136H56Q46 136 46 126Z',ring:18,vw:24},
+    club:{bot:112,d:'M50 58H70C70 80 82 94 82 104Q82 112 74 112H46Q38 112 38 104C38 94 50 80 50 58Z',ring:15,vw:30}
+  }[g('stipes')]||{bot:112,d:'M45 58H75V102Q75 112 65 112H55Q45 112 45 102Z',ring:19,vw:26};
+  const ty=GROUND-ST.bot; // the mushroom always stands on the ground line; whatever sticks out of the frame is cut off
+  const CAPS={
+    small:['M30 66C30 42 43 32 60 32s30 10 30 34c0 3-2 4-5 4H35c-3 0-5-1-5-4z',32],
+    big:['M12 68C12 28 34 14 60 14s48 14 48 54c0 3-3 5-6 5H18c-3 0-6-2-6-5z',14],
+    flat:['M8 62C8 46 32 40 60 40s52 6 52 22c0 4-3 7-7 7H15c-4 0-7-3-7-7z',40],
+    conical:['M33 70C33 24 46 8 60 8s27 16 27 62c0 2-1 3-3 3H36c-2 0-3-1-3-3z',8], // tall convex
+    concave:['M12 46C12 64 34 72 60 72s48-8 48-26z',33]
+  };
+  const [cp,top]=CAPS[shape]||CAPS.small;
+  const dots=pts=>pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="4.3" fill="${pc}"/>`).join('');
+  const scal=(rows,x0,x1)=>rows.map((y,r)=>{let s='';for(let x=x0+(r%2)*6;x<x1;x+=12)s+=`<path d="M${x} ${y}q6-7 12 0" fill="none" stroke="${pc}" stroke-width="2.2" stroke-linecap="round"/>`;return s}).join('');
+  let capSvg;
+  if(shape==='concave'){ // the cap's top surface is the dish (cap colour), the underside with gills or pores is the bowl below it
+    let det='';
+    if(hy.startsWith('gill'))det=Array.from({length:17},(_,i)=>{const t=-1+i/8,x=60+t*46,y=46+13*Math.sqrt(1-t*t);return `<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(60+t*30).toFixed(1)}" y2="72" stroke="${line}" stroke-width="1.1"/>`}).join('');
+    else if(hy.startsWith('sponge'))det=Array.from({length:34},(_,i)=>`<circle cx="${22+((i*37)%76)}" cy="${54+((i*53)%16)}" r="1.5" fill="${line}"/>`).join('');
+    const pat=capf==='dots'?dots([[34,46],[52,41],[70,41],[86,46],[60,48]]):capf==='scales'?scal([40,47],14,100):'';
+    capSvg=`<clipPath id="${u}b"><path d="${cp}"/></clipPath><clipPath id="${u}t"><ellipse cx="60" cy="46" rx="48" ry="13"/></clipPath>
+      <path d="${cp}" fill="${hc||capc}" stroke="${line}"/>${hc?'':`<path d="${cp}" fill="rgba(0,0,0,.2)"/>`}<g clip-path="url(#${u}b)">${det}</g>
+      <ellipse cx="60" cy="46" rx="48" ry="13" fill="${capc}" stroke="${line}"/><g clip-path="url(#${u}t)">${pat}</g><ellipse cx="60" cy="47.5" rx="38" ry="8" fill="rgba(0,0,0,.1)"/>`;
+  }else{
+    const pat=capf==='dots'?dots([[38,52],[60,40],[82,52],[48,62],[72,62],[28,62],[92,62],[60,54]]):capf==='scales'?scal([36,46,56,66],6,110):'';
+    capSvg=`<clipPath id="${u}c"><path d="${cp}"/></clipPath><path d="${cp}" fill="${capc}" stroke="${line}"/><g clip-path="url(#${u}c)">${pat}</g>`;
+  }
+  const FACES={
+    smile:`<circle cx="52" cy="82" r="3" fill="${ink}"/><circle cx="68" cy="82" r="3" fill="${ink}"/><path d="M54 90q6 5 12 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`,
+    neutral:`<circle cx="52" cy="82" r="3" fill="${ink}"/><circle cx="68" cy="82" r="3" fill="${ink}"/><path d="M54 92h12" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`,
+    sad:`<circle cx="52" cy="82" r="3" fill="${ink}"/><circle cx="68" cy="82" r="3" fill="${ink}"/><path d="M54 95q6-6 12 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/><path d="M71 86q-2.5 4 0 6q2.5-2 0-6z" fill="#6BA8E0"/>`,
+    happy:`<path d="M47 83q5-6 10 0M63 83q5-6 10 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/><path d="M51 88q9 12 18 0z" fill="${ink}"/>`,
+    angry:`<circle cx="52" cy="83" r="3" fill="${ink}"/><circle cx="68" cy="83" r="3" fill="${ink}"/><path d="M46 76l10 4M74 76l-10 4" stroke="${ink}" stroke-width="2.6" stroke-linecap="round"/><path d="M54 94q6-4 12 0" fill="none" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/>`,
+    dead:`<path d="M48 79l8 8M56 79l-8 8M64 79l8 8M72 79l-8 8" stroke="${ink}" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="60" cy="93" rx="3.5" ry="4.5" fill="none" stroke="${ink}" stroke-width="2.2"/>`
+  };
+  const stipe=`<clipPath id="${u}s"><path d="${ST.d}"/></clipPath><path d="${ST.d}" fill="${sc}" stroke="${line}"/>`
+    +(sf==='net'?`<g clip-path="url(#${u}s)" stroke="${line}" stroke-width="1">${Array.from({length:14},(_,i)=>`<line x1="${24+i*6}" y1="58" x2="${54+i*6}" y2="${ST.bot}"/><line x1="${96-i*6}" y1="58" x2="${66-i*6}" y2="${ST.bot}"/>`).join('')}</g>`:'')
+    +(sf==='volva'?`<path d="M${60-ST.vw} ${ST.bot-16}H${60+ST.vw}C${60+ST.vw} ${ST.bot-2} ${60+ST.vw*.6} ${ST.bot+5} 60 ${ST.bot+5}S${60-ST.vw} ${ST.bot-2} ${60-ST.vw} ${ST.bot-16}z" fill="${sc}" stroke="${line}"/>`:'')
+    +(sf==='ring'?`<ellipse cx="60" cy="74" rx="${ST.ring}" ry="5" fill="${sc}" stroke="${line}"/>`:'');
+  const ex=g('extra'),gear=g('extra2'),wt=g('weather'),gr=g('ground');
+  const glasses=ex==='glasses'?`<g fill="rgba(255,255,255,.35)" stroke="${ink}" stroke-width="1.6"><circle cx="52" cy="82" r="6.5"/><circle cx="68" cy="82" r="6.5"/><path d="M58.5 82h3" fill="none"/></g>`:'';
+  const hat=ex==='hat'?`<path d="M34 ${top+3}C34 ${top-18} 86 ${top-18} 86 ${top+3}z" fill="#8a5a2b"/><rect x="26" y="${top}" width="68" height="6" rx="3" fill="#6b3f2a"/>`:ex==='crown'?`<path d="M38 ${top+4}l4-20 9 12 9-16 9 16 9-12 4 20z" fill="#E8B923" stroke="#B88A00" stroke-width="1.4"/>`:'';
+  const critter=ex==='worm'?`<ellipse cx="70" cy="${top+10}" rx="6.5" ry="2.6" fill="rgba(0,0,0,.38)"/><path d="M70 ${top+9}c-2-9 2-15 7-14c5 1 4 8 0 8" fill="none" stroke="#E7A3A3" stroke-width="5" stroke-linecap="round"/><circle cx="74" cy="${top-4}" r="1" fill="${ink}"/>`
+    :ex==='leaf'?`<path d="M56 ${top+3}c4-14 18-18 30-12c-2 14-14 20-30 12z" fill="#4F9A45" stroke="rgba(0,0,0,.2)"/><path d="M58 ${top+2}c8-4 16-7 24-10" stroke="#2F6B30" stroke-width="1.3" fill="none"/>`:'';
+  const weather={
+    snow:Array.from({length:18},(_,i)=>`<circle cx="${(i*29)%116+4}" cy="${-12+(i*37)%120}" r="${i%3?1.6:2.4}" fill="#fff"/>`).join(''),
+    rain:Array.from({length:18},(_,i)=>`<path d="M${(i*31)%116+4} ${-12+(i*43)%112}l-3 9" stroke="#5B8DB8" stroke-width="1.3" stroke-linecap="round"/>`).join(''),
+    sun:`<circle cx="22" cy="0" r="9" fill="#F7C948"/>${Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return `<path d="M${(22+Math.cos(a)*13).toFixed(1)} ${(Math.sin(a)*13).toFixed(1)}L${(22+Math.cos(a)*18).toFixed(1)} ${(Math.sin(a)*18).toFixed(1)}" stroke="#F7C948" stroke-width="2" stroke-linecap="round"/>`}).join('')}`,
+    moon:`<circle cx="96" cy="2" r="10" fill="#F4E9B8"/><circle cx="101" cy="-1" r="9" fill="${bg}"/><circle cx="80" cy="-8" r="1.2" fill="#F4E9B8"/><circle cx="108" cy="20" r="1.2" fill="#F4E9B8"/><circle cx="14" cy="14" r="1.2" fill="#F4E9B8"/>`
+  }[wt]||'';
+  const ground={
+    grass:`<rect x="0" y="${GROUND}" width="120" height="30" fill="#6DB65B"/>${Array.from({length:17},(_,i)=>`<path d="M${i*7.5} ${GROUND+1}l2.5-9 2.5 9z" fill="#4F9A45"/>`).join('')}`,
+    moss:`<rect x="0" y="${GROUND}" width="120" height="30" fill="#5C8A4A"/>${Array.from({length:11},(_,i)=>`<circle cx="${i*11+3}" cy="${GROUND}" r="${5+(i%3)*1.5}" fill="#6BA05A"/>`).join('')}`,
+    concrete:`<rect x="0" y="${GROUND}" width="120" height="30" fill="#A7A9AC"/><path d="M0 ${GROUND}H120" stroke="#8C8E91"/><path d="M26 ${GROUND}l6 9-5 8M84 ${GROUND}l-5 8 7 9M58 ${GROUND+4}l4 6" stroke="#6E7073" fill="none" stroke-linecap="round"/>`
+  }[gr]||'';
+  const gearSvg={
+    basket:'<rect x="84" y="108" width="22" height="16" rx="4" fill="#B07A3E"/><path d="M87 108q8-14 16 0" fill="none" stroke="#8a5a2b" stroke-width="3"/>',
+    bigbasket:'<rect x="80" y="100" width="30" height="24" rx="5" fill="#B07A3E"/><path d="M83 100q12-20 24 0" fill="none" stroke="#8a5a2b" stroke-width="3"/><circle cx="90" cy="98" r="5" fill="#D64545"/><circle cx="101" cy="99" r="4" fill="#DDA15E"/>',
+    book:'<rect x="86" y="98" width="20" height="26" rx="2" fill="#1B4332"/><rect x="89" y="101" width="14" height="20" rx="1" fill="#F4E3A1"/><path d="M91 107h10M91 112h10M91 117h7" stroke="#8a5a2b" stroke-width="1.2"/>',
+    knife:`<rect x="92" y="94" width="6" height="14" rx="2" fill="#6b3f2a"/><path d="M92 108H98V124Q92 121 92 108z" fill="#C9CED3" stroke="${line}"/>`
+  }[gear]||'';
+  return `<svg class="avatar ${f}" viewBox="0 -16 120 156" width="${size}" height="${Math.round(size*1.3)}" role="img" aria-label="Your mushroom character">
+  <clipPath id="${u}f"><rect x="0" y="-16" width="120" height="156" rx="16"/></clipPath>
+  <g clip-path="url(#${u}f)"><rect x="0" y="-16" width="120" height="156" fill="${bg}"/>${weather}
+  <g transform="translate(0 ${ty})">${stipe}${FACES[f]||FACES.smile}${glasses}${capSvg}${critter}${hat}</g>
+  ${ground}${gearSvg}</g></svg>`;
 }
+
+/* ---------- questions ---------- */
 const pick=a=>a[Math.random()*a.length|0],shuffle=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(x=>x[1]);
 const short=s=>s.length>90?s.slice(0,87)+'…':s;
 const others=o=>D.lex.filter(x=>x.id!==o.id);
-const sev=o=>['deadly','poisonous','inedible','conditional','edible'].find(t=>o.tags.includes(t))||'edible';
+const sureP=o=>o.photos.filter(p=>!(o.uphotos||[]).includes(p)); // photos you were unsure about are never used
+const sev=o=>['deadly','poisonous','inedible','conditional','varies','edible'].find(t=>o.tags.includes(t))||'edible';
 const lev=(a,b)=>{const d=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]};
 const same=(a,b)=>{a=norm(a).trim();b=norm(b).trim();return a===b||(b.length>6&&lev(a,b)<=1)};
 // mushrooms you know less well come up more often
 function weighted(pool){const t=pool.map(o=>6-(D.quiz.mastery[o.id]||0));let r=Math.random()*t.reduce((a,b)=>a+b,0);for(let i=0;i<pool.length;i++){r-=t[i];if(r<=0)return pool[i]}return pool[0]}
-function mc(o,prompt,ans,wrong,pts,img,expl){wrong=[...new Set(wrong.filter(w=>w&&w!==ans))];if(wrong.length<2)return;return{type:'mc',id:o.id,pts,prompt,img,ans,expl,opts:shuffle([ans,...shuffle(wrong).slice(0,3)])}}
+function mc(o,prompt,ans,wrong,pts,img,expl,min=2){ // options that differ only in capitalisation count as the same
+  const seen=new Set([norm(ans)]);wrong=wrong.filter(w=>w&&!seen.has(norm(w))&&seen.add(norm(w)));
+  if(wrong.length<min)return;return{type:'mc',id:o.id,pts,prompt,img,ans,expl,opts:shuffle([ans,...shuffle(wrong).slice(0,3)])}}
+// answer options always use ONE language per question (never mixed): the one chosen in the settings, or a random one
+const LL=['la','en','pl','de','nl'];
+function pickL(o,pool,need,ok=()=>true){
+  const s=cfg().lang,order=[...(s!=='auto'?[s]:[]),...shuffle(LL.filter(l=>l!==s))];
+  return order.find(l=>o.n[l]&&ok(l)&&pool.filter(x=>x.n[l]).length>=need)||null;
+}
+const nL=(o,L)=>(L&&o.n[L])||nm(o),lt=L=>L?` ${LF(L)}`:''; // language marker next to a name in a question
+// every generator can be forced onto one mushroom (o0) and one task, which is how "Train mistakes" works
 const T={
-  names(){const c=D.lex.filter(o=>LANGS.filter(k=>o.n[k]).length>1);if(!c.length)return;const o=weighted(c),ks=LANGS.filter(k=>o.n[k]),a=pick(ks),b=pick(ks.filter(k=>k!==a));
-    return{type:'text',id:o.id,pts:15,prompt:`What is the <b>${LN[b]}</b> name of <b>${esc(o.n[a])}</b> (${LN[a]})?`,ans:o.n[b]}},
-  photo(){const c=D.lex.filter(o=>o.photos.length);if(!c.length)return;const o=weighted(c);return mc(o,'Which mushroom is this?',nm(o),others(o).map(nm),10,pick(o.photos))},
-  traits(){if(!D.lex.length)return;const o=weighted(D.lex),fs=FEAT.filter(([k])=>o.feat[k]);if(!fs.length)return;const[k,l]=pick(fs),oth=others(o).filter(x=>x.feat[k]&&x.feat[k]!==o.feat[k]);
-    return Math.random()<.5?mc(o,`Which <b>${l.toLowerCase()}</b> belongs to <b>${esc(nm(o))}</b>?`,short(o.feat[k]),oth.map(x=>short(x.feat[k])),10):mc(o,`Which mushroom has this ${l.toLowerCase()}? <i>${esc(short(o.feat[k]))}</i>`,nm(o),others(o).filter(x=>x.feat[k]!==o.feat[k]).map(nm),10)},
-  safety(){if(!D.lex.length)return;const o=weighted(D.lex),s=sev(o);return{type:'mc',id:o.id,pts:10,prompt:`What is the highest-risk label for <b>${esc(nm(o))}</b>?`,ans:E[s].l,opts:ED.map(k=>E[k].l),expl:s==='conditional'&&o.ediNote?'Conditions: '+o.ediNote:o.warn}},
-  alike(){const ok=o=>o.similar.filter(id=>D.lex.some(x=>x.id===id)),c=D.lex.filter(o=>ok(o).length);if(!c.length)return;const o=weighted(c),s=D.lex.find(x=>x.id===pick(ok(o)));
-    return mc(o,`Which of these is easily confused with <b>${esc(nm(o))}</b>?`,nm(s),others(o).filter(x=>!o.similar.includes(x.id)).map(nm),15,null,o.warn)}
+  names(o0,task){const c=D.lex.filter(o=>LANGS.filter(k=>o.n[k]).length>1);if(!c.length)return;
+    const o=o0&&c.includes(o0)?o0:weighted(c),ks=LANGS.filter(k=>o.n[k]),m=/^names:(\w\w)>(\w\w)$/.exec(task||'');let a,b;
+    if(m&&o.n[m[1]]&&o.n[m[2]]){a=m[1];b=m[2]}else{a=pick(ks);b=pick(ks.filter(k=>k!==a))}
+    return{type:'text',id:o.id,pts:15,task:`names:${a}>${b}`,prompt:`What is the <b>${LN[b]}</b> ${LF(b)} name of <b>${esc(o.n[a])}</b> ${LF(a)}?`,ans:o.n[b]}},
+  photo(o0){const c=D.lex.filter(o=>sureP(o).length);if(!c.length)return;const o=o0&&c.includes(o0)?o0:weighted(c),pool=others(o),L=pickL(o,pool,2);
+    return mc(o,'Which mushroom is this?'+lt(L),nL(o,L),pool.filter(x=>!L||x.n[L]).map(x=>nL(x,L)),10,pick(sureP(o)))},
+  traits(o0,task){if(!D.lex.length)return;const o=o0||weighted(D.lex),fs=featList(o);if(!fs.length)return;
+    const lab=(task||'').startsWith('traits:')?task.slice(7):null,[k,l,val]=(lab&&fs.find(f=>f[1]===lab))||pick(fs);let q;
+    if(Math.random()<.5){const oth=others(o).map(x=>featVal(x,k)).filter(t=>t&&norm(t)!==norm(val)),L=pickL(o,[],0);
+      q=mc(o,`Which <b>${esc(l.toLowerCase())}</b> belongs to <b>${esc(nL(o,L))}</b>${lt(L)}?`,short(val),oth.map(short),10)}
+    else{if(k==='bruise'&&val==='No')return; // "No" says too little to recognise a mushroom by
+      const pool=others(o).filter(x=>norm(featVal(x,k))!==norm(val)),L=pickL(o,pool,2);
+      q=mc(o,`Which mushroom has this <b>${esc(l.toLowerCase())}</b>? <b>${esc(short(val))}</b>`+lt(L),nL(o,L),pool.filter(x=>!L||x.n[L]).map(x=>nL(x,L)),10)}
+    if(q)q.task='traits:'+l;return q},
+  safety(o0){if(!D.lex.length)return;const o=o0||weighted(D.lex),s=sev(o),L=pickL(o,[],0);
+    return{type:'mc',id:o.id,pts:10,prompt:`What is the highest-risk label for <b>${esc(nL(o,L))}</b>${lt(L)}?`,ans:E[s].l,opts:ED.map(k=>E[k].l),expl:s==='conditional'&&o.ediNote?'Conditions: '+o.ediNote:o.warn}},
+  tf(o0,task){ // "True or false?": a statement about edibility, a trait or a name; always works with any lexicon
+    const o=o0||weighted(D.lex);if(!o)return;
+    const want=(task||'').startsWith('tf:')?task.slice(3):null,truth=Math.random()<.5,opts=['True','False'],mk=(task,stmt,expl)=>({type:'mc',id:o.id,pts:8,task:'tf:'+task,prompt:'True or false?<br>'+stmt,ans:(truth?'True':'False'),opts,expl});
+    const kinds=[];
+    // edibility
+    const lab=ED.filter(t=>o.tags.includes(t)||(t==='poisonous'&&o.tags.includes('deadly'))),bad=ED.filter(t=>!lab.includes(t)&&!(['edible','conditional'].includes(t)&&(o.tags.includes('edible')||o.tags.includes('conditional'))));
+    if(lab.length&&bad.length)kinds.push('edibility');
+    // traits
+    const fs=featList(o).filter(f=>others(o).some(x=>featVal(x,f[0])&&norm(featVal(x,f[0]))!==norm(f[2])));if(fs.length)kinds.push('trait');
+    // names
+    const ls=LANGS.filter(k=>o.n[k]);if(ls.length>=2&&others(o).some(x=>LANGS.some(k=>x.n[k]&&o.n[k])))kinds.push('names');
+    const L=pickL(o,[],0);
+    let kind=want==='edibility'?'edibility':want==='names'?'names':want?'trait':pick(kinds);if(!kinds.includes(kind))kind=pick(kinds);
+    if(!kind)return;
+    if(kind==='edibility'){const t=truth?pick(lab):pick(bad);return mk('edibility',`<b>${esc(nL(o,L))}</b>${lt(L)} is labelled <b>${E[t].l}</b>.`,'Its labels: '+(lab.map(x=>E[x].l).join(', ')||'none'))}
+    if(kind==='trait'){const f=(want&&fs.find(x=>x[1]===want))||pick(fs),other=pick(others(o).map(x=>featVal(x,f[0])).filter(t=>t&&norm(t)!==norm(f[2])));return mk(f[1],`The <b>${esc(f[1].toLowerCase())}</b> of <b>${esc(nL(o,L))}</b>${lt(L)} is <b>${esc(short(truth?f[2]:other))}</b>.`,`Correct: ${f[1]} is ${f[2]}.`)}
+    const a=pick(ls),b=pick(ls.filter(k=>k!==a&&others(o).some(x=>x.n[k]))||ls.filter(k=>k!==a)),cand=others(o).map(x=>x.n[b]).filter(Boolean);
+    if(!b||(!truth&&!cand.length))return;
+    return mk('names',`<b>${esc(truth?o.n[b]:pick(cand))}</b> ${LF(b)} is the name of <b>${esc(o.n[a])}</b> ${LF(a)}.`,`${LN[b]} name: ${o.n[b]||'–'}`)}
 };
-const NEED={names:'Add names in at least two languages to a lexicon entry.',photo:'Needs a few lexicon entries with photos.',traits:'Fill in features (cap, stipe…) for several lexicon entries.',safety:'Add some lexicon entries first.',alike:'Link look-alikes on your lexicon entries first.'};
-const genQ=(types,last)=>{for(let n=0;n<8;n++){const t=pick(types),q=T[t]();if(q&&q.prompt!==last){q.kind=t;return q}}};
+const NEED={names:'Add names in at least two languages to a lexicon entry.',photo:'Needs a few lexicon entries with photos that are not marked unsure.',traits:'Fill in features (cap, stipe…) for several lexicon entries.',safety:'Add some lexicon entries first.',tf:'Add some lexicon entries first.',train:'You have no open mistakes yet. Play a few rounds first, then come back to train what went wrong.'};
+const genQ=(types,last,force)=>{let fb;for(let n=0;n<10;n++){const t=pick(types),q=T[t](force?.o,force?.task);if(q){q.kind=t;q.task=q.task||t;q.key=t+'|'+q.id+'|'+(q.img||'').slice(-30)+'|'+q.ans;if(q.key!==last)return q;fb=q}}return fb}; // with a tiny lexicon a question may have to repeat
 const Q={};
+
+/* ---------- mastery and difficulty ---------- */
+// mastery of a mushroom = share of correct answers among your last 10 answers about it (needs at least 3 answers)
+const masteryPct=id=>{const h=D.quiz.hist?.[id]||[];return h.length>=3?Math.round(100*h.reduce((a,b)=>a+b,0)/h.length):null};
+const mastered=()=>D.lex.filter(o=>(D.quiz.hist?.[o.id]||[]).length>=5&&masteryPct(o.id)>=80).length;
+const taskLabel=t=>{const [k,d]=t.split(/:(.*)/),m=KINDS.find(x=>x[0]===k);
+  if(k==='names'&&d){const [a,b]=d.split('>');return `Name recall: ${LN[a]} → ${LN[b]}`}
+  if(k==='traits'&&d)return 'Traits: '+d;if(k==='tf')return 'True or false: '+d;return m?m[2]:t};
+const openMistakes=()=>Object.entries(D.quiz.miss||{}).filter(([k,n])=>n>0&&D.lex.some(o=>o.id===k.split('|')[0])&&T[(k.split('|')[1]||'').split(':')[0]]).sort((a,b)=>b[1]-a[1]);
+
+/* ---------- menu ---------- */
+const setQ=html=>{const el=$('#quizBox');el.innerHTML=html;const t=el.getBoundingClientRect().top;if(t<40||t>innerHeight*.7)el.scrollIntoView({block:'start'})};
+const subHead=t=>`<div class="subhead"><button class="backarrow" id="backArrow" title="Back to the quiz menu" aria-label="Back to the quiz menu">←</button><h3 class="qtitle">${t}</h3></div>`;
 function quizHome(){
-  const z=D.quiz,l=lvl(z.xp),prev=40*(l-1)**2,next=40*l*l,t=today(),got=D.lex.filter(o=>(z.mastery[o.id]||0)>=4).length;
-  const ds=z.day===t||z.day===ydate(t)?z.dayStreak||0:0,nu=Object.keys(ITEMS).find(k=>+k>l);
-  $('#quizBox').innerHTML=`<div class="hero"><div class="avbox">${avatar(l)}</div><div class="herotxt">
+  $('#quizIcons').hidden=false;
+  const z=D.quiz,l=lvl(z.xp),prev=40*(l-1)**2,next=40*l*l,c=cfg(),open=openMistakes().length;
+  const sel=(v,cur,label)=>`<option value="${v}" ${String(v)===String(cur)?'selected':''}>${label}</option>`;
+  setQ(`<div class="hero"><div class="avbox">${avatar(null,120)}</div><div class="herotxt">
     <input id="cname" class="cname" maxlength="20" value="${esc(z.char.name)}" aria-label="Character name">
     <h3 class="qtitle">${title(l)}, level ${l}</h3>
     <div class="xp" role="progressbar" aria-valuenow="${z.xp}"><i style="width:${(z.xp-prev)/(next-prev)*100}%"></i></div>
-    <p class="meta">${z.xp} XP, ${next-z.xp} to level ${l+1}${nu?`. Next unlock: ${ITEMS[nu]} at level ${nu}.`:'. All gear unlocked!'}</p>
-    <div class="swatches">${COLORS.map(c=>`<button type="button" class="sw ${c===z.char.color?'on':''}" style="background:${c}" data-c="${c}" aria-label="Cap colour"></button>`).join('')}</div></div></div>
-  <div class="stats"><span><b>${ds}</b> day streak</span><span><b>${z.best}</b> best round</span><span><b>${got}/${D.lex.length}</b> mastered</span></div>
-  <div class="badges">${BADGES.map(b=>`<div class="badge ${z.badges.includes(b[0])?'on':''}"><b>${b[1]}</b><small>${b[2]}</small></div>`).join('')}</div>
-  <p class="meta">A round has 10 questions. Correct answers earn points, streaks and quick answers (under 8 seconds) add bonus points, a perfect round adds 25, and your first round each day adds 10. Survival has no end until you lose 3 lives. Mushrooms you miss come back more often.</p>
-  <div class="acts"><button class="btn main" data-m="mix">Mixed round</button><button class="btn main" data-m="surv">Survival (3 lives)</button><button class="btn" data-m="names">Name recall</button><button class="btn" data-m="photo">Photo ID</button><button class="btn" data-m="traits">Traits</button><button class="btn" data-m="safety">Safety</button><button class="btn" data-m="alike">Look-alikes</button></div>`;
+    <p class="meta">${z.xp} XP, ${next-z.xp} to level ${l+1}</p>
+    <div class="sporeRow"><span class="spores">🍄 <b>${z.spores||0}</b> spores</span><button class="btn shopbtn" id="shopBtn">🛍️ Shop</button></div></div></div>
+  <div class="modes">${MODES.map(([m,e,n])=>`<button class="btn mode ${['mix','surv','train'].includes(m)?'main':''}" data-m="${m}"><span class="em" aria-hidden="true">${e}</span>${n}${m==='train'&&open?` <small>(${open})</small>`:''}</button>`).join('')}</div>
+  <details class="qset"><summary>Quiz settings</summary>
+    <div class="row row3" style="margin-top:.9rem">
+      <div class="field"><label class="l" for="sLang">Answer language</label><select id="sLang">${sel('auto',c.lang,'Varies per question')}${LL.map(l=>sel(l,c.lang,LN[l])).join('')}</select></div>
+      <div class="field"><label class="l" for="sTimer">Timer per question</label><select id="sTimer">${sel(0,c.timer,'Off')}${[30,20,12,8,5].map(s=>sel(s,c.timer,s+' seconds')).join('')}</select></div>
+      <div class="field"><label class="l" for="sRounds">Questions per round</label><select id="sRounds">${[5,10,15,20].map(n=>sel(n,c.rounds,n)).join('')}</select></div>
+    </div>
+    <div class="resetRow"><button type="button" class="linkdanger" id="resetBtn">Reset all progress…</button></div></details>`);
   $$('#quizBox [data-m]').forEach(b=>b.onclick=()=>startRound(b.dataset.m));
+  $('#shopBtn').onclick=shopView;$('#resetBtn').onclick=resetProgress;
   $('#cname').onchange=e=>{z.char.name=e.target.value.trim()||'Forager';Store.save(D)};
-  $$('.sw').forEach(b=>b.onclick=()=>{z.char.color=b.dataset.c;Store.save(D);quizHome()});
+  const saveSet=()=>{z.settings={lang:$('#sLang').value,timer:+$('#sTimer').value,rounds:+$('#sRounds').value};Store.save(D)};
+  ['sLang','sTimer','sRounds'].forEach(id=>$('#'+id).onchange=saveSet);
 }
+async function resetProgress(){ // deliberately tucked away in the settings
+  if(!await ask('XP, level, spores, shop items, achievements and statistics are erased. This cannot be undone.',{title:'Reset all progress?',yes:'Continue',danger:true}))return;
+  if(!await ask('Really erase everything?',{title:'Are you sure?',yes:'Erase everything',danger:true}))return;
+  const keep=D.quiz.settings;D.quiz={...QUIZ0(),settings:keep};Store.save(D);toast('Quiz progress was reset.');quizHome();
+}
+function achView(){
+  const z=D.quiz,s=z.stats,medals=ACH.reduce((n,a)=>n+tierOf(a,s,z),0);
+  setQ(subHead('Achievements')+`<p class="meta">${medals} of ${ACH.length*3} medals · 🥉 bronze, 🥈 silver, 🥇 gold</p>
+  <div class="achs">${ACH.map(a=>{const v=a[5](s,z),t=tierOf(a,s,z),next=a[4][t],prevT=t?a[4][t-1]:0;
+    return `<div class="ach t${t}"><span class="bi" aria-hidden="true">${a[1]}</span><b>${a[2]}</b><span class="med" aria-label="${['No medal','Bronze','Silver','Gold'][t]}">${[1,2,3].map(i=>`<i class="${t>=i?'on':''}">${MEDAL[i]}</i>`).join('')}</span><small>${t<3?`${v} / ${next} ${a[3]}`:`${v} ${a[3]}`}</small><div class="xp mini"><i style="width:${t<3?Math.min(100,(v-prevT)/(next-prevT)*100):100}%"></i></div></div>`}).join('')}</div>`);
+  $('#backArrow').onclick=quizHome;
+}
+function gameStatsView(){
+  const z=D.quiz,s=z.stats,acc=s.answered?Math.round(100*(s.correct||0)/s.answered):0,t=today(),ds=z.day===t||z.day===ydate(t)?z.dayStreak||0:0;
+  const kinds=KINDS.filter(m=>s.kinds?.[m[0]]).map(m=>{const [r,w]=s.kinds[m[0]];return [`${m[1]} ${m[2]}`,Math.round(100*r/(r+w)),'var(--third)']});
+  const hard=Object.entries(z.tasks||{})  .filter(([k,[r,w]])=>r+w>=3&&T[k.split(':')[0]]).map(([k,[r,w]])=>[taskLabel(k),Math.round(100*r/(r+w)),r+w]).sort((a,b)=>a[1]-b[1]).slice(0,5);
+  const weak=D.lex.map(o=>[o,masteryPct(o.id)]).filter(x=>x[1]!==null).sort((a,b)=>a[1]-b[1]).slice(0,6);
+  const errs=openMistakes().slice(0,8);
+  const all=D.lex.map(o=>[nm(o),masteryPct(o.id)]).filter(x=>x[1]!==null).sort((a,b)=>b[1]-a[1]);
+  const tiles=[['Rounds played',s.rounds],['Questions answered',s.answered||0],['Accuracy',acc+'%'],['Best streak',s.bestStreak],['Best round',z.best+' pts'],['Survival best',s.survBest],['Perfect rounds',s.perfect],['Day streak',ds],['Mastered',`${mastered()}/${D.lex.length}`],['Total XP',z.xp]];
+  setQ(subHead('Game stats')+`<div class="tiles">${tiles.map(([l,n])=>`<div class="card tile"><b>${n}</b><span>${l}</span></div>`).join('')}</div>
+  <p class="meta" style="margin-top:.6rem"><b>Mastery</b> of a mushroom is the share of correct answers among your last 10 answers about it (at least 3 needed). From 80% over 5 or more answers it counts as mastered.</p>
+  <h4 class="ct" style="margin-top:1rem">Accuracy per game</h4>${kinds.length?hBars(kinds).replace(/<b>(\d+)<\/b>/g,'<b>$1%</b>'):'<p class="meta">Play a round to see this.</p>'}
+  <h4 class="ct" style="margin-top:1rem">Difficult tasks</h4>${hard.length?hBars(hard.map(([l,p,n])=>[`${l} (${n})`,p,'var(--c-poisonous)'])).replace(/<b>(\d+)<\/b>/g,'<b>$1%</b>'):'<p class="meta">Needs at least 3 answers per task.</p>'}
+  <h4 class="ct" style="margin-top:1rem">Difficult mushrooms</h4>${weak.length?`<div class="chips">${weak.map(([o,p])=>`<button class="chip-s" onclick="goLex('${o.id}')">${esc(nm(o))} · ${p}%</button>`).join('')}</div>`:'<p class="meta">Needs at least 3 answers per mushroom.</p>'}
+  <h4 class="ct" style="margin-top:1rem">Frequent errors</h4>${errs.length?`<ul class="errs">${errs.map(([k,n])=>{const [id,task]=k.split('|'),o=D.lex.find(x=>x.id===id);return `<li><b>${esc(nm(o))}</b> · ${esc(taskLabel(task))} <span class="x">×${n}</span></li>`}).join('')}</ul><div class="acts"><button class="btn main" id="trainBtn">🩹 Train these mistakes</button></div>`:'<p class="meta">No open mistakes. Nicely done!</p>'}
+  ${all.length?`<details class="qset"><summary>Mastery of every mushroom</summary><div style="margin-top:.75rem">${hBars(all.map(([n,p])=>[n,p,p>=80?'var(--c-edible)':p>=50?'var(--third)':'var(--c-poisonous)'])).replace(/<b>(\d+)<\/b>/g,'<b>$1%</b>')}</div></details>`:''}`);
+  $('#backArrow').onclick=quizHome;if($('#trainBtn'))$('#trainBtn').onclick=()=>startRound('train');
+}
+
+/* ---------- wardrobe and shop ---------- */
+let shopCat='cap',shopSlot='cap';
+function askBuy(slot,id){ // "do you want to buy X for N spores?" with a preview
+  const z=D.quiz,it=itemOf(slot.k,id),p=priceOf(slot.k,id),have=z.spores||0,can=have>=p;
+  $('#buyBody').innerHTML=`<div class="lvlpop">${avatar(null,130,{...z.look,[slot.k]:id})}<h2>Buy ${esc(it[1])}?</h2><p>Do you want to buy <b>${esc(it[1])}</b> for <b>🍄 ${p}</b> spores?${can?'':`<br><span class="bad">You have ${have} spores. You need ${p-have} more.</span>`}</p>
+    <div class="acts" style="justify-content:center">${can?'<button class="btn main" id="buyYes">Buy</button>':''}<button class="btn" id="buyNo">${can?'Cancel':'OK'}</button></div></div>`;
+  $('#buyDlg').showModal();$('#buyNo').onclick=()=>$('#buyDlg').close();
+  if(can)$('#buyYes').onclick=()=>{z.spores-=p;z.owned.push(slot.k+':'+id);z.look[slot.k]=id;Store.save(D);$('#buyDlg').close();shopView()};
+}
+function shopView(){
+  const z=D.quiz,cat=SHOP.find(c=>c.cat===shopCat),slots=cat.slots.filter(s=>!s.only||z.look.cap===s.only); // the underside only exists for a concave cap
+  if(!slots.some(s=>s.k===shopSlot))shopSlot=slots[0].k;
+  const slot=slots.find(s=>s.k===shopSlot);
+  setQ(subHead('Shop')+`<div class="hero shophero"><div class="avbox">${avatar(null,140)}</div><div class="herotxt"><p class="spores big">🍄 <b>${z.spores||0}</b> spores</p><p class="meta">Tap an item you own to wear it. Tap a locked item to buy it.</p></div></div>
+  <div class="cats" role="tablist">${SHOP.map(c=>`<button type="button" role="tab" class="cat ${c.cat===shopCat?'on':''}" data-cat="${c.cat}"><span class="ci" aria-hidden="true">${c.icon}</span>${c.label}</button>`).join('')}</div>
+  <div class="subtabs">${slots.map(s=>`<button type="button" class="stab ${s.k===shopSlot?'on':''}" data-s="${s.k}">${s.label}</button>`).join('')}</div>
+  ${slot.only?`<p class="meta">Only available with a ${slot.only} cap.</p>`:''}
+  <div class="sitems">${slot.items.map(([id,l,b,c])=>{const own=owns(slot.k,id),on=(z.look[slot.k]||DEF[slot.k])===id;return `<button type="button" class="sitem ${on?'on':''} ${own?'owned':'locked'}" data-i="${id}">${c?`<i class="sw2" style="background:${c}"></i>`:''}<span>${l}</span><small>${on?'✓ Wearing':own?'Unlocked':'🍄 '+priceOf(slot.k,id)}</small></button>`}).join('')}</div>`);
+  $('#backArrow').onclick=quizHome;
+  $$('[data-cat]').forEach(b=>b.onclick=()=>{shopCat=b.dataset.cat;shopSlot=SHOP.find(c=>c.cat===shopCat).slots[0].k;shopView()});
+  $$('[data-s]').forEach(b=>b.onclick=()=>{shopSlot=b.dataset.s;shopView()});
+  $$('.sitem').forEach(b=>b.onclick=()=>{const id=b.dataset.i;if(owns(slot.k,id)){z.look[slot.k]=id;Store.save(D);shopView()}else askBuy(slot,id)});
+}
+
+/* ---------- playing ---------- */
 function startRound(mode){
-  const surv=mode==='surv',types=mode==='mix'||surv?Object.keys(T):[mode],qs=[];
+  const surv=mode==='surv',types=mode==='mix'||surv?Object.keys(T):[mode],qs=[],n=cfg().rounds;
   Object.assign(Q,{mode,surv,types,qs,i:0,pts:0,streak:0,right:0,lives:3,missed:[]});
-  if(surv){const q=genQ(types);if(q)qs.push(q)}
-  else for(let n=0;n<80&&qs.length<10;n++){const q=genQ(types);if(q&&!qs.some(x=>x.prompt===q.prompt))qs.push(q)}
-  if(!qs.length){$('#quizBox').innerHTML=`<p class="empty">Not enough lexicon data for this round yet. ${NEED[mode]||'Add a few lexicon entries first.'}</p><div class="acts"><button class="btn" id="menu">Back</button></div>`;$('#menu').onclick=quizHome;return}
+  if(mode==='train'){ // drill the open mistakes, most frequent first
+    const list=openMistakes();
+    for(let i=0;list.length&&i<n*3&&qs.length<n;i++){
+      const [k]=list[i%list.length],[id,task]=k.split('|'),o=D.lex.find(x=>x.id===id),kind=task.split(':')[0];
+      const q=genQ([kind],qs[qs.length-1]?.key,{o,task})||genQ([kind],qs[qs.length-1]?.key);
+      if(q&&(!qs.some(x=>x.key===q.key)||i>=list.length))qs.push(q);
+    }
+  }else if(surv){const q=genQ(types);if(q)qs.push(q)}
+  else{
+    for(let i=0;i<150&&qs.length<n;i++){const q=genQ(types,qs[qs.length-1]?.key);if(q&&!qs.some(x=>x.key===q.key))qs.push(q)}
+    for(let i=0;i<60&&qs.length<n;i++){const q=genQ(types,qs[qs.length-1]?.key);if(q)qs.push(q)} // small pools: repeat with fresh answer options
+  }
+  if(!qs.length){
+    const why=NEED[mode]||'Add a few lexicon entries first.';
+    setQ(`<p class="empty">Not enough data for this round yet. ${why}</p><div class="acts"><button class="btn" id="menu">Back to the quiz menu</button></div>`);$('#menu').onclick=quizHome;return}
   nextQ();
 }
 function nextQ(){
+  clearTimeout(Q.tid);
   if(Q.surv?Q.lives<=0:Q.i>=Q.qs.length)return endRound();
-  if(!Q.qs[Q.i]){const q=genQ(Q.types,Q.qs[Q.i-1]?.prompt);if(!q)return endRound();Q.qs.push(q)}
-  const q=Q.qs[Q.i],l=lvl(D.quiz.xp);Q.t0=Date.now();Q.done=false;
-  $('#quizBox').innerHTML=`<div class="hud"><div id="av">${avatar(l,'idle',64)}</div><div class="qhead"><span>${Q.surv?'Question '+(Q.i+1):`Question ${Q.i+1} of ${Q.qs.length}`}</span><span>Points ${Q.pts}</span><span>${Q.streak>1?'Combo x'+Q.streak:'Streak '+Q.streak}</span>${Q.surv?`<span class="hearts" aria-label="${Q.lives} lives left">${'♥'.repeat(Q.lives)}${'♡'.repeat(3-Q.lives)}</span>`:''}</div></div>
-  <div class="timer" title="Answer within 8 seconds for a bonus"><i></i></div>${q.img?`<img class="z qimg" src="${q.img}" alt="Mushroom to identify">`:''}<p class="qprompt">${q.prompt}</p>`+
-   (q.type==='mc'?`<div class="qopts">${q.opts.map((o,i)=>`<button class="btn qo" data-i="${i}">${esc(o)}</button>`).join('')}</div>`:`<form id="qf"><div style="display:flex;gap:.5rem"><input id="qa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type your answer"><button class="btn main">Check</button></div></form>`)+'<div id="qfb"></div>';
+  if(!Q.qs[Q.i]){const q=genQ(Q.types,Q.qs[Q.i-1]?.key);if(!q)return endRound();Q.qs.push(q)}
+  const q=Q.qs[Q.i],secs=cfg().timer;Q.t0=Date.now();Q.done=false;$('#quizIcons').hidden=true;
+  setQ(`<div class="hud"><div id="av">${avatar(null,64)}</div><div class="qhead"><span>${Q.surv?'Question '+(Q.i+1):`Question ${Q.i+1} of ${Q.qs.length}`}</span><span>Points ${Q.pts}</span><span>${Q.streak>1?'Combo x'+Q.streak:'Streak '+Q.streak}</span>${Q.surv?`<span class="hearts" aria-label="${Q.lives} lives left">${'♥'.repeat(Q.lives)}${'♡'.repeat(3-Q.lives)}</span>`:''}</div><button class="btn quit" id="qquit" title="Back to the quiz menu">✕ Quit</button></div>
+  ${secs?`<div class="timer" title="${secs} seconds"><i style="animation-duration:${secs}s"></i></div>`:''}${q.img?`<img class="z qimg" src="${q.img}" alt="Mushroom to identify">`:''}<p class="qprompt">${q.prompt}</p>`+
+   (q.type==='mc'?`<div class="qopts">${q.opts.map((o,i)=>`<button class="btn qo" data-i="${i}">${esc(o)}</button>`).join('')}</div><button class="btn skip" id="qskip">🤷 I don't know</button>`
+    :`<form id="qf"><div style="display:flex;gap:.5rem"><input id="qa" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type your answer"><button class="btn main">Check</button></div></form><button class="btn skip" id="qskip">🤷 I don't know</button>`)+'<div id="qfb"></div>');
   if(q.type==='mc')$$('.qo').forEach(b=>b.onclick=()=>answer(q.opts[b.dataset.i]===q.ans,b));
   else{$('#qa').focus();$('#qf').onsubmit=e=>{e.preventDefault();if($('#qa').value.trim())answer(same($('#qa').value,q.ans))}}
+  $('#qskip').onclick=()=>answer(false,null,'skip');
+  $('#qquit').onclick=async()=>{
+    clearTimeout(Q.tid);const bar=$('.timer i');if(bar)bar.style.animationPlayState='paused'; // the clock waits while you decide
+    if(await ask('Points and spores of this round are not saved.',{title:'Quit this round?',yes:'Quit',no:'Keep playing',danger:true}))return quizHome();
+    if(Q.done)return;if(bar)bar.style.animationPlayState='running';
+    if(secs)Q.tid=setTimeout(()=>answer(false,null,'time'),Math.max(1500,secs*1000-(Date.now()-Q.t0)));
+  };
+  if(secs)Q.tid=setTimeout(()=>answer(false,null,'time'),secs*1000); // time is up: the answer is shown and counts as a miss
 }
-function answer(ok,btn){
-  if(Q.done)return;Q.done=true;
-  const q=Q.qs[Q.i],s=D.quiz.stats,fast=Date.now()-Q.t0<8000;let gain=0,extra='';
-  if(ok){Q.streak++;Q.right++;s.bestStreak=Math.max(s.bestStreak,Q.streak);if(q.kind==='safety')s.safety++;if(q.kind==='alike')s.alike++;
+function answer(ok,btn,why){
+  if(Q.done)return;Q.done=true;clearTimeout(Q.tid);
+  const z=D.quiz,q=Q.qs[Q.i],s=z.stats,secs=cfg().timer,fast=secs&&Date.now()-Q.t0<secs*400;let gain=0,extra='';
+  if(ok){Q.streak++;Q.right++;if(fast)s.quick=(s.quick||0)+1;s.bestStreak=Math.max(s.bestStreak,Q.streak);if(q.kind==='safety')s.safety++;
     const sb=Math.min(10,(Q.streak-1)*2);gain=q.pts+sb+(fast?5:0);extra=[sb?`streak +${sb}`:'',fast?'quick +5':''].filter(Boolean).join(', ')}
-  else{Q.streak=0;Q.missed.push(q.id);if(Q.surv)Q.lives--}
-  Q.pts+=gain;const m=D.quiz.mastery;m[q.id]=Math.max(0,Math.min(5,(m[q.id]||0)+(ok?1:-1)));
-  $('.timer i').style.animationPlayState='paused';$('#av').innerHTML=avatar(lvl(D.quiz.xp),ok?'happy':'sad',64);
+  else{Q.streak=0;Q.missed.push(q.id);if(Q.surv)Q.lives--} // "I don't know" is a wrong guess and costs a life too
+  Q.pts+=gain;const m=z.mastery;m[q.id]=Math.max(0,Math.min(5,(m[q.id]||0)+(ok?1:-1)));
+  // game statistics: per game, per task, per mushroom (last 10 answers) and the list of open mistakes
+  s.answered=(s.answered||0)+1;if(ok)s.correct=(s.correct||0)+1;const kv=((s.kinds??={})[q.kind]??=[0,0]);kv[ok?0:1]++;
+  const tv=((z.tasks??={})[q.task]??=[0,0]);tv[ok?0:1]++;
+  const hs=((z.hist??={})[q.id]??=[]);hs.push(ok?1:0);if(hs.length>10)hs.shift();
+  const mk=q.id+'|'+q.task;z.miss??={};if(ok){if(z.miss[mk]>0){z.miss[mk]--;s.cleared=(s.cleared||0)+1}}else z.miss[mk]=(z.miss[mk]||0)+1;
+  const ti=$('.timer i');if(ti)ti.style.animationPlayState='paused';
+  $('#av').innerHTML=avatar(reactFace(z.look.face||'smile',ok),64);
   $$('.qo').forEach(b=>{b.disabled=true;if(b.textContent===q.ans)b.classList.add('ok');else if(b===btn)b.classList.add('no')});
-  if($('#qa'))$('#qa').disabled=true;
-  const last=Q.surv?Q.lives<=0:Q.i+1>=Q.qs.length;
-  $('#qfb').innerHTML=`<p class="${ok?'good':'bad'}"><b>${ok?'Correct!':'Not quite.'}</b> ${ok?`+${gain} points${extra?` (${extra})`:''}`:`The answer is <b>${esc(q.ans)}</b>.${Q.surv?` Lives left: ${Q.lives}.`:''}`}</p>${q.expl?`<p class="meta">${esc(q.expl)}</p>`:''}<button class="btn main" id="qnext">${last?'Finish':'Next'}</button>`;
+  if($('#qa'))$('#qa').disabled=true;if($('#qskip'))$('#qskip').hidden=true;
+  const last=Q.surv?Q.lives<=0:Q.i+1>=Q.qs.length,head=ok?'Correct!':why==='time'?"Time's up!":why==='skip'?"That's okay, now you know.":'Not quite.';
+  $('#qfb').innerHTML=`<p class="${ok?'good':'bad'}"><b>${head}</b> ${ok?`+${gain} points${extra?` (${extra})`:''}`:`The answer is <b>${esc(q.ans)}</b>.${Q.surv?` Lives left: ${Q.lives}.`:''}`}</p>${q.expl?`<p class="meta">${esc(q.expl)}</p>`:''}<button class="btn main" id="qnext">${last?'Finish':'Next'}</button>`;
   $('#qnext').onclick=()=>{Q.i++;nextQ()};$('#qnext').focus();
 }
+function showLevelUp(l,bonus){
+  $('#lvlBody').innerHTML=`<div class="lvlpop">${avatar('happy',130)}<h2>Level up!</h2><p class="qbig">${title(l)}</p><p>You reached level ${l}.<br>Bonus: 🍄 +${bonus} spores</p><button class="btn main" id="lvlOk">Continue</button></div>`;
+  $('#lvlDlg').showModal();$('#lvlOk').onclick=()=>$('#lvlDlg').close();
+}
 function endRound(){
+  clearTimeout(Q.tid);
   const z=D.quiz,s=z.stats,l0=lvl(z.xp),t=today(),perfect=!Q.surv&&Q.qs.length>0&&Q.right===Q.qs.length;
   let total=Q.pts+(perfect?25:0),first=false;
   if(z.day!==t){z.dayStreak=z.day===ydate(t)?(z.dayStreak||0)+1:1;z.day=t;total+=10;first=true}
-  s.rounds++;if(perfect)s.perfect++;if(Q.surv)s.survBest=Math.max(s.survBest,Q.right);
+  s.bestDay=Math.max(s.bestDay||0,z.dayStreak||0);s.rounds++;if(perfect)s.perfect++;if(Q.surv)s.survBest=Math.max(s.survBest,Q.right);
   z.xp+=total;z.best=Math.max(z.best,total);
-  const got=D.lex.filter(o=>(z.mastery[o.id]||0)>=4).length,fresh=BADGES.filter(b=>!z.badges.includes(b[0])&&b[3](s,z,got));
-  fresh.forEach(b=>z.badges.push(b[0]));Store.save(D);
-  const l1=lvl(z.xp),gear=Object.keys(ITEMS).filter(k=>+k>l0&&+k<=l1).map(k=>ITEMS[k]),weak=[...new Set(Q.missed)].map(id=>D.lex.find(o=>o.id===id)).filter(Boolean);
-  $('#quizBox').innerHTML=`<div class="hero"><div class="avbox">${avatar(l1,'happy')}</div><div class="herotxt"><h3 class="qtitle">${Q.surv?'Survival over':'Round complete'}</h3><p class="qbig">${total} points</p>
-  <p>${Q.right} correct${Q.surv?'':` of ${Q.qs.length}`}${perfect?'. Perfect round, +25!':''}${first?' Includes +10 for your first round today.':''}</p></div></div>
-  ${l1>l0?`<p class="good"><b>Level up!</b> You are now ${title(l1)}, level ${l1}.${gear.length?' New gear: '+gear.join(', ')+'.':''}</p>`:''}
-  ${fresh.length?`<p class="good"><b>New badge${fresh.length>1?'s':''}:</b> ${fresh.map(b=>b[1]).join(', ')}</p>`:''}
+  const l1=lvl(z.xp),ups=l1-l0,spores=Q.right*3+(perfect?15:0)+(first?8:0)+ups*30;z.spores=(z.spores||0)+spores;s.sporesEarned=(s.sporesEarned||0)+spores;
+  const up=[];z.ach??={};ACH.forEach(a=>{const t=tierOf(a,s,z);if(t>(z.ach[a[0]]||0))up.push(`${MEDAL[t]} ${a[1]} ${a[2]}`);z.ach[a[0]]=t}); // new medals
+  Store.save(D);$('#quizIcons').hidden=false;
+  const weak=[...new Set(Q.missed)].map(id=>D.lex.find(o=>o.id===id)).filter(Boolean);
+  setQ(`<div class="hero"><div class="avbox">${avatar('happy',120)}</div><div class="herotxt"><h3 class="qtitle">${Q.surv?'Survival over':Q.mode==='train'?'Training done':'Round complete'}</h3><p class="qbig">${total} points</p>
+  <p>${Q.right} correct${Q.surv?'':` of ${Q.qs.length}`}${perfect?'. Perfect round, +25!':''}${first?' First round today, +10.':''}</p><p class="spores">🍄 +${spores} spores</p></div></div>
+  ${up.length?`<p class="good"><b>New medal${up.length>1?'s':''}:</b> ${up.join(', ')}</p>`:''}
   ${weak.length?`<p class="meta">Study these next:</p><div class="chips">${weak.map(o=>`<button class="chip-s" onclick="goLex('${o.id}')">${esc(nm(o))}</button>`).join('')}</div>`:''}
-  <div class="acts"><button class="btn main" id="again">Play again</button><button class="btn" id="menu">Menu</button></div>`;
-  $('#again').onclick=()=>startRound(Q.mode);$('#menu').onclick=quizHome;
+  <div class="acts"><button class="btn main" id="again">Play again</button><button class="btn" id="shopBtn">🛍️ Shop</button><button class="btn" id="menu">Menu</button></div>`);
+  $('#again').onclick=()=>startRound(Q.mode);$('#menu').onclick=quizHome;$('#shopBtn').onclick=shopView;
+  if(ups>0)showLevelUp(l1,ups*30);
 }
+
+$('#achBtn').onclick=achView;$('#gsBtn').onclick=gameStatsView;
 
 /* ---------- Sign in / sign out ---------- */
 function setAuthUI(){
@@ -745,18 +1206,22 @@ $('#loginForm').onsubmit=async e=>{
 };
 
 /* ---------- Loading ---------- */
-const QUIZ0=()=>({xp:0,best:0,mastery:{},char:{name:'Forager',color:COLORS[0]},stats:{rounds:0,perfect:0,bestStreak:0,safety:0,alike:0,survBest:0},badges:[],day:'',dayStreak:0});
+const QUIZ0=()=>({xp:0,best:0,spores:0,mastery:{},char:{name:'Forager'},hist:{},tasks:{},miss:{},ach:{},look:{...DEF},owned:FREE(),settings:{...SET0},stats:{rounds:0,perfect:0,bestStreak:0,safety:0,alike:0,survBest:0,answered:0,correct:0,kinds:{},bestDay:0,sporesEarned:0,cleared:0,quick:0},badges:[],day:'',dayStreak:0});
 function upgrade(o){ // entries saved by earlier versions
   if(!o.tags){o.tags=[o.edi||'edible'];if(o.hallu)o.tags.push('hallucinogenic');delete o.edi;delete o.hallu}
   if(!o.feat){o.feat={};if(o.features)o.feat.other=o.features;delete o.features}
-  o.similar??=[];o.photos??=[];o.ediNote??='';o.warn??='';return o;
+  o.similar??=[];o.photos??=[];o.uphotos??=[];o.lookalike??='';o.simNote??='';o.ediNote??='';o.warn??='';o.rank??='species';o.parent??='';o.extra??=[];o.alt??={};o.bruise??='';o.bruiseNote??='';
+  if(o.feat.other){o.extra.push({k:'Other features',v:o.feat.other});delete o.feat.other} // the old long text box became a separate feature
+  return o;
 }
 async function loadAll(){
   let d={};
   try{d=await Store.load()}catch(e){console.error(e);toast('Could not load data from Supabase: '+(e.message||e))}
   D={finds:(d.finds||[]).map(upgrade),lex:(d.lex||[]).map(upgrade),quiz:{...QUIZ0(),...(d.quiz||{})}};
   D.finds.forEach(o=>o.wid??='');
-  D.lex.forEach(o=>o.found??=D.finds.some(f=>Object.values(f.n).some(v=>v&&Object.values(o.n).some(x=>x&&norm(x)===norm(v)))));
+  D.finds.forEach(o=>o.ident??='yes');
+  const hit=(o,id)=>D.finds.some(f=>f.ident===id&&Object.values(f.n).some(v=>v&&Object.values(o.n).some(x=>x&&norm(x)===norm(v))));
+  D.lex.forEach(o=>{o.ident??=(o.found||hit(o,'yes'))?'yes':hit(o,'unsure')?'unsure':'';delete o.found}); // "found by me" became "identified"
   Store.baseline(D);fillSpecies();
 }
 // entries from before the switch to Supabase are still in this browser: offer to upload them once
@@ -765,7 +1230,7 @@ async function offerImport(){
   if(!CLOUD||!user||!L||localStorage.getItem('mushroomlog_imported'))return;
   const have=new Set([...D.finds,...D.lex].map(o=>o.id)),f=(L.finds||[]).filter(o=>!have.has(o.id)),l=(L.lex||[]).filter(o=>!have.has(o.id));
   if(!f.length&&!l.length)return;
-  const yes=confirm(`This browser still has ${f.length} finds and ${l.length} lexicon entries saved locally from before. Upload them to your account?`);
+  const yes=await ask(`This browser still has ${f.length} finds and ${l.length} lexicon entries saved locally from before. Upload them to your account?`,{title:'Upload local entries?',yes:'Upload',no:'Not now'});
   localStorage.setItem('mushroomlog_imported',yes?'yes':'skip');
   if(!yes)return;
   D.finds.push(...f.map(upgrade));D.lex.push(...l.map(upgrade));fillSpecies();toast('Uploading…');

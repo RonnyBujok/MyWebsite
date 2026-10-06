@@ -63,7 +63,14 @@
       </div>
       <div class="sheet-body">
         <ul id="recipe-dd" hidden></ul>
-        <div id="filter-view" hidden><div class="tags-container"></div></div>
+        <div id="filter-view" hidden>
+          <div id="popular-block" hidden>
+            <p class="tag-heading">Most used</p>
+            <div class="tags-container popular-tags"></div>
+          </div>
+          <p class="tag-heading" id="all-heading" hidden>All tags</p>
+          <div class="tags-container all-tags"></div>
+        </div>
       </div>
       <div class="sheet-foot" id="filter-foot" hidden>
         <button type="button" class="reset-filters" id="panel-reset" hidden>Reset</button>
@@ -135,10 +142,20 @@ function renderNav() {
   $('#recipe-list').innerHTML = $('#recipe-dd').innerHTML =
     allRecipes.map(r => `<li><a href="#${esc(slug(r.name))}">${esc(r.name)}</a></li>`).join('');
 
-  const tags = new Map(); // one entry per tag, case-insensitive
-  allRecipes.forEach(r => r.tags.forEach(t => tags.has(t.toLowerCase()) || tags.set(t.toLowerCase(), t)));
-  $('.tags-container').innerHTML = [...tags.values()].sort((a, b) => a.localeCompare(b))
-    .map(t => `<button type="button" class="recipe-tag" data-tag="${esc(t.toLowerCase())}">${esc(t)}</button>`).join('');
+  // count how many recipes use each tag (one entry per tag, case-insensitive)
+  const counts = new Map();
+  allRecipes.forEach(r => r.tags.forEach(t => {
+    const k = t.toLowerCase(), e = counts.get(k) || { name: t, n: 0 };
+    e.n++; counts.set(k, e);
+  }));
+  const all = [...counts.values()].sort((a, b) => a.name.localeCompare(b.name));
+  const popular = all.filter(e => e.n > 1).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name)).slice(0, 20);
+  const pill = e => `<button type="button" class="recipe-tag" data-tag="${esc(e.name.toLowerCase())}">${esc(e.name)}</button>`;
+
+  const showPopular = popular.length >= 3 && all.length > popular.length; // only worth it with plenty of tags
+  $('#popular-block').hidden = $('#all-heading').hidden = !showPopular;
+  $('.popular-tags').innerHTML = showPopular ? popular.map(pill).join('') : '';
+  $('.all-tags').innerHTML = all.map(pill).join('');
 }
 
 function recipeHTML(r) {
@@ -188,7 +205,6 @@ function render() {
   $('#filter-toggle').classList.toggle('on', selectedTags.length > 0);
   $('#panel-reset').hidden = !selectedTags.length && !searchTerm;
   $('#sheet-done').textContent = `Show ${list.length} recipe${list.length === 1 ? '' : 's'}`;
-  markRest();
 }
 
 function resetFilters() {
@@ -218,45 +234,6 @@ addEventListener('scroll', () => {
   if (Math.abs(d) < 6) return;
   toolbar.classList.toggle('hide', d > 0 && y > 80);
   lastY = y;
-}, { passive: true });
-
-// ---------- snap to the start of a recipe ----------
-// Free scrolling inside a recipe. Once a scroll carries you into a different recipe
-// (up or down), it settles at the START of that recipe. Tiny nudges spring back.
-const snapOffset = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 72;
-let rest = { y: 0, idx: -1 }, endTimer, snapping = false;
-
-function recipeIndexAt() { // recipe under the snap line; -1 while still above the first recipe
-  const line = snapOffset() + 1;
-  let idx = -1;
-  document.querySelectorAll('.recipe').forEach((el, i) => { if (el.getBoundingClientRect().top <= line) idx = i; });
-  return idx;
-}
-function markRest() { rest = { y: scrollY, idx: recipeIndexAt() }; }
-
-function snapToRecipe(i) {
-  const el = document.querySelectorAll('.recipe')[i];
-  if (!el) return markRest();
-  const top = el.getBoundingClientRect().top + scrollY - snapOffset();
-  if (Math.abs(top - scrollY) < 2) return markRest();
-  snapping = true; jumping = true; // keep the search bar tucked away during the move
-  scrollTo({ top, behavior: 'smooth' });
-  setTimeout(() => { if (snapping) { snapping = false; jumping = false; markRest(); } }, 1500);
-}
-
-addEventListener('scroll', () => {
-  clearTimeout(endTimer);
-  if (snapping) {
-    endTimer = setTimeout(() => { snapping = false; jumping = false; markRest(); }, 160);
-    return;
-  }
-  endTimer = setTimeout(() => {
-    const idx = recipeIndexAt();
-    if (idx < 0 || idx === rest.idx) return markRest();
-    const nudge = Math.abs(scrollY - rest.y) < 120;
-    if (nudge && rest.idx < 0) return markRest();
-    snapToRecipe(nudge ? rest.idx : idx);
-  }, 140);
 }, { passive: true });
 
 // ---------- back to top ----------
