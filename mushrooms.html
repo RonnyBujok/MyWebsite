@@ -32,7 +32,7 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
   <section class="cb-hero">
     <div class="cb-hero-inner">
       <h1>Mushroom log</h1>
-      <p class="cb-sub">Where, when and what I found</p>
+      <p class="cb-sub">Work in progress - Use at your own risk!</p>
     </div>
     <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><path d="M8 52C8 22 30 6 56 6s48 16 48 46z" fill="#E76F51"/><circle cx="34" cy="30" r="7" fill="#FFFDF8"/><circle cx="62" cy="22" r="5" fill="#FFFDF8"/><circle cx="80" cy="38" r="7" fill="#FFFDF8"/><path d="M42 52h28l-3 34H45z" fill="#FFFDF8"/></svg></div>
     <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
@@ -210,8 +210,8 @@ async function fetchAll(table){
   }
   return rows.map(r=>({...r.data,id:r.id}));
 }
-async function uploadPhotos(o){ // data URLs become files in Storage, URLs stay as they are; "unsure" flags follow the new URLs
-  const map=new Map();
+async function uploadPhotos(o,cache){ // data URLs become files in Storage, URLs stay as they are; "unsure" flags follow the new URLs
+  const map=cache||new Map(); // shared during one save, so a photo of a find that is also in its lexicon entry is uploaded only once
   for(const p of o.photos||[]){
     if(!p.startsWith('data:')||map.has(p))continue;
     const blob=await (await fetch(p)).blob(),path=`${user.id}/${crypto.randomUUID()}.jpg`;
@@ -227,12 +227,12 @@ async function dropPhotos(urls){ // only delete files that no find or lexicon en
   const ps=urls.filter(u=>!used.has(u)).map(storagePath).filter(Boolean);
   if(ps.length)await db.storage.from(BUCKET).remove(ps);
 }
-async function syncList(key,list){ // upsert new/changed entries, delete removed ones
+async function syncList(key,list,cache){ // upsert new/changed entries, delete removed ones
   const sh=shadow[key],seen=new Set();
   for(const o of list){
     seen.add(o.id);if(sh.get(o.id)===JSON.stringify(o))continue;
     const old=sh.has(o.id)?JSON.parse(sh.get(o.id)).photos||[]:[];
-    await uploadPhotos(o);
+    await uploadPhotos(o,cache);
     const {error}=await db.from(TABLE[key]).upsert({id:o.id,data:o,updated_at:new Date().toISOString()});
     if(error)throw error;
     sh.set(o.id,JSON.stringify(o));await dropPhotos(old.filter(p=>!o.photos.includes(p)));
@@ -256,7 +256,7 @@ const Store={
     try{
       if(!CLOUD)return lsSet('mushroomlog',D);
       if(!user)return lsSet('mushroomlog_quiz',D.quiz); // visitors only keep their quiz progress, in this browser
-      await syncList('finds',D.finds);await syncList('lex',D.lex);
+      const cache=new Map();await syncList('finds',D.finds,cache);await syncList('lex',D.lex,cache);
       const q=JSON.stringify(D.quiz);
       if(q!==shadow.quiz){const {error}=await db.from('mushroom_quiz').upsert({user_id:user.id,data:D.quiz,updated_at:new Date().toISOString()});if(error)throw error;shadow.quiz=q}
       return true;
@@ -601,9 +601,14 @@ F.onsubmit=async e=>{
     }
     btn.disabled=false;btn.textContent=label;
   }
-  if(lexHit&&!cur.id&&cur.photos.length){ // new photos of a mushroom that is already in the lexicon grow its photo collection
-    const u=cur.ident==='unsure';let n=0;
-    for(const p of cur.photos)if(!lexHit.photos.includes(p)){lexHit.photos.push(p);if(u)lexHit.uphotos=[...(lexHit.uphotos||[]),p];n++}
+  if(lexHit&&cur.photos.length){ // every new photo of a mushroom that is already in the lexicon is added to its entry, so the collection keeps growing
+    const before=cur.id?(D.finds.find(o=>o.id===cur.id)?.photos||[]):[]; // when editing a find, only photos that are new on it count
+    let n=0;
+    for(const p of cur.photos){
+      if(before.includes(p)||lexHit.photos.includes(p))continue;
+      lexHit.photos.push(p);n++;
+      if(cur.ident==='unsure'||(cur.uphotos||[]).includes(p))lexHit.uphotos=[...(lexHit.uphotos||[]),p]; // unsure photos stay flagged
+    }
     if(n)note=(note?note+' ':'')+`${n} photo${n>1?'s':''} added to the lexicon entry.`;
   }
   delete cur.toLex;delete cur.review;

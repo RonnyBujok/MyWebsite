@@ -31,7 +31,6 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
   <section class="cb-hero">
     <div class="cb-hero-inner">
       <h1>Board games</h1>
-      <p class="cb-sub">What I own, what I play and who wins</p>
     </div>
     <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><g transform="rotate(-8 58 46)"><rect x="30" y="18" width="56" height="56" rx="11" fill="#E76F51"/><circle cx="44" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="58" cy="46" r="5.5" fill="#FFFDF8"/><circle cx="44" cy="60" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="60" r="5.5" fill="#FFFDF8"/></g></svg></div>
     <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
@@ -39,28 +38,27 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
 
   <main class="wrap">
     <div class="bar tabs" role="tablist">
-      <button class="tab on" data-v="lib">Library</button>
-      <button class="tab" data-v="log">Log</button>
+      <button class="tab on owner-only" data-v="lib">Library</button>
+      <button class="tab owner-only" data-v="log">Log</button>
       <button class="tab" data-v="calc">Calculator</button>
       <span class="grow"></span>
       <button class="btn main edit-only" id="newPlay">+ New play</button>
     </div>
     <div class="bar logNav" id="logNav" hidden><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button><button class="stab" data-sub="game">By game</button></div>
+    <div class="bar logNav owner-only" id="libNav"><button class="stab on" data-sub="lib">Games</button><button class="stab" data-sub="libstats">Stats</button></div>
 
     <!-- shared search and date filter of History and Stats -->
     <div class="card panel" id="logFilter" hidden>
       <div class="field"><label class="l" for="lq">Search game, player or date</label><input id="lq" type="search" placeholder="e.g. Catan, Anna, 2026-10"></div>
-      <details id="lDate"><summary id="lSum">Filter by date</summary>
+      <details id="lDate"><summary id="lSum">Filters</summary>
         <div class="field dates" style="margin-top:.9rem"><div><label class="l" for="lFrom">From</label><input type="date" id="lFrom"></div><div><label class="l" for="lTo">To</label><input type="date" id="lTo"></div></div>
+        <div class="chips" style="margin:.2rem 0 .6rem"><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="lDeck"><span>🃏 Standard deck</span></label><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="lDeck2"><span>🃏 2× Two decks</span></label></div>
       </details>
       <div class="resetRow"><button class="btn sm" id="lReset" type="button">Reset filters</button></div>
     </div>
 
-    <!-- LIBRARY -->
-    <section class="view" id="v-lib">
-      <div class="tiles3" id="overview"></div>
-      <div class="card panel">
-        <div class="field"><label class="l" for="gq">Search the library</label><input id="gq" type="search" placeholder="Name, genre, year, players, feature…"></div>
+    <div class="card panel owner-only" id="libFilter">
+        <div class="field"><label class="l" for="gq">Search and filter the library</label><input id="gq" type="search" placeholder="Name, genre, year, players, feature…"></div>
         <details id="gFilters"><summary id="gSum">Filters</summary>
           <div class="filters">
             <div class="field"><label class="l" for="gOwn">Ownership</label><select id="gOwn"><option value="">All</option><option value="own">Owned</option><option value="not">Not owned</option></select></div>
@@ -70,13 +68,20 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
             <div class="field"><label class="l" for="gTime">Max playtime (min)</label><input id="gTime" type="number" min="1" inputmode="numeric" placeholder="e.g. 60"></div>
             <div class="field dates"><div><label class="l" for="gY1">Year from</label><input id="gY1" type="number" inputmode="numeric"></div><div><label class="l" for="gY2">to</label><input id="gY2" type="number" inputmode="numeric"></div></div>
           </div>
-          <div class="chips" style="margin:.2rem 0 .6rem"><label class="chip" style="--c:var(--gold)"><input type="checkbox" id="gFav"><span>★ Favorites only</span></label></div>
+          <div class="chips" style="margin:.2rem 0 .6rem"><label class="chip" style="--c:var(--gold)"><input type="checkbox" id="gFav"><span>★ Favorites only</span></label><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="gDeck"><span>🃏 Standard deck</span></label><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="gDeck2"><span>🃏 2× Two decks</span></label></div>
         </details>
         <div class="resetRow"><button class="btn sm" id="gReset" type="button">Reset filters</button></div>
       </div>
+
+    <!-- LIBRARY -->
+    <section class="view owner-only" id="v-lib">
+      <div class="tiles3" id="overview"></div>
       <div class="bar"><h2 style="margin:0">Games</h2><span class="meta" id="gCount"></span><span class="grow"></span><button class="btn main edit-only" id="newGame">+ Add game</button></div>
       <div class="list" id="gameList"></div>
     </section>
+
+    <!-- LIBRARY: stats -->
+    <section class="view" id="v-libstats" hidden><div id="libStatsBox"></div></section>
 
     <!-- LOG: history -->
     <section class="view" id="v-hist" hidden>
@@ -116,6 +121,7 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
         <div class="row">
           <div class="field"><label class="l" for="gMode">Type</label><select id="gMode" name="mode"><option value="comp">Competitive</option><option value="coop">Co-op</option></select></div>
           <div class="field"><label class="l" for="gGen">Genre</label><input id="gGen" name="genre" list="genreNames" placeholder="e.g. Strategy"></div>
+          <div class="field"><label class="l" for="gDk">Standard deck of cards</label><select id="gDk" name="deck"><option value="0">Not a card game</option><option value="1">Playable with one deck</option><option value="2">Playable with two decks (2×)</option></select></div>
         </div>
         <div class="field"><div class="chips">
           <label class="chip" style="--c:var(--gold)"><input type="checkbox" name="fav"><span>★ Favorite</span></label>
@@ -235,7 +241,7 @@ const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStr
 const fmtD=d=>d?new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';
 const num=v=>{if(v===''||v==null)return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
 const toks=s=>String(s??'').split(/\s*[,;/]\s*/).map(t=>t.trim()).filter(Boolean);
-let D={games:[],plays:[],calcs:[]},view='lib',lastLog='hist',cur=null,returnTo='lib';
+let D={games:[],plays:[],calcs:[]},view='lib',lastLog='hist',lastLib='lib',cur=null,returnTo='lib';
 const gameById=id=>D.games.find(g=>g.id===id);
 const gameByName=n=>D.games.find(g=>norm(g.name)===norm(n));
 const playersTxt=g=>g.minP&&g.maxP?(g.minP===g.maxP?`${g.minP}`:`${g.minP}–${g.maxP}`):(g.maxP||g.minP||'');
@@ -272,18 +278,19 @@ $('#loginForm').onsubmit=async e=>{
 };
 
 /* ---------- navigation: Library | Log (History, Stats, By game) | Calculator ---------- */
-const LOGV=['hist','stats','game'],CALCV=['calc','calcplay','calcedit'];
-const tabOf=v=>v==='lib'||v==='editgame'?'lib':LOGV.includes(v)||v==='editplay'?'log':CALCV.includes(v)?'calc':'';
+const LOGV=['hist','stats','game'],LIBV=['lib','libstats'],CALCV=['calc','calcplay','calcedit'];
+const tabOf=v=>v==='lib'||v==='libstats'||v==='editgame'?'lib':LOGV.includes(v)||v==='editplay'?'log':CALCV.includes(v)?'calc':'';
 function show(v){
-  view=v;if(LOGV.includes(v))lastLog=v;
+  if(!can()&&v!=='calc'&&v!=='calcplay')v='calc'; // visitors only get the calculators; library and log are private
+  view=v;if(LOGV.includes(v))lastLog=v;if(LIBV.includes(v))lastLib=v;
   $$('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
   $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===tabOf(v)));
   $('#logNav').hidden=!LOGV.includes(v);$$('[data-sub]').forEach(b=>b.classList.toggle('on',b.dataset.sub===v));
-  $('#logFilter').hidden=!(v==='hist'||v==='stats');
-  if(v==='lib')renderLib();if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='game')renderGameStats();if(v==='calc')renderCalcList();
+  $('#logFilter').hidden=!(v==='hist'||v==='stats');$('#libNav').hidden=$('#libFilter').hidden=!LIBV.includes(v);
+  if(v==='lib')renderLib();if(v==='libstats')renderLibStats();if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='game')renderGameStats();if(v==='calc')renderCalcList();
   fillLists();window.scrollTo({top:0});
 }
-$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v));
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v==='lib'?lastLib:t.dataset.v));
 $$('[data-sub]').forEach(b=>b.onclick=()=>show(b.dataset.sub));
 function fillLists(){ // suggestions for the autofill fields
   const names=[...new Set([...D.games.map(g=>g.name),...D.plays.map(p=>p.game)])].sort();
@@ -298,12 +305,13 @@ function fillLists(){ // suggestions for the autofill fields
 const ICON_OWN='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const favMark=on=>`<span class="fav${on?' on':''}" role="img" aria-label="${on?'Favorite':'Not a favorite'}" title="${on?'Favorite':'Not a favorite'}">★</span>`;
 const ownMark=on=>`<span class="own${on?' on':''}" role="img" aria-label="${on?'Owned':'Not owned'}" title="${on?'Owned':'Not owned'}">${on?ICON_OWN:''}</span>`;
+const deckMark=g=>g&&g.deck?`<span class="deck${g.deck>1?' two':''}" role="img" aria-label="${g.deck>1?'Playable with two standard decks of cards':'Playable with a standard deck of cards'}" title="${g.deck>1?'Playable with two standard decks of cards':'Playable with a standard deck of cards'}">🃏${g.deck>1?' 2×':''}</span>`:'';
 function libList(){
-  const qs=norm($('#gq').value).split(/\s+/).filter(Boolean),ow=$('#gOwn').value,ty=$('#gType').value,ge=$('#gGenre').value,fav=$('#gFav').checked;
+  const qs=norm($('#gq').value).split(/\s+/).filter(Boolean),ow=$('#gOwn').value,ty=$('#gType').value,ge=$('#gGenre').value,fav=$('#gFav').checked,d1=$('#gDeck').checked,d2=$('#gDeck2').checked;
   const pl=num($('#gPl').value),mt=num($('#gTime').value),y1=num($('#gY1').value),y2=num($('#gY2').value);
   return D.games.filter(g=>{
-    const hay=norm([g.name,g.genre,g.year,g.mode==='coop'?'co-op coop cooperative':'competitive',`${playersTxt(g)} players`,g.time?`${g.time} min minutes`:'',g.owned?'owned':'not owned',g.fav?'favorite':'',...(g.extra||[]).flatMap(e=>[e.k,e.v]),g.rules].join(' '));
-    return qs.every(t=>hay.includes(t))&&(!ow||(ow==='own'?g.owned:!g.owned))&&(!fav||g.fav)&&(!ty||(g.mode||'comp')===ty)
+    const hay=norm([g.name,g.genre,g.year,g.mode==='coop'?'co-op coop cooperative':'competitive',`${playersTxt(g)} players`,g.time?`${g.time} min minutes`:'',g.owned?'owned':'not owned',g.fav?'favorite':'',g.deck?'cards card game deck standard deck playing cards'+(g.deck>1?' two decks 2x':''):'',...(g.extra||[]).flatMap(e=>[e.k,e.v]),g.rules].join(' '));
+    return qs.every(t=>hay.includes(t))&&(!ow||(ow==='own'?g.owned:!g.owned))&&(!fav||g.fav)&&(!d1||(g.deck||0)>=1)&&(!d2||g.deck===2)&&(!ty||(g.mode||'comp')===ty)
       &&(!ge||toks(g.genre).some(t=>norm(t)===norm(ge)))&&(pl==null||((g.minP||1)<=pl&&pl<=(g.maxP||99)))&&(mt==null||(g.time||0)<=mt)
       &&(y1==null||(g.year||0)>=y1)&&(y2==null||(g.year||9999)<=y2);
   }).sort((a,b)=>a.name.localeCompare(b.name));
@@ -311,9 +319,9 @@ function libList(){
 function playsOf(g){return D.plays.filter(p=>p.gameId===g.id||(!p.gameId&&norm(p.game)===norm(g.name)))}
 function gameRow(g){
   const ps=playsOf(g),last=ps.map(p=>p.date).sort().pop();
-  const facts=[['Players',playersTxt(g)?playersTxt(g):'–'],['Playtime',g.time?`${g.time} min`:'–'],['Type',(g.mode||'comp')==='coop'?'Co-op':'Competitive'],['Genre',g.genre||'–'],['Year',g.year||'–']];
+  const facts=[...(g.deck?[['Cards',g.deck>1?'Two standard decks (2×)':'One standard deck']]:[]),['Players',playersTxt(g)?playersTxt(g):'–'],['Playtime',g.time?`${g.time} min`:'–'],['Type',(g.mode||'comp')==='coop'?'Co-op':'Competitive'],['Genre',g.genre||'–'],['Year',g.year||'–']];
   const extra=(g.extra||[]).filter(e=>e.k&&e.v).map(e=>`<dt>${esc(e.k)}</dt><dd>${esc(e.v)}</dd>`).join('');
-  return `<details class="card entry" id="g-${g.id}"><summary><span class="en">${esc(g.name)}</span>${favMark(g.fav)}${ownMark(g.owned)}</summary>
+  return `<details class="card entry" id="g-${g.id}"><summary><span class="en">${esc(g.name)}${deckMark(g)}</span>${favMark(g.fav)}${ownMark(g.owned)}</summary>
   <div class="ebody"><dl class="facts">${facts.map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
   ${extra?`<dl class="feat">${extra}</dl>`:''}
   ${g.rules?`<div class="box"><h5>Instructions</h5><div class="rules">${esc(g.rules)}</div></div>`:''}
@@ -327,16 +335,73 @@ function gameRow(g){
 function renderLib(){
   const all=D.games; // the overview never changes with the search or filters
   $('#overview').innerHTML=[['Games listed',all.length],['Owned',all.filter(g=>g.owned).length],['Favorites',all.filter(g=>g.fav).length]].map(([l,n])=>`<div class="card tile"><b>${n}</b><span>${l}</span></div>`).join('');
-  const sel=$('#gGenre'),v=sel.value,gs=[...new Set(all.flatMap(g=>toks(g.genre)))].sort((a,b)=>a.localeCompare(b));
-  sel.innerHTML='<option value="">All genres</option>'+gs.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');sel.value=gs.includes(v)?v:'';
+  syncLibFilters();
   const list=libList();
   $('#gCount').textContent=list.length===all.length?'':`${list.length} of ${all.length} shown`;
-  const active=['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].some(s=>$(s).value)||$('#gFav').checked;
-  $('#gSum').textContent='Filters'+(active?' (active)':'');
   $('#gameList').innerHTML=list.map(gameRow).join('')||`<div class="empty card">${all.length?'No games match your search or filters.':'Your library is empty. Add your first game.'}</div>`;
 }
-$('#v-lib').addEventListener('input',renderLib);
-$('#gReset').onclick=()=>{$('#gq').value='';['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].forEach(s=>$(s).value='');$('#gFav').checked=false;renderLib()};
+function syncLibFilters(){ // the genre list and the "(active)" label of the filters shared by Games and Stats
+  const sel=$('#gGenre'),v=sel.value,gs=[...new Set(D.games.flatMap(g=>toks(g.genre)))].sort((a,b)=>a.localeCompare(b));
+  sel.innerHTML='<option value="">All genres</option>'+gs.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');sel.value=gs.includes(v)?v:'';
+  const active=['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].some(s=>$(s).value)||$('#gFav').checked;
+  $('#gSum').textContent='Filters'+(active?' (active)':'');
+}
+const renderLibAny=()=>view==='libstats'?renderLibStats():renderLib();
+$('#libFilter').addEventListener('input',renderLibAny);
+$('#gReset').onclick=()=>{$('#gq').value='';['#gOwn','#gType','#gGenre','#gPl','#gTime','#gY1','#gY2'].forEach(s=>$(s).value='');$('#gFav').checked=$('#gDeck').checked=$('#gDeck2').checked=false;renderLibAny()};
+
+/* ---------- library stats (use the same search and filters as the game list) ---------- */
+function colChart(items,aria,unit){ // vertical bars: [{label,n}]
+  const W=300,H=110,L=18,n=items.length,mx=Math.max(1,...items.map(i=>i.n)),bw=(W-L-4)/n,step=Math.ceil(n/8);
+  return `<svg class="chart cols" viewBox="0 0 ${W} ${H+22}" role="img" aria-label="${esc(aria)}"><path d="M${L} ${H-8}H${W}" stroke="currentColor" stroke-opacity=".25"/><text x="${L-4}" y="${H-5}" font-size="8" text-anchor="end" fill="currentColor">0</text><text x="${L-4}" y="${H-8-(H-26)+7}" font-size="8" text-anchor="end" fill="currentColor">${mx}</text>
+  ${items.map((it,i)=>{const x=L+i*bw,bh=it.n/mx*(H-26);return `<g class="cb" tabindex="0" data-tip="${esc(it.label)}: ${it.n} ${unit}${it.n===1?'':'s'}"><title>${esc(it.label)}: ${it.n}</title><rect x="${x}" y="0" width="${bw}" height="${H}" fill="transparent"/><rect class="barr" x="${x+bw*.12}" y="${H-8-bh}" width="${bw*.76}" height="${bh}" rx="2" fill="var(--accent)"/></g>${i%step===0?`<text x="${x+bw/2}" y="${H+8}" font-size="8" text-anchor="middle" fill="currentColor">${esc(it.label)}</text>`:''}`}).join('')}</svg><p class="meta chartcap">Tap or hover a bar for the number.</p>`;
+}
+function stackBar(parts){ // [{label,n,cls}] shown as one bar plus a legend
+  const tot=parts.reduce((s,p)=>s+p.n,0)||1;
+  return `<div class="stack" role="img" aria-label="${esc(parts.map(p=>p.label+' '+p.n).join(', '))}">${parts.filter(p=>p.n).map(p=>`<i class="${p.cls}" style="flex:${p.n}">${p.n/tot>.12?p.n:''}</i>`).join('')}</div>
+  <ul class="legend">${parts.map(p=>`<li><span class="sw2 ${p.cls}"></span>${esc(p.label)} <b>${p.n}</b> <span class="meta">(${Math.round(p.n/tot*100)}%)</span></li>`).join('')}</ul>`;
+}
+function renderLibStats(){
+  syncLibFilters();
+  const all=D.games,list=libList(),box=$('#libStatsBox'),own=$('#gOwn').value;
+  const head=`<div class="bar" style="margin-top:.2rem"><div class="seg" role="group" aria-label="Which games to count"><button type="button" data-own="" class="${own===''?'on':''}">All listed</button><button type="button" data-own="own" class="${own==='own'?'on':''}">Owned</button></div><span class="grow"></span><span class="meta">${list.length===all.length?`${all.length} games`:`${list.length} of ${all.length} games`}</span></div>`;
+  if(!list.length){box.innerHTML=head+`<div class="empty card">${all.length?'No games match your search or filters.':'Stats appear after you add your first game.'}</div>`;wireLibStats();return}
+  const n=list.length,coop=list.filter(g=>g.mode==='coop').length,owned=list.filter(g=>g.owned).length,cards=list.filter(g=>g.deck),two=list.filter(g=>g.deck===2).length;
+  // genres (a game with several genres counts in each)
+  const gc=new Map();list.forEach(g=>toks(g.genre).forEach(t=>{const k=norm(t),e=gc.get(k)||{name:t,n:0};e.n++;gc.set(k,e)}));
+  const gl=[...gc.values()].sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name)),gmax=gl[0]?.n||1,noGenre=list.filter(g=>!toks(g.genre).length).length;
+  const hb=e=>`<button type="button" class="hb" data-genre="${esc(e.name)}" title="Show only ${esc(e.name)} games"><span class="hl">${esc(e.name)}</span><span class="hv"><i style="width:${e.n/gmax*100}%"></i></span><b>${e.n}</b></button>`;
+  // release years: single years, 5-year or 10-year groups depending on the span
+  const ys=list.filter(g=>g.year).map(g=>g.year),noYear=n-ys.length;let years='';
+  if(ys.length){
+    const y0=Math.min(...ys),y1=Math.max(...ys),sp=y1-y0,size=sp>=30?10:sp>=12?5:1,b0=Math.floor(y0/size)*size,items=[];
+    for(let b=b0;b<=y1;b+=size)items.push({label:size===1?String(b):size===5?`${b}–${String(b+4).slice(2)}`:`${b}s`,n:ys.filter(y=>y>=b&&y<b+size).length});
+    years=colChart(items,'Games by release year','game');
+  }
+  // players: how many games can be played with exactly this many players
+  const pg=list.filter(g=>g.minP||g.maxP),noPl=n-pg.length;let players='';
+  if(pg.length){
+    const mxp=Math.max(...pg.map(g=>g.maxP||g.minP)),top=Math.min(10,mxp),items=[];
+    for(let k=1;k<=top;k++)items.push({label:k===10&&mxp>10?'10+':String(k),n:pg.filter(g=>(g.minP||1)<=k&&k<=(g.maxP||g.minP)).length});
+    players=colChart(items,'Games by number of players','game');
+  }
+  box.innerHTML=head+`<div class="tiles4"><div class="card tile big"><b>${n}</b><span>Games counted</span></div><div class="card tile"><b>${owned}</b><span>Owned</span></div><div class="card tile"><b>${coop}</b><span>Co-op</span></div><div class="card tile"><b>${cards.length}</b><span>🃏 Card games</span></div></div>
+  <div class="card" style="margin-top:1rem"><h3 class="ct">Genres</h3>${gl.length?`<div class="hbars">${gl.slice(0,8).map(hb).join('')}</div>${gl.length>8?`<details class="more"><summary>${gl.length-8} more genre${gl.length-8>1?'s':''}</summary><div class="hbars">${gl.slice(8).map(hb).join('')}</div></details>`:''}`:'<p class="meta">No genres filled in yet.</p>'}
+    <p class="meta chartcap">Games with several genres count in each. Tap a bar to show only that genre.${noGenre?` ${noGenre} game${noGenre>1?'s have':' has'} no genre.`:''}</p></div>
+  <div class="card" style="margin-top:1rem"><h3 class="ct">Release years</h3>${years||'<p class="meta">No release years filled in yet.</p>'}${noYear&&ys.length?`<p class="meta">${noYear} game${noYear>1?'s':''} without a year.</p>`:''}</div>
+  <div class="card" style="margin-top:1rem"><h3 class="ct">Number of players</h3>${players||'<p class="meta">No player counts filled in yet.</p>'}${players?`<p class="meta">Number of games that can be played with this many players.${noPl?` ${noPl} without player info.`:''}</p>`:''}</div>
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card"><h3 class="ct">Co-op or competitive</h3>${stackBar([{label:'Competitive',n:n-coop,cls:'c1'},{label:'Co-op',n:coop,cls:'c2'}])}</div>
+    <div class="card"><h3 class="ct">Standard deck of cards</h3>${stackBar([{label:'One deck 🃏',n:cards.length-two,cls:'c1'},{label:'Two decks 🃏 2×',n:two,cls:'c3'},{label:'Not a card game',n:n-cards.length,cls:'c0'}])}</div>
+  </div>`;
+  wireLibStats();
+}
+function wireLibStats(){
+  $$('#libStatsBox .seg button').forEach(b=>b.onclick=()=>{$('#gOwn').value=b.dataset.own;renderLibStats()});
+  $$('#libStatsBox .hb').forEach(b=>b.onclick=()=>{$('#gGenre').value=b.dataset.genre;renderLibStats()});
+  $$('#libStatsBox .chart.cols').forEach(svg=>{const cap=svg.nextElementSibling;svg.querySelectorAll('.cb').forEach(g=>{
+    const f=()=>{svg.querySelectorAll('.barr').forEach(r=>r.setAttribute('fill','var(--accent)'));g.querySelector('.barr').setAttribute('fill','var(--third)');cap.innerHTML=`<b>${g.dataset.tip}</b>`};g.onclick=g.onmouseenter=g.onfocus=f})});
+}
 function gameStats(id){show('game');$('#bgName').value=gameById(id).name;renderGameStats()}
 async function toggleGame(id,k){
   if(!needLogin())return;const g=gameById(id);g[k]=!g[k];await Store.save(D);
@@ -349,7 +414,7 @@ async function delGame(id){
 }
 
 /* ---------- add / edit a game ---------- */
-const blankGame=()=>({id:null,name:'',minP:null,maxP:null,time:null,mode:'comp',genre:'',year:null,fav:false,owned:true,lowWins:false,extra:[],rules:''});
+const blankGame=()=>({id:null,name:'',minP:null,maxP:null,time:null,mode:'comp',genre:'',deck:0,year:null,fav:false,owned:true,lowWins:false,extra:[],rules:''});
 function openGame(g){if(!needLogin())return;cur=g;returnTo='lib';show('editgame');fillGame()}
 const editGame=id=>openGame(structuredClone(gameById(id)));
 $('#newGame').onclick=()=>openGame(blankGame());
@@ -358,7 +423,7 @@ const GF=$('#gf');
 function fillGame(){
   const E=GF.elements;$('#gameTitle').textContent=cur.id?'Edit game':'New game';
   E.name.value=cur.name;E.minP.value=cur.minP??'';E.maxP.value=cur.maxP??'';E.time.value=cur.time??'';E.year.value=cur.year??'';
-  E.mode.value=cur.mode||'comp';E.genre.value=cur.genre||'';E.fav.checked=!!cur.fav;E.owned.checked=!!cur.owned;E.lowWins.checked=!!cur.lowWins;E.rules.value=cur.rules||'';
+  E.mode.value=cur.mode||'comp';E.genre.value=cur.genre||'';E.deck.value=String(cur.deck||0);E.fav.checked=!!cur.fav;E.owned.checked=!!cur.owned;E.lowWins.checked=!!cur.lowWins;E.rules.value=cur.rules||'';
   drawExtras();
 }
 const readExtras=keep=>$$('#gExtraRows .xrow').map(r=>({k:r.children[0].value.trim(),v:r.children[1].value.trim()})).filter(x=>keep||(x.k&&x.v));
@@ -370,7 +435,7 @@ function drawExtras(){
 $('#addExtra').onclick=()=>{cur.extra=readExtras(true);cur.extra.push({k:'',v:''});drawExtras();$$('#gExtraRows .xrow').pop()?.children[0].focus()};
 GF.onsubmit=async e=>{
   e.preventDefault();if(!needLogin())return;const E=GF.elements;
-  const g={...cur,name:E.name.value.trim(),minP:num(E.minP.value),maxP:num(E.maxP.value),time:num(E.time.value),year:num(E.year.value),mode:E.mode.value,genre:E.genre.value.trim(),
+  const g={...cur,name:E.name.value.trim(),minP:num(E.minP.value),maxP:num(E.maxP.value),time:num(E.time.value),year:num(E.year.value),mode:E.mode.value,genre:E.genre.value.trim(),deck:+E.deck.value||0,
     fav:E.fav.checked,owned:E.owned.checked,lowWins:E.lowWins.checked,rules:E.rules.value.trim(),extra:readExtras(false)};
   if(!g.name)return say('Give the game a name.');
   if(g.minP&&g.maxP&&g.minP>g.maxP)return say('Min players cannot be higher than max players.');
@@ -385,13 +450,14 @@ GF.onsubmit=async e=>{
    LOG: plays
    ===================================================================== */
 const LF={q:'',from:'',to:''};
+const deckOf=p=>((p.gameId?gameById(p.gameId):gameByName(p.game))||{}).deck||0;
 const logPlays=()=>{
   const qs=norm(LF.q).split(/\s+/).filter(Boolean);
-  return D.plays.filter(p=>{const hay=norm([p.game,p.date,fmtD(p.date),...p.players.map(x=>x.name)].join(' '));return qs.every(t=>hay.includes(t))&&(!LF.from||p.date>=LF.from)&&(!LF.to||p.date<=LF.to)})
+  return D.plays.filter(p=>{const hay=norm([p.game,p.date,fmtD(p.date),...p.players.map(x=>x.name)].join(' '));return qs.every(t=>hay.includes(t))&&(!LF.from||p.date>=LF.from)&&(!LF.to||p.date<=LF.to)&&(!LF.deck||deckOf(p)>=1)&&(!LF.deck2||deckOf(p)===2)})
     .sort((a,b)=>b.date.localeCompare(a.date));
 };
-$('#logFilter').addEventListener('input',()=>{LF.q=$('#lq').value;LF.from=$('#lFrom').value;LF.to=$('#lTo').value;$('#lSum').textContent='Filter by date'+(LF.from||LF.to?' (active)':'');view==='stats'?renderStats():renderHist()});
-$('#lReset').onclick=()=>{$('#lq').value=$('#lFrom').value=$('#lTo').value='';LF.q=LF.from=LF.to='';$('#lSum').textContent='Filter by date';view==='stats'?renderStats():renderHist()};
+$('#logFilter').addEventListener('input',()=>{LF.q=$('#lq').value;LF.from=$('#lFrom').value;LF.to=$('#lTo').value;LF.deck=$('#lDeck').checked;LF.deck2=$('#lDeck2').checked;$('#lSum').textContent='Filters'+(LF.from||LF.to||LF.deck||LF.deck2?' (active)':'');view==='stats'?renderStats():renderHist()});
+$('#lReset').onclick=()=>{$('#lq').value=$('#lFrom').value=$('#lTo').value='';LF.q=LF.from=LF.to='';$('#lDeck').checked=$('#lDeck2').checked=LF.deck=LF.deck2=false;$('#lSum').textContent='Filters';view==='stats'?renderStats():renderHist()};
 const meOf=p=>p.players.find(x=>x.me);
 // the result for you: won / lost / draw (null when you did not play or no winner was marked)
 function resultOf(p){
@@ -413,7 +479,7 @@ function playRow(p){
   const rows=p.teams
     ?[...new Set(p.players.map(x=>x.team))].map(t=>{const m=p.players.filter(x=>x.team===t);return `<tr class="${m.some(x=>x.win)?'wonrow':''}"><td>${m.some(x=>x.win)?'🏆 ':''}<b>${teamName(t)}</b>: ${m.map(x=>esc(x.name)+(x.me?' <i>(me)</i>':'')).join(', ')}</td><td class="sc">${p.teamScores?.[t]??''}</td></tr>`}).join('')
     :p.players.map(x=>`<tr class="${x.win?'wonrow':''}"><td>${x.win?'🏆 ':''}${esc(x.name)}${x.me?' <i>(me)</i>':''}</td><td class="sc">${x.score??''}</td></tr>`).join('');
-  return `<details class="card entry" id="p-${p.id}"><summary><span class="en">${esc(p.game)}</span>${favMark(g?.fav)}<span class="dt">${fmtD(p.date)}</span><span class="wn">${esc(winnerText(p))}</span></summary>
+  return `<details class="card entry" id="p-${p.id}"><summary><span class="en">${esc(p.game)}${deckMark(g)}</span>${favMark(g?.fav)}<span class="dt">${fmtD(p.date)}</span><span class="wn">${esc(winnerText(p))}</span></summary>
   <div class="ebody"><table class="ptable"><tbody>${rows}</tbody></table>
   ${res?`<p class="meta">For you: <b>${res==='won'?'won':res==='lost'?'lost':'draw'}</b></p>`:''}
   ${p.notes?`<p class="meta">${esc(p.notes)}</p>`:''}
@@ -751,7 +817,7 @@ async function saveCalc(){
 /* ---------- start ---------- */
 async function loadAll(){
   let d={};try{d=await Store.load()}catch(e){console.error(e);toast('Could not load data from Supabase: '+(e.message||e))}
-  D={games:(d.games||[]).map(g=>({extra:[],mode:'comp',...g})),plays:(d.plays||[]).map(p=>({players:[],teamScores:{},...p})),calcs:(d.calcs||[]).map(t=>({info:'',groups:[],...t,rows:(t.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r})),groups:(t.groups||[]).map(g=>({names:'',...g,rows:(g.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r}))}))}))};
+  D={games:(d.games||[]).map(g=>({extra:[],mode:'comp',deck:0,...g})),plays:(d.plays||[]).map(p=>({players:[],teamScores:{},...p})),calcs:(d.calcs||[]).map(t=>({info:'',groups:[],...t,rows:(t.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r})),groups:(t.groups||[]).map(g=>({names:'',...g,rows:(g.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r}))}))}))};
   Store.baseline(D);
 }
 async function authChanged(){setAuthUI();await loadAll();show(view==='editgame'||view==='editplay'||view==='calcedit'||view==='calcplay'?'lib':view)}
@@ -759,7 +825,7 @@ async function authChanged(){setAuthUI();await loadAll();show(view==='editgame'|
   if(CLOUD){const {data:{session}}=await db.auth.getSession();user=session?.user||null}
   else if(SUPABASE_URL)toast('Could not load Supabase, so everything is only saved in this browser.');
   setAuthUI();
-  await loadAll();setAuthUI();show('lib');document.body.classList.remove('loading');
+  await loadAll();setAuthUI();show(can()?'lib':'calc');document.body.classList.remove('loading');
   if(CLOUD)db.auth.onAuthStateChange((_e,s)=>{const u=s?.user||null;if((u?.id||'')===(user?.id||''))return;user=u;setTimeout(authChanged,0)});
 })();
 </script>
