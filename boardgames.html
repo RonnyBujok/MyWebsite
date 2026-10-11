@@ -31,6 +31,7 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
   <section class="cb-hero">
     <div class="cb-hero-inner">
       <h1>Board games</h1>
+      <p class="cb-sub">What I own, what I play and who wins</p>
     </div>
     <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><g transform="rotate(-8 58 46)"><rect x="30" y="18" width="56" height="56" rx="11" fill="#E76F51"/><circle cx="44" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="58" cy="46" r="5.5" fill="#FFFDF8"/><circle cx="44" cy="60" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="60" r="5.5" fill="#FFFDF8"/></g></svg></div>
     <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
@@ -41,10 +42,12 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
       <button class="tab on owner-only" data-v="lib">Library</button>
       <button class="tab owner-only" data-v="log">Log</button>
       <button class="tab" data-v="calc">Calculator</button>
+      <button class="tab" data-v="chance">Random</button>
       <span class="grow"></span>
       <button class="btn main edit-only" id="newPlay">+ New play</button>
     </div>
     <div class="bar logNav" id="logNav" hidden><button class="stab" data-sub="hist">History</button><button class="stab" data-sub="stats">Stats</button><button class="stab" data-sub="game">By game</button></div>
+    <div class="bar logNav" id="chanceNav" hidden><button class="stab" data-sub="dice">Dice</button><button class="stab" data-sub="coin">Coin</button><button class="stab" data-sub="num">Number</button></div>
     <div class="bar logNav owner-only" id="libNav"><button class="stab on" data-sub="lib">Games</button><button class="stab" data-sub="libstats">Stats</button></div>
 
     <!-- shared search and date filter of History and Stats -->
@@ -78,6 +81,46 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
       <div class="tiles3" id="overview"></div>
       <div class="bar"><h2 style="margin:0">Games</h2><span class="meta" id="gCount"></span><span class="grow"></span><button class="btn main edit-only" id="newGame">+ Add game</button></div>
       <div class="list" id="gameList"></div>
+    </section>
+
+    <!-- RANDOM: dice -->
+    <section class="view" id="v-dice" hidden>
+      <div class="seg small" id="dKinds"></div>
+      <div class="stage" id="diceStage" role="button" tabindex="0" aria-label="Throw the dice"></div>
+      <div class="cres" id="diceRes" aria-live="polite"></div>
+      <p class="hint">Tap the dice to throw them.</p>
+      <details class="setd"><summary>⚙ Settings</summary>
+        <div class="setbody">
+          <div class="field"><span class="l">Number of dice</span><div class="stepper" id="dCount"><button type="button" class="stp" data-d="-1" aria-label="Fewer dice">−</button><span class="sv">1</span><button type="button" class="stp" data-d="1" aria-label="More dice">+</button></div></div>
+          <div class="field"><span class="l">Colour</span><div class="swatches" id="dColors"></div></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- RANDOM: coin -->
+    <section class="view" id="v-coin" hidden>
+      <div class="stage" id="coinStage" role="button" tabindex="0" aria-label="Flip the coin"></div>
+      <div class="cres" id="coinRes" aria-live="polite"></div>
+      <p class="hint">Tap the coin to flip it.</p>
+      <details class="setd"><summary>⚙ Settings</summary>
+        <div class="setbody">
+          <div class="field"><label class="l" for="coinCur">Currency</label><select id="coinCur"></select></div>
+          <div class="field"><span class="l">Number of coins</span><div class="stepper" id="cCount"><button type="button" class="stp" data-d="-1" aria-label="Fewer coins">−</button><span class="sv">1</span><button type="button" class="stp" data-d="1" aria-label="More coins">+</button></div></div>
+        </div>
+      </details>
+    </section>
+
+    <!-- RANDOM: number -->
+    <section class="view" id="v-num" hidden>
+      <form class="card panel" id="numForm" autocomplete="off">
+        <div class="row">
+          <div class="field"><label class="l" for="nMin">Minimum</label><input id="nMin" type="number" inputmode="numeric" step="1"></div>
+          <div class="field"><label class="l" for="nMax">Maximum</label><input id="nMax" type="number" inputmode="numeric" step="1"></div>
+        </div>
+        <p class="msg" id="nMsg" role="alert"></p>
+        <div class="acts" style="justify-content:center"><button type="button" class="btn main" id="nGo">Generate</button></div>
+      </form>
+      <div class="numout" id="numOut" aria-live="polite">?</div>
     </section>
 
     <!-- LIBRARY: stats -->
@@ -241,7 +284,7 @@ const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStr
 const fmtD=d=>d?new Date(d+'T12:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'';
 const num=v=>{if(v===''||v==null)return null;const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
 const toks=s=>String(s??'').split(/\s*[,;/]\s*/).map(t=>t.trim()).filter(Boolean);
-let D={games:[],plays:[],calcs:[]},view='lib',lastLog='hist',lastLib='lib',cur=null,returnTo='lib';
+let D={games:[],plays:[],calcs:[]},view='lib',lastLog='hist',lastLib='lib',lastChance='dice',cur=null,returnTo='lib';
 const gameById=id=>D.games.find(g=>g.id===id);
 const gameByName=n=>D.games.find(g=>norm(g.name)===norm(n));
 const playersTxt=g=>g.minP&&g.maxP?(g.minP===g.maxP?`${g.minP}`:`${g.minP}–${g.maxP}`):(g.maxP||g.minP||'');
@@ -278,19 +321,19 @@ $('#loginForm').onsubmit=async e=>{
 };
 
 /* ---------- navigation: Library | Log (History, Stats, By game) | Calculator ---------- */
-const LOGV=['hist','stats','game'],LIBV=['lib','libstats'],CALCV=['calc','calcplay','calcedit'];
-const tabOf=v=>v==='lib'||v==='libstats'||v==='editgame'?'lib':LOGV.includes(v)||v==='editplay'?'log':CALCV.includes(v)?'calc':'';
+const LOGV=['hist','stats','game'],LIBV=['lib','libstats'],CHV=['dice','coin','num'],CALCV=['calc','calcplay','calcedit'];
+const tabOf=v=>v==='lib'||v==='libstats'||v==='editgame'?'lib':CHV.includes(v)?'chance':LOGV.includes(v)||v==='editplay'?'log':CALCV.includes(v)?'calc':'';
 function show(v){
-  if(!can()&&v!=='calc'&&v!=='calcplay')v='calc'; // visitors only get the calculators; library and log are private
-  view=v;if(LOGV.includes(v))lastLog=v;if(LIBV.includes(v))lastLib=v;
+  if(!can()&&v!=='calc'&&v!=='calcplay'&&!CHV.includes(v))v='calc'; // visitors get the calculators and the dice; library and log are private
+  view=v;if(LOGV.includes(v))lastLog=v;if(LIBV.includes(v))lastLib=v;if(CHV.includes(v))lastChance=v;
   $$('.view').forEach(e=>e.hidden=e.id!=='v-'+v);
   $$('.tab').forEach(t=>t.classList.toggle('on',t.dataset.v===tabOf(v)));
   $('#logNav').hidden=!LOGV.includes(v);$$('[data-sub]').forEach(b=>b.classList.toggle('on',b.dataset.sub===v));
-  $('#logFilter').hidden=!(v==='hist'||v==='stats');$('#libNav').hidden=$('#libFilter').hidden=!LIBV.includes(v);
-  if(v==='lib')renderLib();if(v==='libstats')renderLibStats();if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='game')renderGameStats();if(v==='calc')renderCalcList();
+  $('#logFilter').hidden=!(v==='hist'||v==='stats');$('#libNav').hidden=$('#libFilter').hidden=!LIBV.includes(v);$('#chanceNav').hidden=!CHV.includes(v);
+  if(v==='lib')renderLib();if(v==='libstats')renderLibStats();if(v==='dice')initDice();if(v==='coin')initCoin();if(v==='num')initNum();if(v==='hist')renderHist();if(v==='stats')renderStats();if(v==='game')renderGameStats();if(v==='calc')renderCalcList();
   fillLists();window.scrollTo({top:0});
 }
-$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v==='lib'?lastLib:t.dataset.v));
+$$('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v==='log'?lastLog:t.dataset.v==='lib'?lastLib:t.dataset.v==='chance'?lastChance:t.dataset.v));
 $$('[data-sub]').forEach(b=>b.onclick=()=>show(b.dataset.sub));
 function fillLists(){ // suggestions for the autofill fields
   const names=[...new Set([...D.games.map(g=>g.name),...D.plays.map(p=>p.game)])].sort();
@@ -643,181 +686,674 @@ $('#pf').onsubmit=async e=>{
 };
 
 /* =====================================================================
-   CALCULATOR
+   CALCULATOR GENERATOR
+   You type how a game is scored (a small script), the page builds the calculator and calculates with real formulas.
    ===================================================================== */
-// Rows are worked through in order: numbers, switches and counters add or subtract, a multiplier multiplies what came before IN ITS OWN PART.
-// A template has main rows plus optional groups (optionally repeated, e.g. once per colour). Every part is worked out on its own and the parts are added up.
-const mval=(r,v)=>v==null?(r.start??2):v;
+const FN={min:[1,99],max:[1,99],sum:[1,99],avg:[1,99],count:[1,1],abs:[1,1],floor:[1,1],ceil:[1,1],round:[1,2],if:[3,3],clamp:[3,3],table:[2,99],lookup:[2,99],ismax:[1,1],ismin:[1,1],rank:[1,1]};
+const RESERVED=new Set([...Object.keys(FN),'and','or','not','index','players','total']);
+const IDENT=/^[A-Za-z_]\w*$/;
 const nameList=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean);
-function parts(t){
-  const out=[];
-  if((t.rows||[]).length)out.push({id:'main',label:'',group:'',rows:t.rows,prefix:''});
-  (t.groups||[]).forEach(g=>{const ns=nameList(g.names);(ns.length?ns:[g.name||'Group']).forEach((n,i)=>out.push({id:g.id+'|'+i,label:n,group:g.name||'',rows:g.rows||[],prefix:g.id+'|'+i+'|'}))});
+const prettify=s=>{s=String(s).replace(/_/g,' ');return s.charAt(0).toUpperCase()+s.slice(1)};
+
+/* ----- expressions ----- */
+function tokenize(s){
+  const out=[],re=/\s*(?:(\d+(?:\.\d+)?)|([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)?)|(==|!=|<=|>=|&&|\|\||[-+*\/%^<>(),!]))/y;let i=0;
+  while(i<s.length){re.lastIndex=i;const m=re.exec(s);
+    if(!m){if(!s.slice(i).trim())break;throw new Error(`I do not understand “${s.slice(i).trim()[0]}”`)}
+    i=re.lastIndex;
+    if(m[1]!=null)out.push({t:'num',v:parseFloat(m[1])});
+    else if(m[2]!=null){const w=m[2].toLowerCase();out.push(w==='and'||w==='or'||w==='not'?{t:'op',v:w==='and'?'&&':w==='or'?'||':'!'}:{t:'id',v:m[2]})}
+    else out.push({t:'op',v:m[3]});
+  }
   return out;
 }
-function calcRows(rows,vals,prefix){
-  let sum=0;
-  for(const r of rows){const v=vals[prefix+r.id],s=r.op==='sub'?-1:1;
-    if(r.type==='input')sum+=s*(num(v)||0);
-    else if(r.type==='toggle'){if(v)sum+=s*(r.points||0)}
-    else if(r.type==='count')sum+=s*(v||0)*(r.points||0);
-    else if(r.type==='mult')sum*=mval(r,v)}
-  return sum;
+function parseExpr(src){
+  const tk=tokenize(src);let p=0;
+  const peek=()=>tk[p],eat=v=>{const t=tk[p];if(t&&t.t==='op'&&t.v===v){p++;return true}return false},need=v=>{if(!eat(v))throw new Error(`I expected “${v}”`)};
+  const or=()=>{let l=and();while(eat('||'))l={t:'bin',op:'||',l,r:and()};return l};
+  const and=()=>{let l=not();while(eat('&&'))l={t:'bin',op:'&&',l,r:not()};return l};
+  const not=()=>eat('!')?{t:'un',op:'!',e:not()}:cmp();
+  const cmp=()=>{const l=add(),t=peek();if(t&&t.t==='op'&&['==','!=','<=','>=','<','>'].includes(t.v)){p++;return{t:'bin',op:t.v,l,r:add()}}return l};
+  const add=()=>{let l=mul();for(;;){if(eat('+'))l={t:'bin',op:'+',l,r:mul()};else if(eat('-'))l={t:'bin',op:'-',l,r:mul()};else return l}};
+  const mul=()=>{let l=unary();for(;;){const t=peek();if(t&&t.t==='op'&&['*','/','%'].includes(t.v)){p++;l={t:'bin',op:t.v,l,r:unary()}}else return l}};
+  const unary=()=>eat('-')?{t:'un',op:'-',e:unary()}:pow();
+  const pow=()=>{const l=prim();return eat('^')?{t:'bin',op:'^',l,r:unary()}:l};
+  const prim=()=>{const t=tk[p++];if(!t)throw new Error('the formula stops too early');
+    if(t.t==='num')return{t:'num',v:t.v};
+    if(t.t==='id'){if(eat('(')){const args=[];if(!eat(')')){do args.push(or());while(eat(','));need(')')}return{t:'call',fn:t.v.toLowerCase(),args}}return{t:'id',name:t.v}}
+    if(t.t==='op'&&t.v==='('){const e=or();need(')');return e}
+    throw new Error(`unexpected “${t.v}”`)};
+  const ast=or();if(p<tk.length)throw new Error(`unexpected “${tk[p].v}”`);return ast;
 }
-const partTotal=(p,vals)=>calcRows(p.rows,vals,p.prefix);
-const calcTotal=(t,vals)=>parts(t).reduce((s,p)=>s+partTotal(p,vals),0);
-// the winner highlight starts as soon as something was entered (a multiplier alone does not count)
-const hasData=(t,vals)=>parts(t).some(p=>p.rows.some(r=>{const v=vals[p.prefix+r.id];return r.type==='input'?String(v??'')!=='':r.type==='toggle'?!!v:r.type==='count'?(v||0)>0:false}));
-function renderCalcList(){
-  $('#calcList').innerHTML=D.calcs.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<div class="card calcitem"><button class="calcopen" onclick="openCalc('${t.id}')"><b>${esc(t.name)}</b>${t.lowWins?'<small>lowest total wins</small>':''}</button><button class="btn sm edit-only" onclick="editCalc('${t.id}')">Edit</button></div>`).join('')
-    ||`<div class="empty card">No calculators yet. ${can()?'Create one with “New calculator”.':'The owner can add them.'}</div>`;
+function editDist(a,b){const d=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);for(let j=1;j<=b.length;j++)d[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]}
+function checkAst(a,g,tpl,known){ // g = the group this formula lives in (or null for the main part); throws for unknown names / functions
+  if(a.t==='num')return;
+  if(a.t==='un')return checkAst(a.e,g,tpl,known);
+  if(a.t==='bin'){checkAst(a.l,g,tpl,known);checkAst(a.r,g,tpl,known);return}
+  if(a.t==='call'){const f=FN[a.fn];if(!f)throw new Error(`I do not know the function “${a.fn}”. Available: ${Object.keys(FN).join(', ')}`);
+    if(a.args.length<f[0]||a.args.length>f[1])throw new Error(`${a.fn}(…) needs ${f[0]===f[1]?f[0]:f[0]+' or more'} value${f[0]===1&&f[1]===1?'':'s'}`);a.args.forEach(x=>checkAst(x,g,tpl,known));return}
+  const nm=a.name;
+  if(nm.includes('.')){const[gn,fn]=nm.split('.'),gr=tpl.groups.find(x=>x.id===gn);
+    if(!gr)throw new Error(`there is no group “${gn}”`);if(!gr.inputs.some(i=>i.id===fn)&&!gr.forms.some(f=>f.id===fn))throw new Error(`group “${gn}” has no “${fn}”`);return}
+  const pool=[...(g?[...g.inputs.map(i=>i.id),...g.forms.map(f=>f.id),'index']:[]),...tpl.main.inputs.map(i=>i.id),...tpl.main.forms.map(f=>f.id),...tpl.groups.map(x=>x.id),'players'];
+  if(!pool.includes(nm)){const near=pool.filter(x=>editDist(x.toLowerCase(),nm.toLowerCase())<=2)[0];throw new Error(`I do not know “${nm}”${near?` – did you mean “${near}”?`:''}`)}
 }
-/* the calculator itself */
-let cs=null;
-const fm=n=>Number.isInteger(n)?n:Math.round(n*100)/100;
-const grandOf=(t,p)=>p.rounds.reduce((s,v)=>s+calcTotal(t,v),0); // points add up across all rounds
-const anyData=(t,p)=>p.rounds.some(v=>hasData(t,v));
-function openCalc(id){
-  const prev=lsGet('bg_calc_names');
-  cs={tid:id,cur:0,players:(prev&&prev.length?prev:['Player 1','Player 2']).slice(0,6).map(n=>({name:n,rounds:[{}]}))};show('calcplay');drawCalc();
-}
-const rowNote=r=>r.type==='mult'?'multiplier':r.type==='toggle'?`${r.op==='sub'?'−':'+'}${r.points||0}`:r.type==='count'?`${r.op==='sub'?'−':'+'}${r.points||0} each`:r.op==='sub'?'subtract':'add';
-function drawCalc(){
-  const t=D.calcs.find(x=>x.id===cs.tid),nr=cs.players[0].rounds.length,cv=p=>p.rounds[cs.cur],ps=parts(t),rowMap={};
-  ps.forEach(p=>p.rows.forEach(r=>rowMap[p.prefix+r.id]=r));
-  const stepper=(i,k,txt)=>`<div class="stepper" data-i="${i}" data-r="${k}"><button type="button" class="stp" data-d="-1" aria-label="Less">−</button><span class="sv">${txt}</span><button type="button" class="stp" data-d="1" aria-label="More">+</button></div>`;
-  const cell=(p,r,pl,i)=>{const v=cv(pl),k=p.prefix+r.id,lab=esc(r.label)+(p.label?' '+esc(p.label):'')+' for '+esc(pl.name);
-    return r.type==='input'?`<input class="cin" data-i="${i}" data-r="${k}" type="number" step="any" inputmode="decimal" value="${esc(v[k]??'')}" aria-label="${lab}">`
-    :r.type==='toggle'?`<label class="sw"><input type="checkbox" class="cin" data-i="${i}" data-r="${k}" ${v[k]?'checked':''} aria-label="${lab}"><span></span></label>`
-    :r.type==='count'?stepper(i,k,v[k]||0)
-    :stepper(i,k,'×'+mval(r,v[k]))};
-  $('#calcPlayBox').innerHTML=`<div class="subhead"><button class="backarrow" id="calcBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${esc(t.name)}</h3></div>
-  ${t.lowWins?'<p class="meta" style="margin:-.3rem 0 .6rem">Lowest total wins</p>':''}
-  ${t.info?`<details class="box cheat"><summary>ℹ️ Cheat sheet</summary><div class="rules" style="margin-top:.6rem">${esc(t.info)}</div></details>`:''}
-  ${t.rounds?`<div class="rtabs">${Array.from({length:nr},(_,r)=>`<button type="button" class="stab rbtn${r===cs.cur?' on':''}" data-rr="${r}">Round ${r+1}</button>`).join('')}<button type="button" class="btn sm" id="rAdd">+ Round</button>${nr>1?'<button type="button" class="btn sm" id="rDel">− Last round</button>':''}</div>`:''}
-  <div class="ctablewrap"><table class="ctable"><thead><tr><th></th>${cs.players.map((p,i)=>`<th class="cp" data-c="${i}"><input class="cname" data-i="${i}" value="${esc(p.name)}" aria-label="Player name"><span class="crown" hidden>🏆</span></th>`).join('')}</tr></thead>
-  <tbody>${ps.map(p=>(p.id==='main'?'':`<tr class="ghead"><th scope="row">${esc(p.label)}${p.group&&p.group!==p.label?`<small>${esc(p.group)}</small>`:''}</th>${cs.players.map((pl,i)=>`<td class="sub" data-c="${i}" data-p="${p.id}">0</td>`).join('')}</tr>`)
-    +p.rows.map(r=>`<tr><th scope="row">${esc(r.label)}<small>${rowNote(r)}</small></th>${cs.players.map((pl,i)=>`<td data-c="${i}">${cell(p,r,pl,i)}</td>`).join('')}</tr>`).join('')).join('')}</tbody>
-  <tfoot>${t.rounds&&nr>1?cs.players[0].rounds.map((_,r)=>`<tr class="rrow${r===cs.cur?' curr':''}"><th scope="row">Round ${r+1}</th>${cs.players.map((p,i)=>`<td class="rtot" data-c="${i}" data-rr="${r}">0</td>`).join('')}</tr>`).join(''):''}
-  <tr class="grand"><th scope="row">${t.rounds&&nr>1?'Total, all rounds':'Total'}</th>${cs.players.map((p,i)=>`<td class="ctot" data-c="${i}">0</td>`).join('')}</tr></tfoot></table></div>
-  <div class="acts" style="margin-top:.8rem"><button class="btn sm" id="calcAdd" ${cs.players.length>=6?'disabled':''}>+ Add player</button><button class="btn sm" id="calcRemove" ${cs.players.length<2?'disabled':''}>− Remove last</button><button class="btn sm" id="calcReset">Reset points</button><span class="grow"></span><button class="btn main sm edit-only" id="calcLog">Log as play</button></div>`;
-  $('#calcBack').onclick=()=>show('calc');
-  $('#calcAdd').onclick=()=>{cs.players.push({name:'Player '+(cs.players.length+1),rounds:cs.players[0].rounds.map(()=>({}))});drawCalc()};
-  $('#calcRemove').onclick=()=>{cs.players.pop();drawCalc()};
-  $('#calcReset').onclick=()=>{cs.players.forEach(p=>p.rounds=[{}]);cs.cur=0;drawCalc()};
-  $('#calcLog').onclick=calcToPlay;
-  $$('.rbtn').forEach(b=>b.onclick=()=>{cs.cur=+b.dataset.rr;drawCalc()});
-  if($('#rAdd'))$('#rAdd').onclick=()=>{cs.players.forEach(p=>p.rounds.push({}));cs.cur=nr;drawCalc()};
-  if($('#rDel'))$('#rDel').onclick=async()=>{
-    if(cs.players.some(p=>hasData(t,p.rounds[nr-1]))&&!await ask(`The points of round ${nr} are removed.`,{title:'Remove the last round?',yes:'Remove',danger:true}))return;
-    cs.players.forEach(p=>p.rounds.pop());cs.cur=Math.min(cs.cur,nr-2);drawCalc();
-  };
-  $$('.cname').forEach(i=>i.oninput=()=>{cs.players[+i.dataset.i].name=i.value;lsSet('bg_calc_names',cs.players.map(p=>p.name))});
-  $$('.cin').forEach(i=>{const f=()=>{cv(cs.players[+i.dataset.i])[i.dataset.r]=i.type==='checkbox'?i.checked:i.value;updateCalc()};i.oninput=f;i.onchange=f});
-  $$('.stepper').forEach(el=>el.onclick=e=>{ // + and − for counters and multipliers
-    const b=e.target.closest('.stp');if(!b)return;
-    const v=cv(cs.players[+el.dataset.i]),k=el.dataset.r,r=rowMap[k],d=+b.dataset.d;let n;
-    if(r.type==='count')n=Math.max(0,(v[k]||0)+d);
-    else n=Math.max(0,Math.round((mval(r,v[k])+d*(r.step||1))*100)/100);
-    v[k]=n;el.querySelector('.sv').textContent=r.type==='mult'?'×'+n:n;updateCalc();
+function parseScript(src){
+  const errors=[],t={name:'',info:'',rounds:false,lowWins:false,main:{inputs:[],forms:[]},groups:[],total:null};
+  let g=null;const raw=String(src||'').split('\n'),pending=[];
+  const stripComment=l=>{let q=false;for(let i=0;i<l.length;i++){if(l[i]==='"')q=!q;else if(l[i]==='#'&&!q&&(i===0||/\s/.test(l[i-1])))return l.slice(0,i)}return l};
+  raw.forEach((line,ix)=>{
+    const ln=ix+1,full=stripComment(line);if(!full.trim())return;
+    const indent=/^(\s{2,}|\t)/.test(full),s=full.trim(),bad=m=>errors.push(`Line ${ln}: ${m}`);let m;
+    if(!t.name){t.name=s;return}
+    if((m=s.match(/^info:\s*(.*)$/i))){t.info+=(t.info?'\n':'')+m[1];return}
+    if(/^lowest wins$/i.test(s)){t.lowWins=true;return}
+    if(/^rounds$/i.test(s)){t.rounds=true;return}
+    if((m=s.match(/^total\s*=\s*(.+)$/i))){if(indent)return bad('“total” belongs at the left edge, not inside a group');try{t.total=parseExpr(m[1])}catch(e){return bad(e.message)}pending.push({ast:t.total,g:null,ln});return}
+    if((m=s.match(/^group\s+([A-Za-z_]\w*)(?:\s+"([^"]*)")?(?:\s+for\s+(.+)|\s+\+)?\s*$/i))){
+      if(RESERVED.has(m[1].toLowerCase())||t.groups.some(x=>x.id===m[1])||t.main.inputs.some(i=>i.id===m[1])||t.main.forms.some(f=>f.id===m[1]))return bad(`the name “${m[1]}” is already used or reserved`);
+      g={id:m[1],label:m[2]??prettify(m[1]),mode:m[3]?'names':/\s\+$/.test(s)?'dyn':'one',names:m[3]?nameList(m[3]):[],inputs:[],forms:[]};t.groups.push(g);return}
+    const scope=indent&&g?g:null;if(indent&&!g)return bad('this line is indented, but there is no group above it');
+    if(!indent)g=null;
+    const S=scope||t.main,taken=id=>S.inputs.some(i=>i.id===id)||S.forms.some(f=>f.id===id);
+    if((m=s.match(/^(number|switch|count|pick)\s+([A-Za-z_]\w*)(?:\s+"([^"]*)")?(?:\s*:\s*(.+))?\s*$/i))){
+      const type=m[1].toLowerCase(),id=m[2];
+      if(RESERVED.has(id.toLowerCase()))return bad(`“${id}” is a reserved word, pick another name`);
+      if(taken(id)||(!scope&&t.groups.some(x=>x.id===id)))return bad(`the name “${id}” is used twice`);
+      const inp={id,type,label:m[3]??prettify(id)};
+      if(type==='pick'){
+        if(!m[4])return bad('a pick needs its options after a colon, like: pick size "Size": Small 2, Large 7');
+        inp.options=nameList(m[4]).map((x,k)=>{const q=x.match(/^(.*?)\s*(-?\d+(?:\.\d+)?)?$/);return{label:q[1]||String(q[2]),value:q[2]!=null?parseFloat(q[2]):k+1}});
+        if(!inp.options.length)return bad('a pick needs at least one option')}
+      S.inputs.push(inp);return}
+    if((m=s.match(/^([A-Za-z_]\w*)(?:\s+"([^"]*)")?\s*=\s*(.+)$/))){
+      const id=m[1];if(RESERVED.has(id.toLowerCase())&&id!=='total')return bad(`“${id}” is a reserved word, pick another name`);
+      if(taken(id)||(!scope&&t.groups.some(x=>x.id===id)))return bad(`the name “${id}” is used twice`);
+      let ast;try{ast=parseExpr(m[3])}catch(e){return bad(e.message)}
+      S.forms.push({id,label:m[2]??null,ast});pending.push({ast,g:scope,ln,id});return}
+    bad(`I do not understand this line. Start with number, switch, count, pick, group, or write: name = formula`);
   });
-  updateCalc();
-}
-// who is ahead: everybody counts, also a player without any entries (that is 0 points, which beats a negative score).
-// Nobody is marked until at least one number has been entered.
-function leaders(t,grand){
-  if(!cs.players.some(p=>anyData(t,p)))return grand.map(()=>false);
-  const best=(t.lowWins?Math.min:Math.max)(...grand);
-  return grand.map(g=>g===best);
-}
-function updateCalc(){ // totals and the winner highlight update immediately; the winner is decided on the points of all rounds together
-  const t=D.calcs.find(x=>x.id===cs.tid),grand=cs.players.map(p=>grandOf(t,p)),pm=Object.fromEntries(parts(t).map(p=>[p.id,p]));
-  $$('.ctot').forEach((c,i)=>c.textContent=fm(grand[i]));
-  $$('.rtot').forEach(c=>c.textContent=fm(calcTotal(t,cs.players[+c.dataset.c].rounds[+c.dataset.rr]||{})));
-  $$('.sub').forEach(c=>c.textContent=fm(partTotal(pm[c.dataset.p],cs.players[+c.dataset.c].rounds[cs.cur]))); // score of one group, e.g. one colour
-  const win=leaders(t,grand).map(w=>w&&cs.players.length>1);
-  $$('[data-c]').forEach(el=>el.classList.toggle('win',!!win[+el.dataset.c]));$$('.crown').forEach((c,i)=>c.hidden=!win[i]);
-}
-function calcToPlay(){ // the play gets the total over all rounds, not the single rounds
-  const t=D.calcs.find(x=>x.id===cs.tid),grand=cs.players.map(p=>grandOf(t,p)),lead=leaders(t,grand),g=gameByName(t.name);
-  openPlay({...blankPlay(),game:t.name,gameId:g?.id||'',coop:g?.mode==='coop',scores:true,manual:true,addLib:!g,
-    players:cs.players.map((p,i)=>({name:p.name,score:String(fm(grand[i])),team:String(i+1),win:lead[i],me:i===0&&p.name===localStorage.getItem('bg_me')}))});
+  if(!t.name)errors.push('Start with the name of the game on the first line.');
+  // check every formula (all groups are known now)
+  pending.forEach(p=>{try{checkAst(p.ast,p.g,t)}catch(e){errors.push(`Line ${p.ln}: ${e.message}`)}});
+  const hasScore=t.main.forms.some(f=>f.id==='score')||t.groups.some(x=>x.forms.some(f=>f.id==='score'));
+  if(!errors.length&&!t.total&&!hasScore)errors.push('Say how points are counted: add a line like  score = cards + 5 * bonus  (inside a group, every item gets its own score), or a final  total = …  line.');
+  if(!errors.length&&!t.main.inputs.length&&!t.groups.some(x=>x.inputs.length))errors.push('Add at least one input, for example:  number points "Points"');
+  if(!errors.length){ // try everything once, so circular formulas and the like show up now
+    try{const vals={};t.groups.forEach(x=>{if(x.mode==='dyn')vals['@'+x.id]=['x']});const E=Evaluator(t,[vals,{}],0);E.total();E.checkAll()}
+    catch(e){errors.push('Problem in the formulas: '+(e instanceof RangeError?'a formula that compares players refers to itself':e.message))}}
+  return{tpl:errors.length?null:t,errors};
 }
 
-/* the calculator editor (owner only) */
-const newRow=()=>({id:uid(),label:'',type:'input',op:'add',points:10,start:2,step:1});
-function editCalc(id){openCalcEdit(structuredClone(D.calcs.find(x=>x.id===id)))}
-$('#newCalc').onclick=()=>openCalcEdit({id:null,name:'',lowWins:false,rounds:false,info:'',rows:[newRow()],groups:[]});
-function openCalcEdit(t){if(!needLogin())return;cur=t;cur.groups??=[];show('calcedit');drawCalcEdit()}
-const rowsOf=list=>list==='main'?cur.rows:cur.groups.find(g=>g.id===list.slice(2)).rows;
-function readCalcEdit(){
-  cur.name=$('#ceName').value.trim();cur.lowWins=$('#ceLow').checked;cur.rounds=$('#ceRounds').checked;cur.info=$('#ceInfo').value.trim();
-  $$('#calcEditBox .crow').forEach(el=>{const r=rowsOf(el.closest('.rowlist').dataset.list)[+el.dataset.i],q=s=>el.querySelector(s);if(!r)return;
-    r.label=q('.rl').value.trim();r.type=q('.rt').value;if(q('.ro'))r.op=q('.ro').value;
-    if(q('.rp'))r.points=num(q('.rp').value)||0;if(q('.rs'))r.start=num(q('.rs').value)??2;if(q('.rst'))r.step=num(q('.rst').value)||1});
-  $$('#calcEditBox .ggroup').forEach(el=>{const g=cur.groups.find(x=>x.id===el.dataset.g);if(!g)return;g.name=el.querySelector('.gname').value.trim();g.names=el.querySelector('.gnames').value});
+/* ----- calculating ----- */
+function Evaluator(tpl,all,pi){ // all = the values of every player in one round, pi = whose numbers we want
+  const vals=all[pi]||{},memo=new Map(),stack=[],G=Object.fromEntries(tpl.groups.map(g=>[g.id,g]));
+  const insts=g=>g.mode==='dyn'?(vals['@'+g.id]||[]).map((iid,k)=>({key:iid,k,label:`${g.label} ${k+1}`})):(g.mode==='names'?g.names:[g.label]).map((n,k)=>({key:String(k),k,label:n}));
+  const inVal=(g,inst,inp)=>{const v=vals[(g?g.id+'|'+inst.key+'|':'')+inp.id];
+    return inp.type==='number'?(num(v)||0):inp.type==='switch'?(v?1:0):inp.type==='count'?Math.max(0,Math.floor(+v||0)):(inp.options[v]?inp.options[v].value:0)};
+  const sk=sc=>sc?sc.g.id+'|'+sc.inst.key:'main',fin=x=>Number.isFinite(x)?x:0;
+  const S=x=>{if(Array.isArray(x))throw new Error('a list of values can only be used inside sum(…), max(…), min(…), avg(…) or count(…)');return x};
+  function form(sc,f){
+    const key=sk(sc)+'#'+f.id;if(memo.has(key))return memo.get(key);
+    if(stack.includes(key))throw new Error('circular formula: '+[...stack.slice(stack.indexOf(key)),key].map(k=>k.split('#')[1]).join(' → '));
+    stack.push(key);let v;try{v=ev(f.ast,sc)}finally{stack.pop()}
+    v=fin(S(v));memo.set(key,v);return v;
+  }
+  function named(sc,name){
+    if(sc){const inp=sc.g.inputs.find(i=>i.id===name);if(inp)return inVal(sc.g,sc.inst,inp);const f=sc.g.forms.find(x=>x.id===name);if(f)return form(sc,f);if(name==='index')return sc.inst.k+1}
+    const inp=tpl.main.inputs.find(i=>i.id===name);if(inp)return inVal(null,null,inp);
+    const f=tpl.main.forms.find(x=>x.id===name);if(f)return form(null,f);
+    if(name==='players')return all.length;
+    if(G[name])return insts(G[name]).length;
+    throw new Error(`unknown name “${name}”`);
+  }
+  function ev(a,sc){
+    switch(a.t){
+      case 'num':return a.v;
+      case 'id':if(a.name.includes('.')){const[gn,fn]=a.name.split('.'),g=G[gn];return insts(g).map(inst=>named({g,inst},fn))}return named(sc,a.name);
+      case 'un':{const x=S(ev(a.e,sc));return a.op==='-'?-x:(x?0:1)}
+      case 'bin':{
+        if(a.op==='&&')return S(ev(a.l,sc))&&S(ev(a.r,sc))?1:0;
+        if(a.op==='||')return S(ev(a.l,sc))||S(ev(a.r,sc))?1:0;
+        const x=S(ev(a.l,sc)),y=S(ev(a.r,sc));
+        switch(a.op){case'+':return x+y;case'-':return x-y;case'*':return x*y;case'/':return y===0?0:x/y;case'%':return y===0?0:x%y;case'^':return Math.pow(x,y);
+          case'==':return x===y?1:0;case'!=':return x!==y?1:0;case'<':return x<y?1:0;case'<=':return x<=y?1:0;case'>':return x>y?1:0;case'>=':return x>=y?1:0}
+      }
+      case 'call':return call(a,sc);
+    }
+  }
+  function call(a,sc){
+    const A=a.args,flat=()=>A.flatMap(x=>{const v=ev(x,sc);return Array.isArray(v)?v:[v]}),one=i=>S(ev(A[i],sc));
+    switch(a.fn){
+      case 'if':return one(0)?one(1):one(2);
+      case 'min':{const f=flat();return f.length?Math.min(...f):0}
+      case 'max':{const f=flat();return f.length?Math.max(...f):0}
+      case 'sum':return flat().reduce((s,x)=>s+x,0);
+      case 'avg':{const f=flat();return f.length?f.reduce((s,x)=>s+x,0)/f.length:0}
+      case 'count':{const v=ev(A[0],sc);return Array.isArray(v)?v.length:v}
+      case 'abs':return Math.abs(one(0));case 'floor':return Math.floor(one(0));case 'ceil':return Math.ceil(one(0));
+      case 'round':{const m=Math.pow(10,A[1]?one(1):0);return Math.round(one(0)*m)/m}
+      case 'clamp':return Math.min(Math.max(one(0),one(1)),one(2));
+      case 'table':case 'lookup':{const n=Math.max(0,Math.floor(one(0))),vs=A.slice(1).map((_,i)=>one(i+1));return vs[Math.min(n,vs.length-1)]}
+      case 'ismax':case 'ismin':case 'rank':{ // compare with the other players (same round)
+        const vs=all.map((_,j)=>j===pi?S(ev(A[0],null)):S(Evaluator(tpl,all,j).ev(A[0],null))),me=vs[pi];
+        if(a.fn==='rank')return 1+vs.filter(x=>x>me).length;
+        const best=a.fn==='ismax'?Math.max(...vs):Math.min(...vs);return vs.every(x=>x===vs[0])?0:(me===best?1:0);
+      }
+    }
+  }
+  const hasScore=g=>(g?g.forms:tpl.main.forms).some(f=>f.id==='score');
+  const E={ev,named,insts,G,form,
+    scopeNamed(key,name){if(key==='main')return named(null,name);const[gid,ik]=key.split('|'),g=G[gid],inst=insts(g).find(i=>i.key===ik);return inst?named({g,inst},name):0},
+    groupScore(g){return hasScore(g)?insts(g).reduce((s,inst)=>s+named({g,inst},'score'),0):0},
+    total(){
+      if(tpl.total)return fin(S(ev(tpl.total,null)));
+      let s=hasScore(null)?named(null,'score'):0;tpl.groups.forEach(g=>{s+=E.groupScore(g)});return fin(s);
+    },
+    checkAll(){tpl.main.forms.forEach(f=>form(null,f));tpl.groups.forEach(g=>insts(g).forEach(inst=>g.forms.forEach(f=>form({g,inst},f))))}};
+  return E;
 }
-const CTYPES=[['input','Number entered by players'],['toggle','Switch (yes / no) with a fixed amount'],['count','Counter (+ / −) with a fixed amount each'],['mult','Multiplier (+ / −)']];
-function rowsHTML(list,rows){
-  return `<div class="rowlist" data-list="${list}">${rows.map((r,i)=>`<div class="card crow" data-i="${i}"><div class="crow1"><input class="rl" placeholder="Row name, e.g. Card points" value="${esc(r.label)}" aria-label="Row name">
-    <select class="rt" aria-label="Row type">${CTYPES.map(([v,l])=>`<option value="${v}" ${r.type===v?'selected':''}>${l}</option>`).join('')}</select></div>
-    <div class="crow2">${r.type!=='mult'?`<select class="ro" aria-label="Add or subtract"><option value="add" ${r.op!=='sub'?'selected':''}>Add (+)</option><option value="sub" ${r.op==='sub'?'selected':''}>Subtract (−)</option></select>`:''}
-      ${r.type==='toggle'||r.type==='count'?`<label class="inl">${r.type==='count'?'Points each':'Points'} <input class="rp" type="number" step="any" inputmode="decimal" value="${r.points??''}"></label>`:''}
-      ${r.type==='mult'?`<label class="inl">Start at <input class="rs" type="number" step="any" inputmode="decimal" value="${r.start??2}"></label><label class="inl">Step <input class="rst" type="number" step="any" inputmode="decimal" value="${r.step??1}"></label>`:''}
-      <span class="grow"></span><button type="button" class="remove-x up" ${i?'':'disabled'} aria-label="Move up">↑</button><button type="button" class="remove-x dn" ${i<rows.length-1?'':'disabled'} aria-label="Move down">↓</button><button type="button" class="remove-x del" aria-label="Delete row">×</button></div></div>`).join('')}</div>
-    <div class="acts"><button type="button" class="btn sm" data-add="${list}">+ Add row</button></div>`;
+
+/* ----- the calculator on screen (used for playing and for the preview in the editor) ----- */
+const fm=n=>Number.isInteger(n)?n:Math.round(n*100)/100;
+function CalcView(root,tpl,st,opt={}){
+  const nr=()=>st.players[0].rounds.length,allVals=r=>st.players.map(p=>p.rounds[r]),ev=(r,i)=>Evaluator(tpl,allVals(r),i);
+  const hasData=vals=>Object.entries(vals).some(([k,v])=>!k.startsWith('@')&&v!==''&&v!==false&&v!=null&&v!==0);
+  const grandOf=i=>st.players[i].rounds.reduce((s,_,r)=>s+ev(r,i).total(),0);
+  const leaders=grand=>{if(!st.players.some(p=>p.rounds.some(hasData)))return grand.map(()=>false);const best=(tpl.lowWins?Math.min:Math.max)(...grand);return grand.map(x=>x===best)};
+  const control=(inp,key,i,v,lab)=>{
+    const d=`data-i="${i}" data-k="${esc(key)}"`;
+    if(inp.type==='number')return `<input class="cin" ${d} type="number" inputmode="decimal" step="any" value="${esc(v??'')}" aria-label="${lab}">`;
+    if(inp.type==='switch')return `<label class="sw"><input type="checkbox" class="cin" ${d} ${v?'checked':''} aria-label="${lab}"><span></span></label>`;
+    if(inp.type==='count')return `<div class="stepper" ${d}><button type="button" class="stp" data-d="-1" aria-label="Less">−</button><span class="sv">${v||0}</span><button type="button" class="stp" data-d="1" aria-label="More">+</button></div>`;
+    return inp.options.length<=4?`<span class="cc-seg" ${d}>${inp.options.map((o,j)=>`<button type="button" class="cc-opt${v===j?' on':''}" data-o="${j}" aria-pressed="${v===j}">${esc(o.label)}<b>${o.value}</b></button>`).join('')}</span>`
+      :`<select class="cin" ${d} aria-label="${lab}"><option value="">–</option>${inp.options.map((o,j)=>`<option value="${j}" ${v===j?'selected':''}>${esc(o.label)} (${o.value})</option>`).join('')}</select>`;
+  };
+  const ro=(key,f)=>`<span class="cc-ro" data-ro="${esc(key+'#'+f.id)}">0</span>`;
+  function draw(){
+    if(st.pi>=st.players.length)st.pi=st.players.length-1;
+    const pl=st.players[st.pi],vals=pl.rounds[st.cur],E=ev(st.cur,st.pi),n=nr(),shown=sc=>sc.forms.filter(f=>f.label);
+    const lab=(x,sfx)=>esc(x.label)+(sfx?' '+esc(sfx):'')+' for '+esc(pl.name);
+    const rowsOf=(sc,key,sfx)=>[...sc.inputs.map(inp=>`<div class="cc-row"><span class="cc-lab">${esc(inp.label)}</span>${control(inp,(key==='main'?'':key+'|')+inp.id,st.pi,vals[(key==='main'?'':key+'|')+inp.id],lab(inp,sfx))}</div>`),
+      ...shown(sc).map(f=>`<div class="cc-row cc-calc"><span class="cc-lab">${esc(f.label)}</span>${ro(key,f)}</div>`)].join('');
+    const hasScore=sc=>sc.forms.some(f=>f.id==='score');
+    let h=`<div class="cc-board">${st.players.map((p,i)=>`<div class="card cc-pl${i===st.pi?' cur':''}" data-pi="${i}"><input class="cname" data-i="${i}" value="${esc(p.name)}" aria-label="Player name"><div class="cc-tot" data-tot="${i}">0</div>${tpl.rounds&&n>1?`<div class="cc-rt" data-rt="${i}"></div>`:''}</div>`).join('')}</div>
+    ${tpl.info?`<details class="box cheat"><summary>ℹ️ Cheat sheet</summary><div class="rules" style="margin-top:.6rem">${esc(tpl.info)}</div></details>`:''}
+    ${tpl.rounds?`<div class="rtabs">${Array.from({length:n},(_,r)=>`<button type="button" class="stab rbtn${r===st.cur?' on':''}" data-rr="${r}">Round ${r+1}</button>`).join('')}<button type="button" class="btn sm" data-act="radd">+ Round</button>${n>1?'<button type="button" class="btn sm" data-act="rdel">− Last round</button>':''}</div>`:''}
+    <div class="cc-who"><h4>${esc(pl.name)}</h4><span class="meta">${tpl.rounds?'round '+(st.cur+1):'scoring'}${tpl.lowWins?' · lowest total wins':''}</span></div>`;
+    if(tpl.main.inputs.length||shown(tpl.main).length)h+=`<div class="card cc-sec"><h5>Main${hasScore(tpl.main)?`<b>${ro('main',{id:'score'})}</b>`:''}</h5>${rowsOf(tpl.main,'main','')}</div>`;
+    tpl.groups.forEach(g=>{
+      const ins=E.insts(g),hs=hasScore(g),head=`<h5>${esc(g.label)}${hs?`<b data-gsum="${g.id}">0</b>`:''}</h5>`;
+      if(g.mode==='one'){h+=`<div class="card cc-sec">${head}${rowsOf(g,g.id+'|0',g.label)}</div>`}
+      else if(g.mode==='names'){
+        h+=`<div class="card cc-sec">${head}<div class="cc-gscroll"><table class="cc-gtable"><thead><tr><th></th>${g.inputs.map(i=>`<th>${esc(i.label)}</th>`).join('')}${shown(g).map(f=>`<th>${esc(f.label)}</th>`).join('')}${hs?'<th>Score</th>':''}</tr></thead><tbody>${ins.map(inst=>{const key=g.id+'|'+inst.key;
+          return `<tr><th scope="row">${esc(inst.label)}</th>${g.inputs.map(inp=>`<td>${control(inp,key+'|'+inp.id,st.pi,vals[key+'|'+inp.id],lab(inp,inst.label))}</td>`).join('')}${shown(g).map(f=>`<td>${ro(key,f)}</td>`).join('')}${hs?`<td class="s">${ro(key,{id:'score'})}</td>`:''}</tr>`}).join('')}</tbody></table></div></div>`;
+      }else{
+        h+=`<div class="card cc-sec">${head}${ins.map(inst=>{const key=g.id+'|'+inst.key;
+          return `<div class="cc-item"><div class="cc-fields">${g.inputs.map(inp=>`<span class="cc-fl">${esc(inp.label)} ${control(inp,key+'|'+inp.id,st.pi,vals[key+'|'+inp.id],lab(inp,inst.label))}</span>`).join('')}${shown(g).map(f=>`<span class="cc-fl">${esc(f.label)} ${ro(key,f)}</span>`).join('')}</div><div class="cc-isum"><span>${hs?ro(key,{id:'score'}):''}<small>${esc(inst.label)}</small></span><button type="button" class="cc-rm" data-rm="${esc(key)}" aria-label="Remove ${esc(inst.label)}">×</button></div></div>`}).join('')}<button type="button" class="btn sm cc-addi" data-add="${g.id}">+ Add ${esc(g.label.toLowerCase())}</button></div>`;
+      }
+    });
+    h+=`<div class="cc-err" role="alert" hidden></div><div class="acts" style="margin-top:.8rem"><button class="btn sm" data-act="padd" ${st.players.length>=6?'disabled':''}>+ Add player</button><button class="btn sm" data-act="prem" ${st.players.length<2?'disabled':''}>− Remove last</button><button class="btn sm" data-act="reset">Reset points</button><span class="grow"></span>${opt.onLog?'<button class="btn main sm edit-only" data-act="log">Log as play</button>':''}</div>`;
+    root.innerHTML=h;update();
+  }
+  function update(){
+    const err=root.querySelector('.cc-err');
+    try{
+      const grand=st.players.map((_,i)=>grandOf(i)),lead=leaders(grand),win=lead.map(w=>w&&st.players.length>1);
+      root.querySelectorAll('[data-tot]').forEach(e=>e.textContent=fm(grand[+e.dataset.tot]));
+      root.querySelectorAll('.cc-pl').forEach((el,i)=>el.classList.toggle('win',!!win[i]));
+      root.querySelectorAll('[data-rt]').forEach(e=>{const i=+e.dataset.rt;e.textContent=st.players[i].rounds.map((_,r)=>`R${r+1} ${fm(ev(r,i).total())}`).join(' · ')});
+      const E=ev(st.cur,st.pi);
+      root.querySelectorAll('[data-ro]').forEach(e=>{const j=e.dataset.ro.lastIndexOf('#');e.textContent=fm(E.scopeNamed(e.dataset.ro.slice(0,j),e.dataset.ro.slice(j+1)))});
+      root.querySelectorAll('[data-gsum]').forEach(e=>e.textContent=fm(E.groupScore(E.G[e.dataset.gsum])));
+      if(err)err.hidden=true;
+    }catch(e){if(err){err.hidden=false;err.textContent='Could not calculate: '+e.message}}
+  }
+  const onInput=e=>{
+    const el=e.target;
+    if(el.classList.contains('cname')){st.players[+el.dataset.i].name=el.value;if(opt.persist)lsSet('bg_calc_names',st.players.map(p=>p.name));return}
+    if(!el.classList.contains('cin'))return;
+    st.players[+el.dataset.i].rounds[st.cur][el.dataset.k]=el.type==='checkbox'?el.checked:el.tagName==='SELECT'?(el.value===''?undefined:+el.value):el.value;update();
+  };
+  root.oninput=onInput;root.onchange=onInput;
+  root.onclick=async e=>{
+    const tg=e.target,vals=()=>st.players[st.pi].rounds[st.cur];
+    const pc=tg.closest('.cc-pl');if(pc&&tg.tagName!=='INPUT'&&+pc.dataset.pi!==st.pi){st.pi=+pc.dataset.pi;draw();return}
+    const stp=tg.closest('.stp');
+    if(stp){const box=stp.parentElement,k=box.dataset.k,v=st.players[+box.dataset.i].rounds[st.cur],nv=Math.max(0,(v[k]||0)+ +stp.dataset.d);v[k]=nv;box.querySelector('.sv').textContent=nv;update();return}
+    const op=tg.closest('.cc-opt');
+    if(op){const box=op.parentElement,k=box.dataset.k,v=st.players[+box.dataset.i].rounds[st.cur],j=+op.dataset.o;v[k]=v[k]===j?undefined:j;box.querySelectorAll('.cc-opt').forEach((b,x)=>{b.classList.toggle('on',v[k]===x);b.setAttribute('aria-pressed',v[k]===x)});update();return}
+    const add=tg.closest('[data-add]');if(add){const k='@'+add.dataset.add,v=vals();(v[k]=v[k]||[]).push('i'+(++st.n));draw();return}
+    const rm=tg.closest('[data-rm]');
+    if(rm){const v=vals(),[gid,iid]=rm.dataset.rm.split('|');v['@'+gid]=(v['@'+gid]||[]).filter(x=>x!==iid);Object.keys(v).filter(k=>k.startsWith(gid+'|'+iid+'|')).forEach(k=>delete v[k]);draw();return}
+    const rb=tg.closest('.rbtn');if(rb){st.cur=+rb.dataset.rr;draw();return}
+    const act=tg.closest('[data-act]')?.dataset.act;if(!act)return;
+    if(act==='padd'){st.players.push({name:'Player '+(st.players.length+1),rounds:st.players[0].rounds.map(()=>({}))});draw()}
+    else if(act==='prem'){st.players.pop();draw()}
+    else if(act==='reset'){st.players.forEach(p=>p.rounds=[{}]);st.cur=0;draw()}
+    else if(act==='radd'){st.players.forEach(p=>p.rounds.push({}));st.cur=nr()-1;draw()}
+    else if(act==='rdel'){const last=nr()-1;if(st.players.some(p=>hasData(p.rounds[last]))&&!await ask(`The points of round ${last+1} are removed.`,{title:'Remove the last round?',yes:'Remove',danger:true}))return;
+      st.players.forEach(p=>p.rounds.pop());st.cur=Math.min(st.cur,last-1);draw()}
+    else if(act==='log'&&opt.onLog){const grand=st.players.map((_,i)=>grandOf(i));opt.onLog({players:st.players,grand,lead:leaders(grand)})}
+  };
+  draw();
+  return{draw,update};
 }
+
+/* ----- the list, playing, logging ----- */
+const calcPlain=t=>String(t.src||'');
+function renderCalcList(){
+  $('#calcList').innerHTML=D.calcs.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(t=>{
+    const old=!t.src,tpl=old?null:parseScript(t.src).tpl;
+    return `<div class="card calcitem"><button class="calcopen" onclick="openCalc('${t.id}')"><b>${esc(t.name)}</b>${old?'<small>old format, edit it to rebuild</small>':!tpl?'<small>has an error, edit it to fix</small>':tpl.lowWins?'<small>lowest total wins</small>':''}</button><button class="btn sm edit-only" onclick="editCalc('${t.id}')">Edit</button></div>`}).join('')
+    ||`<div class="empty card">No calculators yet. ${can()?'Create one with “New calculator”.':'The owner can add them.'}</div>`;
+}
+let cs=null;
+function openCalc(id){
+  const t=D.calcs.find(x=>x.id===id);if(!t)return;
+  if(!t.src){toast('This calculator was made with the old editor. Edit it and write it again.');return}
+  const {tpl,errors}=parseScript(t.src);if(!tpl){if(can()){toast('This calculator has an error. Opening the editor.');return editCalc(id)}return say('This calculator has an error: '+errors[0])}
+  const prev=lsGet('bg_calc_names');
+  cs={tpl,st:{players:(prev&&prev.length?prev:['Player 1','Player 2']).slice(0,6).map(n=>({name:n,rounds:[{}]})),cur:0,pi:0,n:0}};
+  $('#calcPlayBox').innerHTML=`<div class="subhead"><button class="backarrow" id="calcBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${esc(tpl.name)}</h3></div><div id="calcView"></div>`;
+  $('#calcBack').onclick=()=>show('calc');
+  show('calcplay');
+  CalcView($('#calcView'),tpl,cs.st,{persist:true,onLog:({players,grand,lead})=>{const g=gameByName(tpl.name);
+    openPlay({...blankPlay(),game:tpl.name,gameId:g?.id||'',coop:g?.mode==='coop',scores:true,manual:true,addLib:!g,
+      players:players.map((p,i)=>({name:p.name,score:String(fm(grand[i])),team:String(i+1),win:lead[i],me:i===0&&p.name===localStorage.getItem('bg_me')}))})}});
+}
+
+/* ---------- examples ---------- */
+const EXAMPLES={
+koi:{title:'Koi (items the player adds)',src:`Koi
+info: PLACEHOLDER POINTS. Replace them with the real ones from the rulebook.
+
+number pond "Pond bonus"
+switch largest "Most koi in one pond"
+score = pond + 5 * largest
+
+group koi "Koi" +
+  pick size "Size": Small 2, Medium 4, Large 7
+  count lilies "Adjacent lilies"
+  switch surrounded "Fully surrounded by water"
+  score = (size + lilies) * (1 + surrounded)`},
+lost:{title:'Lost Cities (one row per colour)',src:`Lost Cities
+info: Per colour: (card points - 20 if started) x (1 + wager cards). 8 or more cards: +20.
+
+group colour "Expedition" for Yellow, Blue, White, Green, Red
+  number cards "Card points"
+  switch started "Started"
+  count wagers "Wager cards"
+  switch big "8+ cards"
+  score "Score" = (cards - 20 * started) * (1 + wagers) + 20 * big`},
+burraco:{title:'Burraco (rounds, simple)',src:`Burraco
+info: Clean burraco 200, dirty burraco 100, going out 100.
+rounds
+
+count clean "Clean burraco"
+count dirty "Dirty burraco"
+number melded "Cards on the table"
+number hand "Cards left in hand"
+switch out "Went out"
+score = melded + 200 * clean + 100 * dirty + 100 * out - hand`},
+sets:{title:'Set collection (lookup table)',src:`Set collection
+number fish "Fish cards"
+number shells "Shell cards"
+fishpts "Fish points" = table(fish, 0, 1, 3, 6, 10, 15)
+shellpts "Shell points" = table(shells, 0, 2, 5, 9, 14)
+score = fishpts + shellpts`},
+majority:{title:'Majority bonus (compares players)',src:`Kingdoms
+info: The player with the most castles gets 10 extra points. Tied players all get it.
+
+number castles "Castles"
+number gold "Gold"
+bonus "Most castles bonus" = 10 * ismax(castles)
+score = gold + 3 * castles + bonus`},
+blank:{title:'Empty start',src:`My game
+
+number points "Points"
+score = points`}
+};
+const SCRIPT_HELP=`<p><b>First line</b> is the name of the game. Then one thing per line. A line starting with # is a note to yourself.</p>
+<table class="ce-tab">
+<tr><td>number cards "Card points"</td><td>the player types a number</td></tr>
+<tr><td>switch started "Started"</td><td>on/off, counts as 1 or 0 in formulas</td></tr>
+<tr><td>count lilies "Adjacent lilies"</td><td>+ / − stepper (0, 1, 2 …)</td></tr>
+<tr><td>pick size "Size": Small 2, Large 7</td><td>choose one; its number is used in formulas (without numbers they count 1, 2, 3 …)</td></tr>
+<tr><td>bonus "Label" = 3 * lilies</td><td>a formula. With a label it is shown, without one it is just a helper</td></tr>
+<tr><td>score = …</td><td>the score of that part. Every <i>score</i> is added to the total</td></tr>
+<tr><td>total = …</td><td>optional: your own final formula instead of adding all scores</td></tr>
+<tr><td>group koi "Koi" +</td><td>a group the player can add to as often as needed, e.g. one fish at a time</td></tr>
+<tr><td>group colour for Yellow, Blue</td><td>the same rows once per name (a compact grid)</td></tr>
+<tr><td>group goals</td><td>a group that exists once (just a section)</td></tr>
+<tr><td>rounds</td><td>play in rounds (the totals add up)</td></tr>
+<tr><td>lowest wins · info: text</td><td>lowest total wins · cheat sheet shown above the calculator</td></tr>
+</table>
+<p>Lines <b>indented</b> by two spaces belong to the group above them; each item or name gets its own copy and its own <i>score</i>.</p>
+<p><b>Formulas</b> use + − * / % ^ ( ) and comparisons == != &lt; &lt;= &gt; &gt;=, plus <i>and</i>, <i>or</i>, <i>not</i>. A true comparison is 1, false is 0.</p>
+<table class="ce-tab">
+<tr><td>if(cond, a, b)</td><td>a when cond is true, otherwise b</td></tr>
+<tr><td>min(…) max(…) sum(…) avg(…)</td><td>of the values given, or of a whole group: sum(koi.score)</td></tr>
+<tr><td>count(koi)</td><td>how many items the group has</td></tr>
+<tr><td>table(n, 0, 1, 3, 6)</td><td>n = 0 gives 0, n = 1 gives 1, n = 2 gives 3 … (the last one is used for bigger n)</td></tr>
+<tr><td>round(x) floor(x) ceil(x) abs(x) clamp(x, lo, hi)</td><td>what you would expect</td></tr>
+<tr><td>ismax(x) ismin(x) rank(x)</td><td>compare with the other players: 1 if you have the highest / lowest x (ties all get 1), your rank (1 = highest)</td></tr>
+<tr><td>group.field</td><td>a field from every item of a group, e.g. koi.size. <i>index</i> is the number of the item, <i>players</i> the number of players</td></tr>
+</table>`;
+
+/* ---------- editor (owner only) ---------- */
+let pst=null; // state of the preview
+function editCalc(id){
+  const t=D.calcs.find(x=>x.id===id);
+  const legacy=!t.src?`${t.name}\n# This calculator was made with the old editor. Its rows were:\n${[...(t.rows||[]).map(r=>`#   ${r.label} (${r.type})`),...(t.groups||[]).flatMap(g=>[`#   group ${g.name}${g.names?' for '+g.names:''}:`,...(g.rows||[]).map(r=>`#     ${r.label} (${r.type})`)])].join('\n')}\n# Write it again below, or pick an example above.\n\nnumber points "Points"\nscore = points`:null;
+  openCalcEdit({id,src:t.src||legacy});
+}
+$('#newCalc').onclick=()=>openCalcEdit({id:null,src:EXAMPLES.blank.src});
+function openCalcEdit(t){if(!needLogin())return;cur=t;pst={players:[{name:'Player 1',rounds:[{}]},{name:'Player 2',rounds:[{}]}],cur:0,pi:0,n:0};show('calcedit');drawCalcEdit()}
 function drawCalcEdit(){
   $('#calcEditBox').innerHTML=`<div class="subhead"><button class="backarrow" id="ceBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${cur.id?'Edit calculator':'New calculator'}</h3></div>
-  <div class="field"><label class="l" for="ceName">Game</label><input id="ceName" value="${esc(cur.name)}" list="gameNames" placeholder="e.g. Lost Cities"></div>
-  <div class="field"><label class="l" for="ceInfo">Cheat sheet (optional)</label><textarea id="ceInfo" rows="4" placeholder="Important things to remember when counting points">${esc(cur.info||'')}</textarea></div>
-  <div class="field"><div class="chips"><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="ceRounds" ${cur.rounds?'checked':''}><span>Play in rounds</span></label><label class="chip" style="--c:var(--accent)"><input type="checkbox" id="ceLow" ${cur.lowWins?'checked':''}><span>Lowest total wins</span></label></div><p class="msg">With rounds you add a round after each hand and the points add up across rounds.</p></div>
-  <span class="l">Main rows (worked through from top to bottom)</span>
-  ${rowsHTML('main',cur.rows)}
-  <h4 class="ct" style="margin-top:1.4rem">Groups</h4>
-  <p class="msg" style="margin:-.3rem 0 .7rem">A group is worked out on its own and then added to the total, so a multiplier inside a group only multiplies that group. Use it when parts of the score are counted separately, like the colours in Lost Cities. Fill in "Repeat for each of" to get the same group once per name.</p>
-  ${cur.groups.map(g=>`<div class="card ggroup" data-g="${g.id}"><div class="ghead2"><input class="gname" placeholder="Group name, e.g. Expedition" value="${esc(g.name)}" aria-label="Group name"><button type="button" class="remove-x gdel" aria-label="Delete group">×</button></div>
-    <label class="inl wide">Repeat for each of <input class="gnames" placeholder="e.g. Yellow, Blue, White, Green, Red" value="${esc(g.names||'')}"></label>
-    ${rowsHTML('g:'+g.id,g.rows)}</div>`).join('')}
-  <div class="acts"><button type="button" class="btn sm" id="gAdd">+ Add group</button></div>
+  <div class="bar" style="margin-bottom:.6rem"><label class="meta" for="ceEx">Start from an example</label><select id="ceEx"><option value="">–</option>${Object.entries(EXAMPLES).map(([k,v])=>`<option value="${k}">${esc(v.title)}</option>`).join('')}</select></div>
+  <textarea id="ceSrc" class="ce-dsl" rows="16" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Calculator script">${esc(cur.src)}</textarea>
+  <div id="ceStatus" role="status"></div>
+  <details class="box" style="margin-top:.6rem"><summary>How to write it</summary><div class="ce-helptxt">${SCRIPT_HELP}</div></details>
+  <h4 class="ct" style="margin-top:1.2rem">Preview</h4>
+  <div class="card cc-preview" id="cePreview"></div>
   <div class="acts" style="justify-content:flex-end;margin-top:1.2rem">${cur.id?'<button type="button" class="btn danger" id="ceDel">Delete calculator</button><span class="grow"></span>':''}<button type="button" class="btn" id="ceCancel">Cancel</button><button type="button" class="btn main" id="ceSave">Save calculator</button></div>`;
+  compileEdit();
 }
+function compileEdit(){
+  const {tpl,errors}=parseScript(cur.src);
+  $('#ceStatus').innerHTML=errors.length?`<div class="msg bad">${errors.slice(0,6).map(esc).join('<br>')}${errors.length>6?`<br>… and ${errors.length-6} more`:''}</div>`
+    :`<div class="msg ok">Looks good: ${tpl.main.inputs.length+tpl.groups.reduce((s,g)=>s+g.inputs.length,0)} inputs${tpl.groups.length?`, ${tpl.groups.length} group${tpl.groups.length>1?'s':''}`:''}. Try it below.</div>`;
+  const box=$('#cePreview');
+  if(tpl)CalcView(box,tpl,pst,{});else box.innerHTML='<p class="meta" style="padding:.4rem">The preview appears when the script has no errors.</p>';
+}
+$('#calcEditBox').oninput=e=>{if(e.target.id==='ceSrc'){cur.src=e.target.value;compileEdit()}};
+$('#calcEditBox').onchange=async e=>{
+  if(e.target.id==='ceEx'&&e.target.value){const ex=EXAMPLES[e.target.value];
+    if(cur.src.trim()&&cur.src.trim()!==EXAMPLES.blank.src.trim()&&!await ask('The text in the box is replaced by the example.',{title:'Use this example?',yes:'Replace'})){e.target.value='';return}
+    cur.src=ex.src;$('#ceSrc').value=cur.src;e.target.value='';compileEdit()}
+};
+$('#calcEditBox').onkeydown=e=>{if(e.target.id==='ceSrc'&&e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart;t.value=t.value.slice(0,s)+'  '+t.value.slice(t.selectionEnd);t.selectionStart=t.selectionEnd=s+2;cur.src=t.value;compileEdit()}};
 $('#calcEditBox').onclick=async e=>{
   const b=e.target.closest('button');if(!b||b.disabled)return;
   if(b.id==='ceBack'||b.id==='ceCancel')return show('calc');
   if(b.id==='ceSave')return saveCalc();
   if(b.id==='ceDel'){if(!await ask('This cannot be undone.',{title:'Delete this calculator?',yes:'Delete',danger:true}))return;D.calcs=D.calcs.filter(x=>x.id!==cur.id);await Store.save(D);return show('calc')}
-  readCalcEdit();
-  if(b.id==='gAdd'){cur.groups.push({id:uid(),name:'',names:'',rows:[newRow()]});drawCalcEdit();$$('#calcEditBox .gname').pop()?.focus()}
-  else if(b.classList.contains('gdel')){const id=b.closest('.ggroup').dataset.g;cur.groups=cur.groups.filter(g=>g.id!==id);drawCalcEdit()}
-  else if(b.dataset.add){rowsOf(b.dataset.add).push(newRow());drawCalcEdit();$$(`#calcEditBox .rowlist[data-list="${b.dataset.add}"] .rl`).pop()?.focus()}
-  else{
-    const row=b.closest('.crow');if(!row)return;
-    const rows=rowsOf(row.closest('.rowlist').dataset.list),i=+row.dataset.i;
-    if(b.classList.contains('del'))rows.splice(i,1);
-    else if(b.classList.contains('up')&&i>0)[rows[i-1],rows[i]]=[rows[i],rows[i-1]];
-    else if(b.classList.contains('dn')&&i<rows.length-1)[rows[i+1],rows[i]]=[rows[i],rows[i+1]];
-    else return;
-    drawCalcEdit();
-  }
 };
-$('#calcEditBox').onchange=e=>{if(e.target.classList.contains('rt')){readCalcEdit();drawCalcEdit()}};
 async function saveCalc(){
-  readCalcEdit();if(!needLogin())return;
-  if(!cur.name)return say('Give the calculator a game name.');
-  const all=[...cur.rows,...cur.groups.flatMap(g=>g.rows)];
-  if(!all.length)return say('Add at least one row.');
-  if(all.some(r=>!r.label))return say('Every row needs a name.');
-  if(cur.groups.some(g=>!g.name))return say('Every group needs a name.');
-  if(cur.groups.some(g=>!g.rows.length))return say('A group needs at least one row. Delete the group if you do not need it.');
-  if(cur.id)D.calcs[D.calcs.findIndex(x=>x.id===cur.id)]=cur;else{cur.id=uid();D.calcs.push(cur)}
+  const {tpl,errors}=parseScript(cur.src);
+  if(!tpl)return say('Fix the script first. '+errors[0]);
+  if(!needLogin())return;
+  const rec={id:cur.id||uid(),name:tpl.name,src:cur.src},i=D.calcs.findIndex(x=>x.id===rec.id);
+  if(i>=0)D.calcs[i]=rec;else D.calcs.push(rec);
   if(await Store.save(D)){toast('Calculator saved.');show('calc')}
+}
+
+/* =====================================================================
+   RANDOM: dice, coin flip and random number
+   The dice and coins are drawn with a small built-in 3D renderer (real polyhedra, flat shading, no libraries).
+   ===================================================================== */
+const rnd=n=>{ // fair random integer 0..n-1
+  if(n<=1)return 0;if(n>4294967296)return Math.floor(Math.random()*n);
+  const lim=Math.floor(4294967296/n)*n,a=new Uint32Array(1);let x;do{crypto.getRandomValues(a);x=a[0]}while(x>=lim);return x%n;
+};
+const PHI=(1+Math.sqrt(5))/2;
+const V3={add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],mul:(a,k)=>[a[0]*k,a[1]*k,a[2]*k],dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],len:a=>Math.hypot(a[0],a[1],a[2]),
+  nrm:a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/l,a[1]/l,a[2]/l]},mid:(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2],
+  avg:ps=>{const s=ps.reduce((q,p)=>[q[0]+p[0],q[1]+p[1],q[2]+p[2]],[0,0,0]);return[s[0]/ps.length,s[1]/ps.length,s[2]/ps.length]}};
+const M3={mul:(a,b)=>a.map((_,i)=>[0,1,2].map(j=>a[i][0]*b[0][j]+a[i][1]*b[1][j]+a[i][2]*b[2][j])),
+  app:(m,p)=>[m[0][0]*p[0]+m[0][1]*p[1]+m[0][2]*p[2],m[1][0]*p[0]+m[1][1]*p[1]+m[1][2]*p[2],m[2][0]*p[0]+m[2][1]*p[1]+m[2][2]*p[2]],
+  rot:(ax,a)=>{const[x,y,z]=V3.nrm(ax),c=Math.cos(a),s=Math.sin(a),t=1-c;return[[t*x*x+c,t*x*y-s*z,t*x*z+s*y],[t*x*y+s*z,t*y*y+c,t*y*z-s*x],[t*x*z-s*y,t*y*z+s*x,t*z*z+c]]}};
+const TILT=[[1,0,0],[0,1,0],[0,0,1]]; // dice and coins come to rest face-on: the result faces you, upright
+const TILT4=TILT;
+const CAM=40,SCALE=44; // almost no perspective, so a picture on a face stays exactly on its disc while it turns
+
+/* ----- the solids ----- */
+function polish(verts,idx,mode,up){ // centre, outward normal, "up" direction for the label, inradius
+  const pts=idx.map(i=>verts[i]),c=V3.avg(pts);
+  let n=V3.nrm(V3.cross(V3.sub(pts[1],pts[0]),V3.sub(pts[2],pts[0])));if(V3.dot(n,c)<0)n=V3.mul(n,-1);
+  const u=up||V3.nrm(V3.sub(mode==='edge'?V3.mid(pts[0],pts[1]):pts[0],c)),ex=V3.cross(u,n);
+  let r=Infinity;for(let i=0;i<pts.length;i++)r=Math.min(r,V3.len(V3.sub(V3.mid(pts[i],pts[(i+1)%pts.length]),c)));
+  return{idx,n,c,u,ex,r};
+}
+function byNormals(verts,normals,mode){ // a face = all vertices furthest along a direction
+  return normals.map(n=>{
+    const nn=V3.nrm(n),m=Math.max(...verts.map(v=>V3.dot(v,nn)));
+    const idx=verts.map((v,i)=>i).filter(i=>Math.abs(V3.dot(verts[i],nn)-m)<1e-6);
+    const c=V3.avg(idx.map(i=>verts[i])),a=V3.nrm(V3.sub(verts[idx[0]],c)),b=V3.cross(nn,a);
+    if(idx.length<3)return null; // this direction is not a face
+    const ang=i=>{const d=V3.sub(verts[i],c);return Math.atan2(V3.dot(d,b),V3.dot(d,a))};
+    idx.sort((i,j)=>ang(i)-ang(j));return polish(verts,idx,mode);
+  });
+}
+function antipodal(faces){ // order so that face i and face n-1-i are opposite (then opposite faces add up to n+1, like real dice)
+  const used=new Set(),first=[],second=[];
+  faces.forEach((f,i)=>{if(used.has(i))return;const j=faces.findIndex((g,k)=>k!==i&&!used.has(k)&&V3.dot(f.n,g.n)<-.999);if(j<0){first.push(f);used.add(i);return}used.add(i);used.add(j);first.push(f);second.unshift(faces[j])});
+  return[...first,...second];
+}
+const SOLIDS={};
+function solid(kind){
+  if(SOLIDS[kind])return SOLIDS[kind];
+  let verts,faces;const P=PHI,S2=[1,-1];
+  const fit=vs=>{const m=Math.max(...vs.map(V3.len));return vs.map(v=>V3.mul(v,1/m))};
+  if(kind==='d4'){verts=fit([[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]]);faces=byNormals(verts,verts.map(v=>V3.mul(v,-1)),'vertex')}
+  else if(kind==='d6'){verts=fit(S2.flatMap(x=>S2.flatMap(y=>S2.map(z=>[x,y,z]))));faces=antipodal(byNormals(verts,[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],'edge'))}
+  else if(kind==='d8'){verts=fit([[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]);faces=antipodal(byNormals(verts,S2.flatMap(x=>S2.flatMap(y=>S2.map(z=>[x,y,z]))),'vertex'))}
+  else if(kind==='d12'){
+    const dv=[...S2.flatMap(x=>S2.flatMap(y=>S2.map(z=>[x,y,z]))),...S2.flatMap(a=>S2.flatMap(b=>[[0,a/P,b*P],[a/P,b*P,0],[b*P,0,a/P]]))];
+    verts=fit(dv);
+    const cyc=(a,b)=>S2.flatMap(s=>S2.flatMap(t=>[[0,s*a,t*b],[s*a,t*b,0],[t*b,0,s*a]]));
+    faces=[cyc(1,P),cyc(P,1)].map(ns=>byNormals(verts,ns,'edge')).find(fs=>fs.length===12&&fs.every(f=>f&&f.idx.length===5));
+    faces=antipodal(faces);
+  }
+  else if(kind==='d20'){
+    verts=fit(S2.flatMap(a=>S2.flatMap(b=>[[0,a,b*P],[a,b*P,0],[b*P,0,a]])));faces=[];
+    const dist=(p,q)=>V3.len(V3.sub(verts[p],verts[q])),edge=Math.min(...verts.slice(1).map((v,x)=>dist(0,x+1)));
+    for(let i=0;i<12;i++)for(let j=i+1;j<12;j++)for(let k=j+1;k<12;k++)if([dist(i,j),dist(j,k),dist(i,k)].every(x=>Math.abs(x-edge)<1e-6))faces.push(polish(verts,[i,j,k],'vertex'));
+    faces=antipodal(faces);
+  }
+  else if(kind==='d10'){ // pentagonal trapezohedron: ten kites
+    const a=.12,U=[],L=[];
+    for(let k=0;k<5;k++){const au=k*2*Math.PI/5,al=au+Math.PI/5;U.push([Math.cos(au),Math.sin(au),a]);L.push([Math.cos(al),Math.sin(al),-a])}
+    const n=V3.cross(V3.sub(U[1],U[0]),V3.sub(L[0],U[0])),h=a+(n[0]*U[0][0]+n[1]*U[0][1])/n[2]; // apex height that makes every kite flat
+    verts=fit([[0,0,h],[0,0,-h],...U,...L]);faces=[];
+    for(let k=0;k<5;k++){faces.push(polish(verts,[0,2+k,7+k,2+(k+1)%5],'vertex'));faces.push(polish(verts,[1,7+k,2+(k+1)%5,7+(k+1)%5],'vertex'))}
+    faces=antipodal(faces);
+  }
+  else if(kind==='coin'){
+    const N=48,t=.022; /* a thin flat disc */verts=[];for(let i=0;i<N;i++){const a=i*2*Math.PI/N;verts.push([Math.cos(a),Math.sin(a),t])}for(let i=0;i<N;i++){const a=i*2*Math.PI/N;verts.push([Math.cos(a),Math.sin(a),-t])}
+    faces=[polish(verts,[...Array(N).keys()],'vertex',[0,1,0]),polish(verts,[...Array(N).keys()].map(i=>N+i),'vertex',[0,1,0])];
+    for(let i=0;i<N;i++)faces.push(polish(verts,[i,(i+1)%N,N+(i+1)%N,N+i],'edge'));
+  }
+  return SOLIDS[kind]={verts,faces};
+}
+
+/* ----- drawing ----- */
+const NS='http://www.w3.org/2000/svg',mkSvg=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const hex2rgb=h=>{h=String(h).replace('#','');if(h.length===3)h=[...h].map(c=>c+c).join('');const n=parseInt(h,16)||0;return[n>>16&255,n>>8&255,n&255]};
+const lum=h=>{const[r,g,b]=hex2rgb(h);return .299*r+.587*g+.114*b};
+const textOn=h=>lum(h)<150?'#ffffff':'#22262b';
+const LIGHT=V3.nrm([-.45,.75,.65]);
+const proj=p=>{const k=CAM/(CAM-p[2]);return[SCALE*p[0]*k,-SCALE*p[1]*k]};
+const faceFrame=f=>[f.ex,f.u,f.n]; // rotation that turns this face towards the viewer with its label upright
+function createBody(sol,deco){
+  const svg=mkSvg('svg',{viewBox:'-64 -64 128 128',class:'die'}),g=mkSvg('g');
+  if(deco.clipId){const d=mkSvg('defs'),cp=mkSvg('clipPath',{id:deco.clipId});cp.append(mkSvg('circle',{r:.985}));d.append(cp);svg.append(d)} // sprites are cut to a round coin
+  svg.append(g);
+  const els=sol.faces.map((f,i)=>{const fg=mkSvg('g'),poly=mkSvg('polygon',{'stroke-linejoin':'round'}),inner=deco.inner(i,f)?mkSvg('polygon'):null,lab=deco.label(i,f)?mkSvg('g'):null;fg.append(poly);if(inner)fg.append(inner);if(lab)fg.append(lab);g.append(fg);return{g:fg,poly,inner,lab}});
+  const b={svg,g,sol,deco,els,R:TILT,hop:0,tilt:deco.tilt||TILT};refreshBody(b);renderBody(b);return b;
+}
+const refreshBody=b=>b.els.forEach((e,i)=>{if(e.lab)e.lab.innerHTML=b.deco.label(i,b.sol.faces[i])});
+const rgbOf=(h,k)=>{const[r,g,bl]=hex2rgb(h);return`rgb(${Math.round(r*k)},${Math.round(g*k)},${Math.round(bl*k)})`};
+function renderBody(b){
+  const R=b.R;
+  b.sol.faces.forEach((f,i)=>{
+    const e=b.els[i],nR=M3.app(R,f.n),cR=M3.app(R,f.c);
+    if(V3.dot(nR,[-cR[0],-cR[1],CAM-cR[2]])<=0){e.g.style.display='none';return}
+    e.g.style.display='';
+    const shade=.52+.48*Math.max(0,V3.dot(nR,LIGHT)),col=b.deco.base(i,f);
+    const P=pts=>pts.map(p=>{const q=proj(M3.app(R,p));return q[0].toFixed(1)+','+q[1].toFixed(1)}).join(' ');
+    e.poly.setAttribute('points',P(f.idx.map(k=>b.sol.verts[k])));e.poly.setAttribute('fill',rgbOf(col,shade));e.poly.setAttribute('stroke',b.deco.line?b.deco.line(i):'rgba(0,0,0,.35)');e.poly.setAttribute('stroke-width',b.deco.sw?b.deco.sw(i):'1');
+    if(e.inner){e.inner.setAttribute('points',P(f.idx.map(k=>V3.add(f.c,V3.mul(V3.sub(b.sol.verts[k],f.c),.74)))));e.inner.setAttribute('fill',rgbOf(b.deco.inner(i,f),shade));e.inner.setAttribute('stroke','rgba(0,0,0,.25)');e.inner.setAttribute('stroke-width','.8')}
+    if(e.lab){const c0=proj(cR),px=proj(M3.app(R,V3.add(f.c,f.ex))),py=proj(M3.app(R,V3.add(f.c,f.u)));
+      e.lab.setAttribute('transform',`matrix(${(px[0]-c0[0]).toFixed(3)} ${(px[1]-c0[1]).toFixed(3)} ${(-(py[0]-c0[0])).toFixed(3)} ${(-(py[1]-c0[1])).toFixed(3)} ${c0[0].toFixed(2)} ${c0[1].toFixed(2)})`)}
+  });
+  b.g.setAttribute('transform',`translate(0 ${(-b.hop).toFixed(1)}) scale(${(b.sc||1).toFixed(3)})`);
+}
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function throwBodies(bodies,targets,kind){ // spin every body and let it come to rest on the chosen face
+  return new Promise(res=>{
+    const t0=performance.now();
+    bodies.forEach((b,i)=>{
+      const coin=kind==='coin';
+      b.anim={coin,start:t0+i*70,dur:REDUCED?250:(coin?1400:1100)+rnd(300),th:REDUCED?0:(coin?(5+rnd(4))*Math.PI:(2+rnd(3))*Math.PI*2+Math.random()*Math.PI),
+        axis:coin?[1,(rnd(100)-50)/300,(rnd(100)-50)/500]:V3.nrm([rnd(200)-99,rnd(200)-99,rnd(200)-99]),R1:M3.mul(b.tilt,faceFrame(b.sol.faces[targets[i]])),hop:REDUCED?0:(coin?70:44)+rnd(14)};
+    });
+    function step(now){
+      let alive=false;
+      bodies.forEach(b=>{const a=b.anim;if(!a)return;
+        const t=Math.min(1,Math.max(0,(now-a.start)/a.dur)),e=1-Math.pow(1-t,3);
+        if(a.coin){const ec=1-Math.pow(1-t,1.6);b.R=M3.mul(M3.rot(a.axis,a.th*(1-ec)),a.R1);b.hop=a.hop*Math.sin(Math.PI*t)} // the size stays the same
+        else{b.R=M3.mul(M3.rot(a.axis,a.th*(1-e)),a.R1);b.hop=a.hop*(1-t)*Math.abs(Math.sin(t*2.6*Math.PI))}
+        if(t<1)alive=true;else{b.R=a.R1;b.hop=0;b.sc=1;b.anim=null}
+        renderBody(b);
+      });
+      alive?requestAnimationFrame(step):res();
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ----- dice ----- */
+const DKIND=['d4','d6','d8','d10','d12','d20','d100'];
+const range=(a,b)=>Array.from({length:b-a+1},(_,i)=>String(a+i));
+const DLAB={d4:range(1,4),d6:range(1,6),d8:range(1,8),d10:range(1,10),d12:range(1,12),d20:range(1,20),
+  d10t:Array.from({length:10},(_,i)=>String(i*10).padStart(2,'0')),d10u:range(0,9)};
+const SHAPE=k=>k==='d10t'||k==='d10u'?'d10':k;
+const PIPS={1:[[0,0]],2:[[-1,-1],[1,1]],3:[[-1,-1],[0,0],[1,1]],4:[[-1,-1],[1,-1],[-1,1],[1,1]],5:[[-1,-1],[1,-1],[0,0],[-1,1],[1,1]],6:[[-1,-1],[-1,0],[-1,1],[1,-1],[1,0],[1,1]]};
+const pipsSvg=(v,r,col)=>PIPS[v].map(([x,y])=>`<circle cx="${(x*.52*r).toFixed(3)}" cy="${(y*.52*r).toFixed(3)}" r="${(.17*r).toFixed(3)}" fill="${col}"/>`).join('');
+const numSvg=(t,r,col,ul)=>`<text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${(r*(t.length>=2?.72:.95)).toFixed(3)}" fill="${col}"${ul?' text-decoration="underline"':''}>${t}</text>`;
+const diceDeco=(kind,color)=>({base:()=>color,inner:()=>null,tilt:kind==='d4'?TILT4:TILT,
+  label:(i,f)=>kind==='d6'?pipsSvg(i+1,f.r,textOn(color)):numSvg(DLAB[kind][i],f.r,textOn(color),kind!=='d4'&&(DLAB[kind][i]==='6'||DLAB[kind][i]==='9'))});
+const COLORS=['#d64545','#e9892b','#f2c230','#2e9e5b','#2f80c4','#8e5bd9','#e86fa0','#23262b','#f4efe6'];
+const CH={kind:'d6',n:1,color:lsGet('bg_dice_color')||'#d64545',dice:[],busy:false,inited:{},coin:lsGet('bg_coin')||'eur',coinN:1,coinBodies:[]};
+function diceSize(count){return count<=1?132:count<=2?118:count<=4?98:count<=6?84:72}
+function buildDice(){
+  const stage=$('#diceStage');stage.innerHTML='';CH.dice=[];
+  const kinds=CH.kind==='d100'?Array.from({length:CH.n}).flatMap(()=>['d10t','d10u']):Array(CH.n).fill(CH.kind);
+  kinds.forEach(k=>{const b=createBody(solid(SHAPE(k)),diceDeco(k,CH.color));b.kind=k;b.face=rnd(b.sol.faces.length);b.R=M3.mul(b.tilt,faceFrame(b.sol.faces[b.face]));renderBody(b);b.svg.style.width=diceSize(kinds.length)+'px';stage.append(b.svg);CH.dice.push(b)});
+  $('#diceRes').innerHTML='';
+}
+async function throwDice(){
+  if(CH.busy)return;CH.busy=true;
+  const targets=CH.dice.map(b=>rnd(b.sol.faces.length));CH.dice.forEach((b,i)=>b.face=targets[i]);
+  $('#diceRes').innerHTML='';
+  await throwBodies(CH.dice,targets,'dice');
+  let vals;
+  if(CH.kind==='d100'){vals=[];for(let i=0;i<CH.dice.length;i+=2){const t=+DLAB.d10t[CH.dice[i].face],u=+DLAB.d10u[CH.dice[i+1].face];vals.push(t+u||100)}}
+  else vals=CH.dice.map(b=>+DLAB[b.kind][b.face]);
+  const sum=vals.reduce((s,v)=>s+v,0);
+  // a single die shows its number itself; the line below only appears when it adds something (several dice, or the d100 pair)
+  $('#diceRes').innerHTML=vals.length>1||CH.kind==='d100'?`<b>${sum}</b>${vals.length>1?`<span>${vals.join(' + ')}</span>`:''}`:'';
+  CH.busy=false;
+}
+function initDice(){
+  if(CH.inited.dice)return;CH.inited.dice=true;
+  $('#dKinds').innerHTML=DKIND.map(k=>`<button type="button" data-k="${k}">${k}</button>`).join('');
+  const sync=()=>{$$('#dKinds button').forEach(b=>b.classList.toggle('on',b.dataset.k===CH.kind));$('#dCount .sv').textContent=CH.n;
+    $$('#dColors .sw-btn[data-c]').forEach(b=>b.classList.toggle('on',b.dataset.c.toLowerCase()===CH.color.toLowerCase()));$('#dCustom').value=/^#[0-9a-f]{6}$/i.test(CH.color)?CH.color:'#d64545'};
+  $('#dKinds').onclick=e=>{const b=e.target.closest('button');if(!b||CH.busy)return;CH.kind=b.dataset.k;sync();buildDice()};
+  $('#dCount').onclick=e=>{const b=e.target.closest('.stp');if(!b||CH.busy)return;CH.n=Math.min(10,Math.max(1,CH.n+ +b.dataset.d));sync();buildDice()};
+  $('#dColors').innerHTML=COLORS.map(c=>`<button type="button" class="sw-btn" data-c="${c}" style="--sw:${c}" aria-label="Dice colour ${c}"></button>`).join('')+'<label class="sw-btn custom" title="Pick any colour"><input type="color" id="dCustom" aria-label="Custom dice colour"></label>';
+  const setColor=c=>{CH.color=c;lsSet('bg_dice_color',c);sync();CH.dice.forEach(b=>{b.deco=diceDeco(b.kind,c);refreshBody(b);renderBody(b)})}; // recolouring never throws the dice again
+  $('#dColors').onclick=e=>{const b=e.target.closest('.sw-btn[data-c]');if(b)setColor(b.dataset.c)};
+  $('#dCustom').oninput=e=>setColor(e.target.value);
+  const stage=$('#diceStage');stage.onclick=throwDice;stage.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();throwDice()}};
+  sync();buildDice();
+}
+
+/* ----- coin: a plain disc that shows a photo or sprite on each side ----- */
+// Put two pictures per currency in images/coins/ (square, transparent background, the coin filling the picture):
+//   <id>-heads.png and <id>-tails.png. Until a picture exists, that side shows a plain disc with the currency symbol.
+const COINS=[
+  {id:'pln',name:'Złoty',sym:'zł',rim:'#aeb2b8',heads:'images/coins/pln-heads.png',tails:'images/coins/pln-tails.png'},
+  {id:'eur',name:'Euro',sym:'€',rim:'#aeb2b8',heads:'images/coins/eur-heads.png',tails:'images/coins/eur-tails.png'},
+  {id:'usd',name:'Dollar',sym:'$',rim:'#aeb2b8',heads:'images/coins/usd-heads.png',tails:'images/coins/usd-tails.png'},
+  {id:'gbp',name:'Pound',sym:'£',rim:'#aeb2b8',heads:'images/coins/gbp-heads.png',tails:'images/coins/gbp-tails.png'}
+];
+const curCoin=()=>COINS.find(c=>c.id===CH.coin)||COINS[1];
+const COINIMG={},RIM={},rgbHex=(h,k)=>'#'+hex2rgb(h).map(v=>Math.round(v*k).toString(16).padStart(2,'0')).join('');
+let CLIPN=0;
+// the edge of the disc takes the colour from the outer ring of your picture, so it always matches the coin (neutral grey if that is not possible)
+function sampleRim(im){
+  try{
+    const S=64,cv=document.createElement('canvas');cv.width=cv.height=S;const x=cv.getContext('2d');x.drawImage(im,0,0,S,S);
+    const d=x.getImageData(0,0,S,S).data;let r=0,g=0,b=0,n=0;
+    for(let py=0;py<S;py++)for(let px=0;px<S;px++){const q=Math.hypot(px+.5-S/2,py+.5-S/2)/(S/2);
+      if(q>.84&&q<.97){const i=(py*S+px)*4;if(d[i+3]>200){r+=d[i];g+=d[i+1];b+=d[i+2];n++}}}
+    return n>20?'#'+[r,g,b].map(v=>Math.round(v/n*.88).toString(16).padStart(2,'0')).join(''):null;
+  }catch{return null} // e.g. the picture is not from this site
+}
+function preloadCoins(){ // only pictures that really load are used, so a missing file never shows a broken image
+  COINS.forEach(c=>[c.heads,c.tails].forEach(src=>{if(src in COINIMG)return;COINIMG[src]=false;
+    const im=new Image();im.onload=()=>{COINIMG[src]=true;if(!RIM[c.id]){const col=sampleRim(im);if(col)RIM[c.id]=col}CH.coinBodies.forEach(b=>{refreshBody(b);renderBody(b)})};im.src=src}));
+}
+const coinFace=(src,c,id)=>COINIMG[src]===true
+  ?`<image href="${esc(src)}" x="-1" y="-1" width="2" height="2" preserveAspectRatio="xMidYMid slice" clip-path="url(#${id})"/>`
+  :`<circle r=".88" fill="none" stroke="rgba(0,0,0,.22)" stroke-width=".03"/><text x="0" y="0" text-anchor="middle" dominant-baseline="central" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="${c.sym.length>1?.55:.8}" fill="#3b4046">${esc(c.sym)}</text>`;
+const rimOf=c=>RIM[c.id]||c.rim;
+const coinDeco=c=>{const id='cc'+(++CLIPN);return{clipId:id,tilt:TILT,base:i=>i<2?rimOf(c):rgbHex(rimOf(c),.82),inner:()=>null,
+  label:i=>i===0?coinFace(c.heads,c,id):i===1?coinFace(c.tails,c,id):'',line:i=>i<2?'rgba(0,0,0,.22)':rgbHex(rimOf(c),.82),sw:i=>i<2?'.6':'.5'}};
+function buildCoins(){
+  const stage=$('#coinStage');stage.innerHTML='';CH.coinBodies=[];const c=curCoin();
+  for(let i=0;i<CH.coinN;i++){const b=createBody(solid('coin'),coinDeco(c));b.face=rnd(2);b.R=M3.mul(b.tilt,faceFrame(b.sol.faces[b.face]));renderBody(b);b.svg.style.width=Math.round(diceSize(CH.coinN)*1.1)+'px';stage.append(b.svg);CH.coinBodies.push(b)}
+  $('#coinRes').innerHTML='';
+}
+async function flipCoins(){
+  if(CH.busy)return;CH.busy=true;
+  const targets=CH.coinBodies.map(()=>rnd(2));CH.coinBodies.forEach((b,i)=>b.face=targets[i]);$('#coinRes').innerHTML='';
+  await throwBodies(CH.coinBodies,targets,'coin');
+  const h=targets.filter(t=>t===0).length,tl=targets.length-h;
+  $('#coinRes').innerHTML=targets.length===1?`<b>${h?'Heads':'Tails'}</b>`:`<b>${h} heads · ${tl} tails</b><span>${targets.map(t=>t===0?'H':'T').join(' ')}</span>`;
+  CH.busy=false;
+}
+function initCoin(){
+  if(CH.inited.coin)return;CH.inited.coin=true;
+  $('#coinCur').innerHTML=COINS.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('#coinCur').value=curCoin().id;
+  $('#coinCur').onchange=e=>{if(CH.busy)return;CH.coin=e.target.value;lsSet('bg_coin',CH.coin);buildCoins()};
+  $('#cCount').onclick=e=>{const b=e.target.closest('.stp');if(!b||CH.busy)return;CH.coinN=Math.min(10,Math.max(1,CH.coinN+ +b.dataset.d));$('#cCount .sv').textContent=CH.coinN;buildCoins()};
+  const stage=$('#coinStage');stage.onclick=flipCoins;stage.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flipCoins()}};
+  buildCoins();preloadCoins();
+}
+
+/* ----- random number ----- */
+function initNum(){
+  if(CH.inited.num)return;CH.inited.num=true;
+  const saved=lsGet('bg_rng')||{min:1,max:100};$('#nMin').value=saved.min;$('#nMax').value=saved.max;
+  const go=async()=>{
+    if(CH.busy)return;
+    let a=num($('#nMin').value),b=num($('#nMax').value);
+    if(a==null||b==null){$('#nMsg').textContent='Fill in a minimum and a maximum.';return}
+    if(a>b)[a,b]=[b,a]; // a reversed range is fine
+    a=Math.ceil(a);b=Math.floor(b);
+    if(a>b){$('#nMsg').textContent='There is no whole number in that range.';return}
+    $('#nMsg').textContent='';lsSet('bg_rng',{min:a,max:b});$('#nMin').value=a;$('#nMax').value=b;
+    CH.busy=true;$('#nGo').disabled=true;const out=$('#numOut'),n=b-a+1,res=a+(n>9007199254740991?Math.floor(Math.random()*n):rnd(n));
+    const end=performance.now()+(REDUCED?0:700);
+    await new Promise(r=>{const f=()=>{if(performance.now()<end){out.textContent=a+rnd(Math.min(n,4294967296));requestAnimationFrame(f)}else r()};f()});
+    out.textContent=res;out.classList.remove('pop');void out.offsetWidth;out.classList.add('pop');
+    CH.busy=false;$('#nGo').disabled=false;
+  };
+  $('#nGo').onclick=go;$('#numForm').onsubmit=e=>{e.preventDefault();go()};
 }
 
 /* ---------- start ---------- */
 async function loadAll(){
   let d={};try{d=await Store.load()}catch(e){console.error(e);toast('Could not load data from Supabase: '+(e.message||e))}
-  D={games:(d.games||[]).map(g=>({extra:[],mode:'comp',deck:0,...g})),plays:(d.plays||[]).map(p=>({players:[],teamScores:{},...p})),calcs:(d.calcs||[]).map(t=>({info:'',groups:[],...t,rows:(t.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r})),groups:(t.groups||[]).map(g=>({names:'',...g,rows:(g.rows||[]).map(r=>({points:10,start:r.options?.[0]??2,step:1,...r}))}))}))};
+  D={games:(d.games||[]).map(g=>({extra:[],mode:'comp',deck:0,...g})),plays:(d.plays||[]).map(p=>({players:[],teamScores:{},...p})),calcs:d.calcs||[]};
   Store.baseline(D);
 }
 async function authChanged(){setAuthUI();await loadAll();show(view==='editgame'||view==='editplay'||view==='calcedit'||view==='calcplay'?'lib':view)}
