@@ -31,7 +31,6 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
   <section class="cb-hero">
     <div class="cb-hero-inner">
       <h1>Board games</h1>
-      <p class="cb-sub">What I own, what I play and who wins</p>
     </div>
     <div class="cb-shapes" aria-hidden="true"><svg viewBox="0 0 112 90"><g transform="rotate(-8 58 46)"><rect x="30" y="18" width="56" height="56" rx="11" fill="#E76F51"/><circle cx="44" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="32" r="5.5" fill="#FFFDF8"/><circle cx="58" cy="46" r="5.5" fill="#FFFDF8"/><circle cx="44" cy="60" r="5.5" fill="#FFFDF8"/><circle cx="72" cy="60" r="5.5" fill="#FFFDF8"/></g></svg></div>
     <svg class="cb-wave" viewBox="0 0 1200 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0 12C100 24 200 0 300 12S500 24 600 12S800 0 900 12S1100 24 1200 12V24H0Z"/></svg>
@@ -186,6 +185,7 @@ document.addEventListener('click',e=>{if(!sidebar.contains(e.target)&&!e.target.
         <div class="field"><div class="chips">
           <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="pScores"><span>Track scores</span></label>
           <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="pTeams"><span>Play in teams</span></label>
+          <label class="chip" style="--c:var(--ok)"><input type="checkbox" id="pCoop"><span>Co-op</span></label>
           <label class="chip" style="--c:#8A8F96" id="drawChip"><input type="checkbox" id="pDraw"><span>Draw</span></label>
         </div></div>
         <div class="field"><span class="l" id="pCount">Players</span><div id="prows"></div>
@@ -564,15 +564,17 @@ function renderStats(){
   const ps=logPlays(),box=$('#statsBox');
   if(!ps.length){box.innerHTML=`<div class="empty card">${D.plays.length?'No plays match your search or dates.':'Stats appear after you log your first play.'}</div>`;return}
   const c=countWLD(ps),gs=groupGames(ps).sort((a,b)=>b.n-a.n||a.name.localeCompare(b.name)),most=gs[0],least=[...gs].sort((a,b)=>a.n-b.n||a.name.localeCompare(b.name))[0];
-  const tiedMost=gs.filter(g=>g.n===most.n).length-1,tiedLeast=gs.filter(g=>g.n===least.n).length-1;
+  // games with the same number of plays are all named (no word like “tied”, which reads like a result)
+  const namesOf=n=>{const l=gs.filter(g=>g.n===n).map(g=>g.name);return{text:l.slice(0,3).join(', ')+(l.length>3?` +${l.length-3} more`:''),several:l.length>1}};
+  const mostN=namesOf(most.n),leastN=namesOf(least.n);
   const days=[...dayCounts(ps)].sort((a,b)=>b[1]-a[1]||b[0].localeCompare(a[0])),bd=days[0];
   const gamesThatDay=[...new Set(ps.filter(p=>p.date===bd[0]).map(p=>p.game))];
   box.innerHTML=`<div class="tiles4"><div class="card tile big"><b>${ps.length}</b><span>Games played</span></div><div class="card tile"><b>${c.won}</b><span>Won</span></div><div class="card tile"><b>${c.lost}</b><span>Lost</span></div><div class="card tile"><b>${c.draw}</b><span>Draw</span></div></div>
   <p class="meta" style="margin:.4rem 0 .8rem">Won, lost and draw count plays where you are marked as “me”.</p>
   <div class="card"><h3 class="ct">Plays over time</h3>${lineChart(ps)}</div>
   <div class="grid2" style="margin-top:1rem">
-    <div class="card"><h3 class="ct">Most played game</h3><p class="big2">${esc(most.name)}</p><p class="meta">${most.n} play${most.n>1?'s':''}${tiedMost?` · ${tiedMost} more tied`:''}</p></div>
-    <div class="card"><h3 class="ct">Least played game</h3><p class="big2">${esc(least.name)}</p><p class="meta">${least.n} play${least.n>1?'s':''}${tiedLeast?` · ${tiedLeast} more tied`:''}</p></div>
+    <div class="card"><h3 class="ct">Most played game</h3><p class="big2">${esc(mostN.text)}</p><p class="meta">${most.n} play${most.n>1?'s':''}${mostN.several?' each':''}</p></div>
+    <div class="card"><h3 class="ct">Least played game</h3><p class="big2">${esc(leastN.text)}</p><p class="meta">${least.n} play${least.n>1?'s':''}${leastN.several?' each':''}</p></div>
     <div class="card"><h3 class="ct">Most plays in one day</h3><p class="big2">${bd[1]}</p><p class="meta">${fmtD(bd[0])} · ${esc(gamesThatDay.join(', '))}</p></div>
   </div>`;
   $$('.chart.lines').forEach(svg=>{const cap=svg.nextElementSibling;svg.querySelectorAll('.pt').forEach(g=>{
@@ -607,14 +609,16 @@ const blankPlay=()=>({id:null,gameId:'',game:'',date:today(),players:[{name:loca
 function openPlay(p){if(!needLogin())return;cur=p;returnTo=LOGV.includes(lastLog)?lastLog:'hist';show('editplay');fillPlay()}
 $('#newPlay').onclick=()=>openPlay(blankPlay());
 function newPlayFor(id){const g=gameById(id);openPlay({...blankPlay(),game:g.name,gameId:g.id,coop:g.mode==='coop',addLib:false})}
-function editPlay(id){const p=structuredClone(D.plays.find(x=>x.id===id));p.scores=p.players.some(x=>x.score!=null&&x.score!=='')||Object.keys(p.teamScores||{}).length>0;p.teamScores=p.teamScores||{};p.addLib=false;p.manual=true;openPlay(p)}
+function editPlay(id){const p=structuredClone(D.plays.find(x=>x.id===id));p.coopLocked=true;p.scores=p.players.some(x=>x.score!=null&&x.score!=='')||Object.keys(p.teamScores||{}).length>0;p.teamScores=p.teamScores||{};p.addLib=false;p.manual=true;openPlay(p)}
 $('#pCancel').onclick=()=>show(returnTo);
 const teamKeys=()=>[...new Set(cur.players.filter(p=>p.name.trim()).map(p=>p.team||'1'))].sort();
 function matchGame(){
-  const g=gameByName(cur.game);cur.gameId=g?.id||'';if(g)cur.coop=g.mode==='coop';
+  const g=gameByName(cur.game);cur.gameId=g?.id||'';if(g&&!cur.coopLocked)cur.coop=g.mode==='coop'; // the Co-op chip always has the last word
+  $('#pCoop').checked=!!cur.coop;
   $('#pHint').textContent=g?`${g.mode==='coop'?'Co-op':'Competitive'}${playersTxt(g)?' · '+playersTxt(g)+' players':''}${g.lowWins?' · lowest score wins':''}`:(cur.game?'Not in your library yet.':'');
   $('#addLibBox').hidden=!(cur.game.trim()&&!g&&!cur.id);
   $('#coopRes').hidden=!cur.coop;$('#drawChip').hidden=cur.coop;
+  if(cur.coop){cur.draw=false;$('#pDraw').checked=false;cur.players.forEach(p=>p.win=false)} // a co-op game has no winner and no tie: you win or lose together
   drawPlayers();
 }
 function fillPlay(){
@@ -652,6 +656,7 @@ $('#pNotes').addEventListener('input',e=>cur.notes=e.target.value);
 $('#pScores').onchange=e=>{cur.scores=e.target.checked;drawPlayers();autoWin()};
 $('#pTeams').onchange=e=>{cur.teams=e.target.checked;cur.manual=false;drawPlayers();autoWin()};
 $('#pDraw').onchange=e=>{cur.draw=e.target.checked;drawPlayers()};
+$('#pCoop').onchange=e=>{cur.coop=e.target.checked;cur.coopLocked=true;matchGame();if(!cur.coop){cur.manual=false;autoWin()}};
 $('#pAddLib').onchange=e=>cur.addLib=e.target.checked;
 $$('input[name=coopr]').forEach(i=>i.onchange=()=>cur.coopResult=i.value);
 $('#addPlayer').onclick=()=>{cur.players.push({name:'',score:'',team:String(Math.min(6,cur.players.length+1)),win:false,me:false});drawPlayers();$$('#prows .pn').pop()?.focus()};
@@ -740,7 +745,7 @@ function checkAst(a,g,tpl,known){ // g = the group this formula lives in (or nul
   if(!pool.includes(nm)){const near=pool.filter(x=>editDist(x.toLowerCase(),nm.toLowerCase())<=2)[0];throw new Error(`I do not know “${nm}”${near?` – did you mean “${near}”?`:''}`)}
 }
 function parseScript(src){
-  const errors=[],t={name:'',info:'',rounds:false,lowWins:false,main:{inputs:[],forms:[]},groups:[],total:null};
+  const errors=[],t={name:'',info:'',rounds:false,coop:false,lowWins:false,main:{inputs:[],forms:[]},groups:[],total:null};
   let g=null;const raw=String(src||'').split('\n'),pending=[];
   const stripComment=l=>{let q=false;for(let i=0;i<l.length;i++){if(l[i]==='"')q=!q;else if(l[i]==='#'&&!q&&(i===0||/\s/.test(l[i-1])))return l.slice(0,i)}return l};
   raw.forEach((line,ix)=>{
@@ -750,6 +755,7 @@ function parseScript(src){
     if((m=s.match(/^info:\s*(.*)$/i))){t.info+=(t.info?'\n':'')+m[1];return}
     if(/^lowest wins$/i.test(s)){t.lowWins=true;return}
     if(/^rounds$/i.test(s)){t.rounds=true;return}
+    if(/^co-?op$/i.test(s)){t.coop=true;return}
     if((m=s.match(/^total\s*=\s*(.+)$/i))){if(indent)return bad('“total” belongs at the left edge, not inside a group');try{t.total=parseExpr(m[1])}catch(e){return bad(e.message)}pending.push({ast:t.total,g:null,ln});return}
     if((m=s.match(/^group\s+([A-Za-z_]\w*)(?:\s+"([^"]*)")?(?:\s+for\s+(.+)|\s+\+)?\s*$/i))){
       if(RESERVED.has(m[1].toLowerCase())||t.groups.some(x=>x.id===m[1])||t.main.inputs.some(i=>i.id===m[1])||t.main.forms.some(f=>f.id===m[1]))return bad(`the name “${m[1]}” is already used or reserved`);
@@ -858,10 +864,11 @@ function Evaluator(tpl,all,pi){ // all = the values of every player in one round
 /* ----- the calculator on screen (used for playing and for the preview in the editor) ----- */
 const fm=n=>Number.isInteger(n)?n:Math.round(n*100)/100;
 function CalcView(root,tpl,st,opt={}){
-  const nr=()=>st.players[0].rounds.length,allVals=r=>st.players.map(p=>p.rounds[r]),ev=(r,i)=>Evaluator(tpl,allVals(r),i);
+  const RO=()=>tpl.rounds||st.rounds,nr=()=>st.players[0].rounds.length,allVals=r=>st.players.map(p=>p.rounds[r]),ev=(r,i)=>Evaluator(tpl,allVals(r),i);
   const hasData=vals=>Object.entries(vals).some(([k,v])=>!k.startsWith('@')&&v!==''&&v!==false&&v!=null&&v!==0);
   const grandOf=i=>st.players[i].rounds.reduce((s,_,r)=>s+ev(r,i).total(),0);
-  const leaders=grand=>{if(!st.players.some(p=>p.rounds.some(hasData)))return grand.map(()=>false);const best=(tpl.lowWins?Math.min:Math.max)(...grand);return grand.map(x=>x===best)};
+  const leaders=grand=>{if(tpl.coop||!st.players.some(p=>p.rounds.some(hasData)))return grand.map(()=>false); // co-op: nobody wins against the others
+    const best=(tpl.lowWins?Math.min:Math.max)(...grand);return grand.map(x=>x===best)};
   const control=(inp,key,i,v,lab)=>{
     const d=`data-i="${i}" data-k="${esc(key)}"`;
     if(inp.type==='number')return `<input class="cin" ${d} type="number" inputmode="decimal" step="any" value="${esc(v??'')}" aria-label="${lab}">`;
@@ -878,10 +885,10 @@ function CalcView(root,tpl,st,opt={}){
     const rowsOf=(sc,key,sfx)=>[...sc.inputs.map(inp=>`<div class="cc-row"><span class="cc-lab">${esc(inp.label)}</span>${control(inp,(key==='main'?'':key+'|')+inp.id,st.pi,vals[(key==='main'?'':key+'|')+inp.id],lab(inp,sfx))}</div>`),
       ...shown(sc).map(f=>`<div class="cc-row cc-calc"><span class="cc-lab">${esc(f.label)}</span>${ro(key,f)}</div>`)].join('');
     const hasScore=sc=>sc.forms.some(f=>f.id==='score');
-    let h=`<div class="cc-board">${st.players.map((p,i)=>`<div class="card cc-pl${i===st.pi?' cur':''}" data-pi="${i}"><input class="cname" data-i="${i}" value="${esc(p.name)}" aria-label="Player name"><div class="cc-tot" data-tot="${i}">0</div>${tpl.rounds&&n>1?`<div class="cc-rt" data-rt="${i}"></div>`:''}</div>`).join('')}</div>
+    let h=`<div class="cc-board">${st.players.map((p,i)=>`<div class="card cc-pl${i===st.pi?' cur':''}" data-pi="${i}"><input class="cname" data-i="${i}" value="${esc(p.name)}" aria-label="Player name"><div class="cc-tot" data-tot="${i}">0</div>${RO()&&n>1?`<div class="cc-rt" data-rt="${i}"></div>`:''}</div>`).join('')}</div>
     ${tpl.info?`<details class="box cheat"><summary>ℹ️ Cheat sheet</summary><div class="rules" style="margin-top:.6rem">${esc(tpl.info)}</div></details>`:''}
-    ${tpl.rounds?`<div class="rtabs">${Array.from({length:n},(_,r)=>`<button type="button" class="stab rbtn${r===st.cur?' on':''}" data-rr="${r}">Round ${r+1}</button>`).join('')}<button type="button" class="btn sm" data-act="radd">+ Round</button>${n>1?'<button type="button" class="btn sm" data-act="rdel">− Last round</button>':''}</div>`:''}
-    <div class="cc-who"><h4>${esc(pl.name)}</h4><span class="meta">${tpl.rounds?'round '+(st.cur+1):'scoring'}${tpl.lowWins?' · lowest total wins':''}</span></div>`;
+    ${RO()?`<div class="rtabs">${Array.from({length:n},(_,r)=>`<button type="button" class="stab rbtn${r===st.cur?' on':''}" data-rr="${r}">Round ${r+1}</button>`).join('')}<button type="button" class="btn sm" data-act="radd">+ Round</button>${n>1?'<button type="button" class="btn sm" data-act="rdel">− Last round</button>':''}</div>`:''}
+    <div class="cc-who"><h4>${esc(pl.name)}</h4><span class="meta">${RO()?'round '+(st.cur+1):'scoring'}${tpl.coop?' · co-op, no winner':tpl.lowWins?' · lowest total wins':''}</span></div>`;
     if(tpl.main.inputs.length||shown(tpl.main).length)h+=`<div class="card cc-sec"><h5>Main${hasScore(tpl.main)?`<b>${ro('main',{id:'score'})}</b>`:''}</h5>${rowsOf(tpl.main,'main','')}</div>`;
     tpl.groups.forEach(g=>{
       const ins=E.insts(g),hs=hasScore(g),head=`<h5>${esc(g.label)}${hs?`<b data-gsum="${g.id}">0</b>`:''}</h5>`;
@@ -894,7 +901,7 @@ function CalcView(root,tpl,st,opt={}){
           return `<div class="cc-item"><div class="cc-fields">${g.inputs.map(inp=>`<span class="cc-fl">${esc(inp.label)} ${control(inp,key+'|'+inp.id,st.pi,vals[key+'|'+inp.id],lab(inp,inst.label))}</span>`).join('')}${shown(g).map(f=>`<span class="cc-fl">${esc(f.label)} ${ro(key,f)}</span>`).join('')}</div><div class="cc-isum"><span>${hs?ro(key,{id:'score'}):''}<small>${esc(inst.label)}</small></span><button type="button" class="cc-rm" data-rm="${esc(key)}" aria-label="Remove ${esc(inst.label)}">×</button></div></div>`}).join('')}<button type="button" class="btn sm cc-addi" data-add="${g.id}">+ Add ${esc(g.label.toLowerCase())}</button></div>`;
       }
     });
-    h+=`<div class="cc-err" role="alert" hidden></div><div class="acts" style="margin-top:.8rem"><button class="btn sm" data-act="padd" ${st.players.length>=6?'disabled':''}>+ Add player</button><button class="btn sm" data-act="prem" ${st.players.length<2?'disabled':''}>− Remove last</button><button class="btn sm" data-act="reset">Reset points</button><span class="grow"></span>${opt.onLog?'<button class="btn main sm edit-only" data-act="log">Log as play</button>':''}</div>`;
+    h+=`<div class="cc-err" role="alert" hidden></div><div class="acts" style="margin-top:.8rem"><button class="btn sm" data-act="padd" ${st.players.length>=6?'disabled':''}>+ Add player</button><button class="btn sm" data-act="prem" ${st.players.length<2?'disabled':''}>− Remove last</button><button class="btn sm" data-act="reset">Reset points</button>${!RO()?'<button class="btn sm" data-act="rounds">Play in rounds</button>':''}<span class="grow"></span>${opt.onLog?'<button class="btn main sm edit-only" data-act="log">Log as play</button>':''}</div>`;
     root.innerHTML=h;update();
   }
   function update(){
@@ -932,6 +939,7 @@ function CalcView(root,tpl,st,opt={}){
     if(act==='padd'){st.players.push({name:'Player '+(st.players.length+1),rounds:st.players[0].rounds.map(()=>({}))});draw()}
     else if(act==='prem'){st.players.pop();draw()}
     else if(act==='reset'){st.players.forEach(p=>p.rounds=[{}]);st.cur=0;draw()}
+    else if(act==='rounds'){st.rounds=true;draw()}
     else if(act==='radd'){st.players.forEach(p=>p.rounds.push({}));st.cur=nr()-1;draw()}
     else if(act==='rdel'){const last=nr()-1;if(st.players.some(p=>hasData(p.rounds[last]))&&!await ask(`The points of round ${last+1} are removed.`,{title:'Remove the last round?',yes:'Remove',danger:true}))return;
       st.players.forEach(p=>p.rounds.pop());st.cur=Math.min(st.cur,last-1);draw()}
@@ -960,8 +968,8 @@ function openCalc(id){
   $('#calcBack').onclick=()=>show('calc');
   show('calcplay');
   CalcView($('#calcView'),tpl,cs.st,{persist:true,onLog:({players,grand,lead})=>{const g=gameByName(tpl.name);
-    openPlay({...blankPlay(),game:tpl.name,gameId:g?.id||'',coop:g?.mode==='coop',scores:true,manual:true,addLib:!g,
-      players:players.map((p,i)=>({name:p.name,score:String(fm(grand[i])),team:String(i+1),win:lead[i],me:i===0&&p.name===localStorage.getItem('bg_me')}))})}});
+    openPlay({...blankPlay(),game:tpl.name,gameId:g?.id||'',coop:!!tpl.coop||g?.mode==='coop',coopLocked:!!tpl.coop,scores:true,manual:true,addLib:!g,
+      players:players.map((p,i)=>({name:p.name,score:String(fm(grand[i])),team:String(i+1),win:!tpl.coop&&lead[i],me:i===0&&p.name===localStorage.getItem('bg_me')}))})}});
 }
 
 /* ---------- examples ---------- */
@@ -1027,7 +1035,8 @@ const SCRIPT_HELP=`<p><b>First line</b> is the name of the game. Then one thing 
 <tr><td>group koi "Koi" +</td><td>a group the player can add to as often as needed, e.g. one fish at a time</td></tr>
 <tr><td>group colour for Yellow, Blue</td><td>the same rows once per name (a compact grid)</td></tr>
 <tr><td>group goals</td><td>a group that exists once (just a section)</td></tr>
-<tr><td>rounds</td><td>play in rounds (the totals add up)</td></tr>
+<tr><td>rounds</td><td>play in rounds (the totals add up). The three boxes above the text write these one-word lines for you</td></tr>
+<tr><td>coop</td><td>a co-op game: nobody wins against the others, the log asks “we won / we lost”</td></tr>
 <tr><td>lowest wins · info: text</td><td>lowest total wins · cheat sheet shown above the calculator</td></tr>
 </table>
 <p>Lines <b>indented</b> by two spaces belong to the group above them; each item or name gets its own copy and its own <i>score</i>.</p>
@@ -1054,6 +1063,11 @@ function openCalcEdit(t){if(!needLogin())return;cur=t;pst={players:[{name:'Playe
 function drawCalcEdit(){
   $('#calcEditBox').innerHTML=`<div class="subhead"><button class="backarrow" id="ceBack" title="Back" aria-label="Back to the calculators">←</button><h3 class="qtitle">${cur.id?'Edit calculator':'New calculator'}</h3></div>
   <div class="bar" style="margin-bottom:.6rem"><label class="meta" for="ceEx">Start from an example</label><select id="ceEx"><option value="">–</option>${Object.entries(EXAMPLES).map(([k,v])=>`<option value="${k}">${esc(v.title)}</option>`).join('')}</select></div>
+  <div class="chips" style="margin:.2rem 0 .6rem" id="ceOpts" aria-label="Options">
+    <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="ceRounds" data-dir="rounds"><span>Play in rounds</span></label>
+    <label class="chip" style="--c:var(--ok)"><input type="checkbox" id="ceCoop" data-dir="coop"><span>Co-op game</span></label>
+    <label class="chip" style="--c:var(--accent)"><input type="checkbox" id="ceLow" data-dir="lowest wins"><span>Lowest total wins</span></label>
+  </div>
   <textarea id="ceSrc" class="ce-dsl" rows="16" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Calculator script">${esc(cur.src)}</textarea>
   <div id="ceStatus" role="status"></div>
   <details class="box" style="margin-top:.6rem"><summary>How to write it</summary><div class="ce-helptxt">${SCRIPT_HELP}</div></details>
@@ -1062,7 +1076,13 @@ function drawCalcEdit(){
   <div class="acts" style="justify-content:flex-end;margin-top:1.2rem">${cur.id?'<button type="button" class="btn danger" id="ceDel">Delete calculator</button><span class="grow"></span>':''}<button type="button" class="btn" id="ceCancel">Cancel</button><button type="button" class="btn main" id="ceSave">Save calculator</button></div>`;
   compileEdit();
 }
+const DIRS={rounds:/^\s*rounds\s*$/i,coop:/^\s*co-?op\s*$/i,'lowest wins':/^\s*lowest wins\s*$/i};
+const dirOn=(src,k)=>src.split('\n').some(l=>DIRS[k].test(l));
+function setDir(src,k,on){ // add or remove a one-word line such as "rounds" right under the title
+  const lines=src.split('\n').filter(l=>!DIRS[k].test(l));if(on)lines.splice(1,0,k);return lines.join('\n');
+}
 function compileEdit(){
+  $$('#ceOpts input').forEach(i=>i.checked=dirOn(cur.src,i.dataset.dir));
   const {tpl,errors}=parseScript(cur.src);
   $('#ceStatus').innerHTML=errors.length?`<div class="msg bad">${errors.slice(0,6).map(esc).join('<br>')}${errors.length>6?`<br>… and ${errors.length-6} more`:''}</div>`
     :`<div class="msg ok">Looks good: ${tpl.main.inputs.length+tpl.groups.reduce((s,g)=>s+g.inputs.length,0)} inputs${tpl.groups.length?`, ${tpl.groups.length} group${tpl.groups.length>1?'s':''}`:''}. Try it below.</div>`;
@@ -1071,6 +1091,7 @@ function compileEdit(){
 }
 $('#calcEditBox').oninput=e=>{if(e.target.id==='ceSrc'){cur.src=e.target.value;compileEdit()}};
 $('#calcEditBox').onchange=async e=>{
+  if(e.target.dataset?.dir){cur.src=setDir(cur.src,e.target.dataset.dir,e.target.checked);$('#ceSrc').value=cur.src;compileEdit();return}
   if(e.target.id==='ceEx'&&e.target.value){const ex=EXAMPLES[e.target.value];
     if(cur.src.trim()&&cur.src.trim()!==EXAMPLES.blank.src.trim()&&!await ask('The text in the box is replaced by the example.',{title:'Use this example?',yes:'Replace'})){e.target.value='';return}
     cur.src=ex.src;$('#ceSrc').value=cur.src;e.target.value='';compileEdit()}
