@@ -73,6 +73,21 @@
           <div class="tags-container all-tags"></div>
         </div>
         <div id="settings-view" hidden></div>
+        <form id="edit-view" hidden autocomplete="off" novalidate>
+          <div class="re-field"><label for="re-name">Name</label><input id="re-name" required></div>
+          <div class="re-field"><label for="re-tags">Tags</label><input id="re-tags" placeholder="dinner, italian, quick"><div class="re-sugg" id="re-sugg"></div></div>
+          <div class="re-field re-sm"><label for="re-serv">Servings</label><input id="re-serv" type="number" min="1" inputmode="numeric"></div>
+          <div class="re-field"><span class="re-l">Photo</span><div id="re-img"></div><input type="file" id="re-file" accept="image/*" hidden></div>
+          <h3 class="re-h">Ingredients</h3><div id="re-ings"></div><button type="button" class="re-add" id="re-add-ing">+ Add ingredient</button>
+          <h3 class="re-h">Method</h3><div id="re-steps"></div><button type="button" class="re-add" id="re-add-step">+ Add step</button>
+          <h3 class="re-h">Source</h3>
+          <div class="re-two"><div class="re-field"><label for="re-author">Author</label><input id="re-author" placeholder="Who is it from?"></div><div class="re-field"><label for="re-link">Link</label><input id="re-link" inputmode="url" placeholder="https://"></div></div>
+          <p class="re-msg" id="re-msg" role="alert"></p>
+        </form>
+      </div>
+      <div class="sheet-foot" id="edit-foot" hidden>
+        <button type="button" class="reset-filters" id="edit-cancel">Cancel</button>
+        <button type="button" id="edit-save" class="done-btn">Save changes</button>
       </div>
       <div class="sheet-foot" id="settings-foot" hidden>
         <button type="button" id="settings-done" class="done-btn">Done</button>
@@ -146,7 +161,7 @@ async function loadRecipes() {
     const tags = [...parse(r.tags, []), ...parse(r.ingredients, []).map(i => i && i.name)]
       .map(t => String(t ?? '').trim()).filter(t => t && !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase()));
     return {
-      name: r.name || 'Unnamed', baseServings: r.baseServings || 4, image: r.image || '',
+      id: r.id, tagsRaw: r.tags, name: r.name || 'Unnamed', baseServings: r.baseServings || 4, image: r.image || '',
       tags, tagKeys: tags.map(t => t.toLowerCase()),
       ingredients: parse(r.ingredients, []), instructions: parse(r.instructions, []), credits: parse(r.credits, {})
     };
@@ -212,7 +227,7 @@ function recipeHTML(r) {
     ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.author)}</a>` : esc(c.author);
 
   return `<article class="recipe" id="${esc(slug(r.name))}" data-base="${r.baseServings}">
-    <p class="kicker">${r.tags.slice(0, 3).map(t => `<span class="kick">${esc(t)}</span>`).join('')}</p>
+    <p class="kicker">${r.tags.slice(0, 3).map(t => `<span class="kick">${esc(t)}</span>`).join('')}${isOwner ? `<button type="button" class="recipe-edit" data-id="${esc(r.id)}" aria-label="Edit ${esc(r.name)}">✎ Edit</button>` : ''}</p>
     <h2>${esc(r.name)}</h2>
     <div class="recipe-body">
       <div class="side">
@@ -260,16 +275,21 @@ function resetFilters() {
 // ---------- full-screen sheets (Recipes / Filter) ----------
 const overlay = $('#overlay');
 function openSheet(view) {
-  $('#sheet-title').textContent = view === 'recipes' ? 'Recipes' : view === 'settings' ? 'Tag settings' : 'Filter';
+  $('#sheet-title').textContent = view === 'recipes' ? 'Recipes' : view === 'settings' ? 'Tag settings' : view === 'edit' ? 'Edit recipe' : 'Filter';
   $('#recipe-dd').hidden = view !== 'recipes';
   $('#filter-view').hidden = $('#filter-foot').hidden = view !== 'filter';
   $('#settings-view').hidden = $('#settings-foot').hidden = view !== 'settings';
+  $('#edit-view').hidden = $('#edit-foot').hidden = view !== 'edit';
   if (view === 'settings') renderSettings();
   overlay.hidden = false;
   document.body.classList.add('lock');
   $('#sheet-close').focus();
 }
-function closeSheet() { overlay.hidden = true; document.body.classList.remove('lock'); }
+let recDirty = false;
+function closeSheet(force) { // an open edit form asks before throwing away changes (force === true skips the question)
+  if (!$('#edit-view').hidden) { if (force !== true && recDirty && !confirm('Discard your changes?')) return; recDirty = false; }
+  overlay.hidden = true; document.body.classList.remove('lock');
+}
 
 // ---------- search bar: hides while scrolling down, returns on scroll up ----------
 const toolbar = $('#toolbar');
@@ -291,12 +311,22 @@ toTop.addEventListener('click', () => scrollTo({ top: 0, behavior: 'smooth' }));
 let isOwner = false, setTab = 'fav', setQuery = '', memberQuery = '', editing = null;
 const gid = () => Math.random().toString(36).slice(2, 10);
 function setOwner(v) {
+  const changed = isOwner !== !!v;
   isOwner = !!v;
+  document.body.classList.toggle('owner', isOwner);
   $('#tag-settings-btn').hidden = !isOwner;
   if (!isOwner && !$('#settings-view').hidden) { closeSheet(); }
+  if (!isOwner && !$('#edit-view').hidden) { recDirty = false; closeSheet(true); }
+  if (changed && allRecipes.length) render(); // the edit buttons only exist while the owner is signed in
 }
-supabaseClient.auth.getSession().then(({ data }) => setOwner(data.session));
-supabaseClient.auth.onAuthStateChange((_e, session) => setOwner(session));
+async function checkOwner(session) {
+  if (!session) return setOwner(false);
+  let ok = true; // if the database check is not available, being signed in counts (the database still decides what may be changed)
+  try { const { data, error } = await supabaseClient.rpc('is_cookbook_owner'); if (!error && typeof data === 'boolean') ok = data; } catch {}
+  setOwner(ok);
+}
+supabaseClient.auth.getSession().then(({ data }) => checkOwner(data.session));
+supabaseClient.auth.onAuthStateChange((_e, session) => checkOwner(session));
 
 async function persistSettings() {
   const { error } = await supabaseClient.from('cookbook_settings').upsert({ id: 'tags', data: settings, updated_at: new Date().toISOString() });
@@ -383,15 +413,109 @@ $('#settings-view').addEventListener('input', e => {
 $('#tag-settings-btn').addEventListener('click', () => { setTab = 'fav'; editing = null; setQuery = ''; openSheet('settings'); });
 $('#settings-done').addEventListener('click', () => { editing = null; openSheet('filter'); });
 
+// ---------- editing a recipe (owner only; the database also only accepts the change from the owner) ----------
+const BUCKET = 'recipe-images', MAX_DIM = 1600, QUALITY = .85;
+let rec = null;
+const reCtl = '<span class="re-ctl"><button type="button" class="re-b" data-mv="-1" aria-label="Move up">↑</button><button type="button" class="re-b" data-mv="1" aria-label="Move down">↓</button><button type="button" class="re-b re-x" data-del="1" aria-label="Remove">×</button></span>';
+const reIng = i => `<div class="re-ing"><input class="re-in" placeholder="Ingredient" value="${esc(i.name || '')}" aria-label="Ingredient"><input class="re-ia" type="number" min="0" step="any" inputmode="decimal" placeholder="Amount" value="${Number(i.amount) ? esc(i.amount) : ''}" aria-label="Amount"><input class="re-iu" placeholder="Unit" value="${esc(i.unit || '')}" aria-label="Unit">${reCtl}</div>`;
+const reStep = t => `<div class="re-step"><textarea class="re-st" rows="2" placeholder="Describe this step…" aria-label="Step">${esc(t || '')}</textarea>${reCtl}</div>`;
+function reTagSugg() {
+  const parts = $('#re-tags').value.split(','), cur = parts.pop().trim().toLowerCase(), have = new Set(parts.map(p => p.trim().toLowerCase()));
+  const list = [...rawTags.values()].map(e => e.name).filter(t => !have.has(t.toLowerCase()) && t.toLowerCase().includes(cur)).sort((a, b) => a.localeCompare(b)).slice(0, 24);
+  $('#re-sugg').innerHTML = list.map(t => `<button type="button" class="re-chip">${esc(t)}</button>`).join('');
+}
+function reImg() {
+  const src = rec.preview || (!rec.remove && rec.image) || '';
+  $('#re-img').innerHTML = src
+    ? `<div class="re-photo"><img src="${esc(src)}" alt="Photo of the recipe"><div class="re-photo-btns"><button type="button" class="re-b2" id="re-replace">Replace</button><button type="button" class="re-b2" id="re-remove">Remove</button></div></div>`
+    : '<button type="button" class="re-b2" id="re-replace">+ Add a photo</button>';
+}
+function openEdit(id) {
+  const r = allRecipes.find(x => String(x.id) === String(id)); if (!r) return;
+  rec = { id: r.id, image: r.image, file: null, preview: '', remove: false, oldName: r.name };
+  const own = parse(r.tagsRaw, []);
+  $('#re-name').value = r.name; $('#re-serv').value = r.baseServings;
+  $('#re-tags').value = own.join(', '); reTagSugg();
+  $('#re-ings').innerHTML = (r.ingredients.length ? r.ingredients : [{}]).map(reIng).join('');
+  $('#re-steps').innerHTML = (r.instructions.length ? r.instructions : ['']).map(reStep).join('');
+  $('#re-author').value = (r.credits || {}).author || ''; $('#re-link').value = (r.credits || {}).link || '';
+  $('#re-msg').textContent = ''; reImg(); recDirty = false;
+  openSheet('edit'); $('#re-name').focus();
+}
+function normTags(list) { // one spelling per tag, reusing the spelling that already exists
+  const canon = new Map([...rawTags.entries()].map(([k, e]) => [k, e.name])), used = new Set();
+  return list.reduce((out, raw) => { const t = raw.trim().replace(/\s+/g, ' '), k = t.toLowerCase(); if (k && !used.has(k)) { used.add(k); out.push(canon.get(k) || t); } return out; }, []);
+}
+async function compress(file) { // resize and compress in the browser, like on the add-recipe page
+  const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }), k = Math.min(1, MAX_DIM / Math.max(bmp.width, bmp.height));
+  const cv = document.createElement('canvas'); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+  cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height); bmp.close();
+  let blob = await new Promise(res => cv.toBlob(res, 'image/webp', QUALITY));
+  if (!blob || blob.type !== 'image/webp') blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', QUALITY));
+  if (!blob) throw new Error('Could not process the image.'); return blob;
+}
+const slugify = t => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'recipe';
+const pathOf = url => { const m = String(url || '').match(new RegExp('/' + BUCKET + '/(.+?)(?:\\?|$)')); return m ? decodeURIComponent(m[1]) : null; };
+async function saveEdit() {
+  const msg = $('#re-msg'), btn = $('#edit-save'); msg.textContent = '';
+  const name = $('#re-name').value.trim(); if (!name) { msg.textContent = 'The recipe needs a name.'; $('#re-name').focus(); return; }
+  const ingredients = [...document.querySelectorAll('#re-ings .re-ing')].map(d => ({ name: d.querySelector('.re-in').value.trim(), amount: Number(d.querySelector('.re-ia').value) || 0, unit: d.querySelector('.re-iu').value.trim() })).filter(i => i.name);
+  const instructions = [...document.querySelectorAll('#re-steps .re-st')].map(t => t.value.trim()).filter(Boolean);
+  const tags = normTags([...$('#re-tags').value.split(','), ...ingredients.map(i => i.name)]);
+  btn.disabled = true; btn.textContent = 'Saving…'; let uploaded = null;
+  try {
+    let image = rec.remove ? '' : rec.image;
+    if (rec.file) {
+      const blob = await compress(rec.file), ext = blob.type === 'image/webp' ? 'webp' : 'jpg', path = `${slugify(name)}-${Date.now()}.${ext}`;
+      const { error: ue } = await supabaseClient.storage.from(BUCKET).upload(path, blob, { contentType: blob.type, cacheControl: '31536000' }); if (ue) throw ue;
+      uploaded = path; image = supabaseClient.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+    }
+    const row = { name, tags, baseServings: Number($('#re-serv').value) || 4, image, ingredients, instructions, credits: { author: $('#re-author').value.trim(), link: $('#re-link').value.trim() } };
+    const { data, error } = await supabaseClient.from('recipes').update(row).eq('id', rec.id).select();
+    if (error) throw error;
+    if (!data || !data.length) throw new Error('The database did not accept the change. Run the “edit recipes” part of supabase_cookbook.sql once, and make sure you are signed in.');
+    if (rec.image && (rec.file || rec.remove)) { const old = pathOf(rec.image); if (old) supabaseClient.storage.from(BUCKET).remove([old]).catch(() => {}); } // tidy up the replaced photo
+    selectedTags = []; searchTerm = ''; $('.search-input').value = '';
+    recDirty = false; closeSheet(true);
+    await loadRecipes();
+    const el = document.getElementById(slug(name)); if (el) { el.scrollIntoView(); el.classList.add('flash'); setTimeout(() => el.classList.remove('flash'), 1800); }
+  } catch (err) {
+    if (uploaded) supabaseClient.storage.from(BUCKET).remove([uploaded]).catch(() => {});
+    msg.textContent = 'Could not save: ' + (err.message || err);
+  } finally { btn.disabled = false; btn.textContent = 'Save changes'; }
+}
+document.addEventListener('click', e => { const b = e.target.closest('.recipe-edit'); if (b) openEdit(b.dataset.id); });
+$('#edit-view').addEventListener('input', e => { recDirty = true; if (e.target.id === 're-tags') reTagSugg(); });
+$('#edit-view').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.classList.contains('re-chip')) { const done = $('#re-tags').value.split(',').slice(0, -1).map(p => p.trim()).filter(Boolean); $('#re-tags').value = [...done, b.textContent].join(', ') + ', '; recDirty = true; reTagSugg(); $('#re-tags').focus(); return; }
+  if (b.id === 're-add-ing') { $('#re-ings').insertAdjacentHTML('beforeend', reIng({})); $('#re-ings').lastElementChild.querySelector('input').focus(); recDirty = true; return; }
+  if (b.id === 're-add-step') { $('#re-steps').insertAdjacentHTML('beforeend', reStep('')); $('#re-steps').lastElementChild.querySelector('textarea').focus(); recDirty = true; return; }
+  if (b.id === 're-replace') { $('#re-file').click(); return; }
+  if (b.id === 're-remove') { rec.remove = true; rec.file = null; if (rec.preview) URL.revokeObjectURL(rec.preview); rec.preview = ''; recDirty = true; reImg(); return; }
+  const row = b.closest('.re-ing, .re-step'); if (!row) return; recDirty = true;
+  if (b.dataset.del) row.remove();
+  else if (b.dataset.mv === '-1' && row.previousElementSibling) row.parentElement.insertBefore(row, row.previousElementSibling);
+  else if (b.dataset.mv === '1' && row.nextElementSibling) row.parentElement.insertBefore(row.nextElementSibling, row);
+});
+$('#re-file').addEventListener('change', e => {
+  const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (!f.type.startsWith('image/')) { $('#re-msg').textContent = 'Please choose an image file.'; return; }
+  if (f.size > 20 * 1024 * 1024) { $('#re-msg').textContent = 'That image is too large (max 20 MB).'; return; }
+  if (rec.preview) URL.revokeObjectURL(rec.preview); rec.file = f; rec.preview = URL.createObjectURL(f); rec.remove = false; recDirty = true; $('#re-msg').textContent = ''; reImg();
+});
+$('#edit-save').addEventListener('click', saveEdit);
+$('#edit-cancel').addEventListener('click', () => closeSheet());
+
 // ---------- events ----------
 $('.search-input').addEventListener('input', e => { searchTerm = e.target.value.trim().toLowerCase(); render(); });
 $('#recipes-btn').addEventListener('click', () => openSheet('recipes'));
 $('#filter-toggle').addEventListener('click', () => openSheet('filter'));
 $('#sheet-close').addEventListener('click', closeSheet);
 $('#sheet-done').addEventListener('click', closeSheet);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#edit-view').hidden) closeSheet(); });
 document.addEventListener('click', e => {
-  if (e.target === overlay) return closeSheet(); // click on the dimmed backdrop (desktop)
+  if (e.target === overlay) return $('#edit-view').hidden ? closeSheet() : undefined; // backdrop click closes, except while editing
 
   const tag = e.target.closest('.recipe-tag');
   if (tag) {
